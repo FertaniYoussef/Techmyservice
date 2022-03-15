@@ -9,6 +9,7 @@ Router.post('/confirmation/:token', async (req, res) => {
 
 	try {
 		const token = await Tokenmodel.findOne({ token: req.params.token });
+	
 		if (!token)
 			return res.status(httpCodes.BAD_REQUEST).send({
 				type: 'not-verified',
@@ -16,7 +17,7 @@ Router.post('/confirmation/:token', async (req, res) => {
 			});
 		console.log(token);
 
-		// If we found a token, find a matching user
+		//	If we found a token, find a matching user
 		const user = await User.findOne({ _id: token._userId });
 		console.log(user);
 

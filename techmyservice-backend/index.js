@@ -11,6 +11,8 @@ const token = require('./Routes/Token');
 const authRoute = require('./Routes/auth');
 const packageRoute=require('./Routes/PackageManagement')
 const orderRoute=require('./Routes/OrderManagement')
+const serviceRoute=require('./Routes/ServiceManagement')
+const driverRoute=require('./Routes/DriverManagement')
 const PORT = process.env.PORT || 5000;
 
 //Database connection
@@ -25,5 +27,8 @@ app.use('/api/user', authRoute);
 app.use('/api/verification', token);
 app.use('/api',packageRoute)
 app.use('/api',orderRoute)
+app.use('/api',serviceRoute)
+app.use('/api',driverRoute)
+
 
 app.listen(PORT, () => console.log(`up and running on port : ${PORT}`));

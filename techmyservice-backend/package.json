@@ -11,13 +11,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vonage/server-sdk": "^2.10.10",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "free-mobile-sms-api": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.2",
+    "mongoose-iban": "^1.0.2",
     "nodemailer": "^6.7.2"
   }
 }

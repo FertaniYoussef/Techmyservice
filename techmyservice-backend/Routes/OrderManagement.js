@@ -1,25 +1,33 @@
 const Router = require('express').Router();
 const { Package } = require('../models/Package');
-const { User } = require('../models/User');
+const {Service} = require('../models/Services')
+const {Notify}=require('../middleware/notify')
 const { Order } = require('../models/Order');
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 
-Router.post('/addorder/:name', verify, async (req, res) => {
+Router.post('/addorder/:service/:name', verify, async (req, res) => {
 	try {
+		const service_name= await Service.findOne({name:req.params.service})
+		if (!service_name) return res.status(httpCodes.NO_CONTENT).send("Service doesn't exist");
 		const pack_name = await Package.findOne({ name: req.params.name });
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("Package doesn't exist");
-		const user = await User.findById(req.user._id);
+		
 
 		const order = new Order({
 			name: pack_name.name,
 			description: pack_name.description,
-			client: user,
-			package: pack_name
+			client: req.user._id,
+			package: pack_name._id,
+			localisation: {coordinates: req.body.coordinates},
+			bill:pack_name.price
 		});
 
 		order.save();
-		return res.status(httpCodes.CREATED).send('Order passed Succesfuly');
+				resultat = await Notify(order,service_name)
+		if (resultat) console.log('we notifed a driver , he\'ll be with you soon')
+		else console.log('your order has been passed , but no driver are availabe please wait')
+		return res.status(httpCodes.CREATED).send('Order passed Succesfully');
 	} catch (err) {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 	}
