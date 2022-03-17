@@ -2,6 +2,7 @@ const Router = require('express').Router();
 const { Package } = require('../models/Package');
 const { User } = require('../models/User');
 const { Service } = require('../models/Services');
+const {Order}=require('../models/Order')
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 const mongocodes = require('../constants/mongodbCodes');
@@ -30,26 +31,25 @@ Router.post('/:service/addpackage', verify, async (req, res) => {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 	}
 });
-Router.get('/getpackages',async (req,res)=> {
+Router.get('/getpackages', async (req, res) => {
 	try {
-			const packages= await Package.find({}).populate('service','name')
-			console.log(packages)
-			if (!packages) return res.status(httpCodes.NO_CONTENT).send("no package exist yet");
-			return res.status(httpCodes.OK).send(packages);
-
-	}catch(err) {
+		const packages = await Package.find({}).populate('service', ['name']);
+		if (!packages) return res.status(httpCodes.NO_CONTENT).send('no package exist yet');
+		return res.status(httpCodes.OK).send(packages);
+	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
-
 	}
-})
-Router.delete('/deletepackage', verify, async (req, res) => {
+});
+Router.delete('/deletepackage?', verify, async (req, res) => {
 	try {
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
 			return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
-		const pack_name = await Package.findOneAndDelete({ name: req.body.name });
+		console.log(req.query);
+		const pack_name = await Package.findOneAndDelete({ name: req.query.name });
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
-		return res.status(httpCodes.OK).send('the package has been deleted');
+		const order= await Order.findOneAndUpdate({package:pack_name._id},{hasPackage:false})
+		return res.status(httpCodes.OK).send('the package has been deleted and the order affilied with ');
 	} catch (err) {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 	}
@@ -63,6 +63,7 @@ Router.put('/updatepackage', verify, async (req, res) => {
 			{ name: req.body.name },
 			{ name: req.body.name_2, description: req.body.description, price: req.body.price }
 		);
+		console.log(pack_name)
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
 		return res.status(httpCodes.OK).send('the package has been updated');
 	} catch (err) {

@@ -21,11 +21,11 @@ const Ordreschema = new mongoose.Schema(
 		description: { type: String },
 		client: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'users'
+			ref: 'Users'
 		},
 		package: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'packages',
+			ref: 'Packages',
 			required: true
 		},
 		addon: {
@@ -42,7 +42,7 @@ const Ordreschema = new mongoose.Schema(
 		index: '2dsphere'
 	}},
     Date:{type:Date, default:Date.now},
-
+	hasPackage: {type:Boolean, default:true},
     bill: {type : Number, required: true}
 	},
 	options
