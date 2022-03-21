@@ -26,6 +26,25 @@ const ListServices = () => {
 			'auth-token': auth
 		}
 	};
+	const addService = async (e) => {
+		e.preventDefault();
+		console.log(Service);
+		
+		api
+			.post(`api/addservice`, Service, header)
+			.then((response) => {
+				 if (response.status == 11000) {
+					alert('service already exist');
+				} else {
+					alert('service added')
+					setChange(true)
+
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 	const modifyService = async (e) => {
 		e.preventDefault();
 		api
@@ -47,9 +66,9 @@ const ListServices = () => {
 			.delete(`api/deleteService?name=${nom}`, header)
 			.then((response) => {
 				if (response.status == 204) {
-					alert('package do not exist');
+					alert('service do not exist');
 				} else {
-					alert('package deleted succesfuly');
+					alert('service deleted succesfuly');
 					setChange(true);
 				}
 			})
@@ -135,6 +154,12 @@ const ListServices = () => {
 										>
 											Admin
 										</th>
+										<th
+											scope="col"
+											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+										>
+											Adress
+										</th>
 									
 										<th scope="col">
 											<button class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase">
@@ -153,14 +178,17 @@ const ListServices = () => {
 												{(pack.description==='')?<span>Has no description</span>: pack.description}
                                                 </td>
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{(pack.hasAdmin==false)?<span>Has no admin</span>: pack.admin.name}
+												{pack.admin.username}
+                                                </td>
+												<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+												{(pack.adress=='')?<span>Has no adress</span>: pack.adress}
                                                 </td>
 											<td class="py-4 pr-8 text-sm font-medium text-right whitespace-nowrap">
 												<button
 													onClick={() => {
 														Service.name = pack.name;
 														Service.description = pack.description;
-													{pack.hasAdmin==true ? Service.admin=pack.admin.name:Service.admin=''}
+													Service.admin=pack.admin.username
 														Service.adress = pack.adress;
 														setService({ ...Service });
 														console.log(Service);
@@ -183,7 +211,7 @@ const ListServices = () => {
 									</div>
 								</tfoot>
 							</table>
-							<h2>modify an Service</h2>
+							<h2>ADD OR MODIFY Service</h2>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
 									value={Service.name}
@@ -202,7 +230,7 @@ const ListServices = () => {
 									value={Service.name_2}
 									type="text"
 									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bService bService-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bService-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="New Name of Package"
+									placeholder="New Name of service"
 									onChange={(e) => {
 										Service.name_2 = e.target.value;
 										setService({ ...Service });
@@ -224,30 +252,33 @@ const ListServices = () => {
 							</div>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
-									value={Service.bill}
-									type="number"
-									required
+									value={Service.admin}
+									type="text"
+								required
 									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bService bService-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bService-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="Price"
+									placeholder="Admin"
 									onChange={(e) => {
-										Service.bill = e.target.value;
+										Service.admin = e.target.value;
 										setService({ ...Service });
 									}}
 								/>
 							</div>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
-									value={Service.package}
+									value={Service.adress}
 									type="text"
 									required
 									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bService bService-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bService-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="package"
+									placeholder="Adress"
 									onChange={(e) => {
-										Service.package = e.target.value;
+										Service.adress = e.target.value;
 										setService({ ...Service });
 									}}
 								/>
 							</div>
+							<button className="px-6 bService-2 bService-slate-900" onClick={addService}>
+								Add
+							</button>
 							<button className="px-6 bService-2 bService-slate-900" onClick={modifyService}>
 								Modify
 							</button>
@@ -258,7 +289,7 @@ const ListServices = () => {
 								type="text"
 								required
 								className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bService bService-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bService-indigo-500 focus:z-10 sm:text-sm"
-								placeholder="Package name"
+								placeholder="service name"
 								onChange={(e) => {
 									setNom(e.target.value);
 								}}

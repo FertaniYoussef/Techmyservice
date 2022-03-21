@@ -85,7 +85,8 @@ const ListPackages = () => {
 				.get('api/getpackages')
 				.then((response) => {
 					setPacks(response.data);
-					
+					const array=packs.filter((pack)=> pack.service!=null)
+					setPacks(array)
                     setLoading(false);
                     packs.map((pack)=> pack.service=pack.service.name)
                     setChange(false)

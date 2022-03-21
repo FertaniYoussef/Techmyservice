@@ -34,6 +34,7 @@ Router.post('/:service/addpackage', verify, async (req, res) => {
 Router.get('/getpackages', async (req, res) => {
 	try {
 		const packages = await Package.find({}).populate('service', ['name']);
+		console.log(packages)
 		if (!packages) return res.status(httpCodes.NO_CONTENT).send('no package exist yet');
 		return res.status(httpCodes.OK).send(packages);
 	} catch (err) {
