@@ -31,7 +31,6 @@ const Ordreschema = new mongoose.Schema(
 		addon: {
 			type: [mongoose.Schema.Types.ObjectId],
 			ref: 'Addon',
-			default:null
 	},
     localisation: 	{type: {
 		default: 'Point',
@@ -41,6 +40,8 @@ const Ordreschema = new mongoose.Schema(
 		type: [ Number ],
 		index: '2dsphere'
 	}},
+	Before:{type: String , default:''},
+	After:{type:String,default:''},
     Date:{type:Date, default:Date.now},
 	hasPackage: {type:Boolean, default:true},
     bill: {type : Number, required: true}

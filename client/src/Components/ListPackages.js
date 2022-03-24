@@ -85,7 +85,10 @@ const ListPackages = () => {
 				.get('api/getpackages')
 				.then((response) => {
 					setPacks(response.data);
-					const array=packs.filter((pack)=> pack.service!=null)
+					const reponse=response.data
+					console.log(reponse)
+					const array=reponse.filter((pack)=> {return pack.service!=null})
+					
 					setPacks(array)
                     setLoading(false);
                     packs.map((pack)=> pack.service=pack.service.name)
@@ -107,10 +110,10 @@ const ListPackages = () => {
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 	if (loading) {
-		return <div class="flex items-center justify-center w-full h-full">
-        <div class="flex justify-center items-center space-x-1 text-sm text-gray-700">
+		return <div className="flex items-center justify-center w-full h-full">
+        <div className="flex justify-center items-center space-x-1 text-sm text-gray-700">
              
-                    <svg fill='none' class="w-6 h-6 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
+                    <svg fill='none' className="w-6 h-6 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
                         <path clip-rule='evenodd'
                             d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
                             fill='currentColor' fill-rule='evenodd' />
@@ -122,70 +125,70 @@ const ListPackages = () => {
     </div>;
 	}
 	return (
-		<div class="max-w-2xl w-screen">
-			<div class="flex flex-col">
-				<div class="overflow-x-auto w-screen shadow-md sm:rounded-lg">
-					<div class="inline-block min-w-scree align-middle">
-						<div class="overflow-hidden ">
-							<table class="min-w-screen divide-y divide-gray-200 table-fixed dark:divide-gray-700">
-								<thead class="bg-gray-100">
+		<div className="max-w-2xl w-screen">
+			<div className="flex flex-col">
+				<div className="overflow-x-auto w-screen shadow-md sm:rounded-lg">
+					<div className="inline-block min-w-scree align-middle">
+						<div className="overflow-hidden ">
+							<table className="min-w-screen divide-y divide-gray-200 table-fixed dark:divide-gray-700">
+								<thead className="bg-gray-100">
 									<tr>
-										<th scope="col" class="p-4" />
+										<th scope="col" className="p-4" />
 										<th
 											scope="col"
-											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+											className="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
 											Package
 										</th>
 										<th
 											scope="col"
-											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+											className="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
 											Descripton
 										</th>
 										<th
 											scope="col"
-											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+											className="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
 											Service
 										</th>
 										<th
 											scope="col"
-											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+											className="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
 											Price
 										</th>
 										<th scope="col">
-											<button class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase">
+											<button className="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase">
 												Add
 											</button>
 										</th>
 									</tr>
 								</thead>
-								<tbody class="bg-white divide-y divide-gray-200  ">
+								<tbody className="bg-white divide-y divide-gray-200  ">
 									{packs.map((pack) => (
-										<tr class="hover:bg-gray-100">
-											<td class="p-4 w-4" />
-											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+										<tr className="hover:bg-gray-100">
+											<td className="p-4 w-4" />
+											<td className="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
 												{pack.name}
 											</td>
-											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+											<td className="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
 												{pack.description}
 											</td>
-											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+											<td className="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
 												{pack.service.name}
 											</td>
-											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+											<td className="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
 												{pack.price} DT
 											</td>
-											<td class="py-4 pr-8 text-sm font-medium text-right whitespace-nowrap">
+											<td className="py-4 pr-8 text-sm font-medium text-right whitespace-nowrap">
                                                 <button onClick={()=>{
                                             
                                                 packe2.name=pack.name
                                                 packe2.description=pack.description
                                                 packe2.price=pack.price
                                                 packe2.service=pack.service.name
-                                                setPack2({...packe2})}} class="text-sm font-medium text-slate-900  no-underline">
+                                                setPack2({...packe2})}} className="text-sm font-medium text-slate-900  no-underline">
 													Edit
 												</button>
 											</td>
@@ -193,7 +196,7 @@ const ListPackages = () => {
 									))}
 								</tbody>
 								<tfoot>
-									<div class="flex items-center mx-auto">
+									<div className="flex items-center mx-auto">
 										<Pagination
 											postsPerPage={postsPerPage}
 											totalPosts={packs.length}

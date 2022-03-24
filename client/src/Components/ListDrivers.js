@@ -3,21 +3,23 @@ import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
 
-const ListOrders = () => {
+const ListDrivers = () => {
 	const history = useNavigate();
-	const [ loading, setLoading ] = useState(false);
-	const [ currentPage, setCurrentPage ] = useState(1);
-	const [ postsPerPage ] = useState(10);
-	const [ orders, setOrders ] = useState([]);
-	const [ change, setChange ] = useState(false);
-	const [ order, setOrder ] = useState({
-		name: '',
+	const [loading, setLoading] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [postsPerPage] = useState(10);
+	const [Orders, setOrders] = useState([]);
+	const [change, setChange] = useState(false);
+	const [Driver, setDriver] = useState({
+		CIN: '',
 		name_2: '',
-		description: '',
-		bill: '',
-		package: ''
+		phone: '',
+		email: '',
+		work: '',
+		adress: '',
+		specialite: ''
 	});
-	const [ nom, setNom ] = useState({
+	const [nom, setNom] = useState({
 		name: ''
 	});
 	const auth = localStorage.getItem('auth-token');
@@ -26,14 +28,34 @@ const ListOrders = () => {
 			'auth-token': auth
 		}
 	};
-	const modifyOrder = async (e) => {
+	const addDriver = async (e) => {
+		e.preventDefault();
+		console.log(Driver);
+
+		api
+			.post(`api/addDriver`, Driver, header)
+			.then((response) => {
+				if (response.status == 11000) {
+					alert('Driver already exist');
+				} else {
+					alert('Driver added')
+					setChange(true)
+
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+	const modifyDriver = async (e) => {
 		e.preventDefault();
 		api
-			.put(`api/modifyorder/${order.name}`, order, header)
+			.put(`api/updatedriver`, Driver, header)
 			.then((response) => {
 				if (response.status == 204) {
-					alert("order doesn't exist");
+					alert("Driver doesn't exist");
 				} else {
+					alert("Driver updated")
 					setChange(true);
 				}
 			})
@@ -41,15 +63,15 @@ const ListOrders = () => {
 				console.log(err);
 			});
 	};
-	const deleteOrder = async (e) => {
+	const deleteDriver = async (e) => {
 		e.preventDefault();
 		api
-			.delete(`api/deleteorder?name=${nom}`, header)
+			.delete(`api/deleteDriver?CIN=${nom}`, header)
 			.then((response) => {
 				if (response.status == 204) {
-					alert('package do not exist');
+					alert('Driver do not exist');
 				} else {
-					alert('package deleted succesfuly');
+					alert('Driver deleted succesfuly');
 					setChange(true);
 				}
 			})
@@ -62,29 +84,26 @@ const ListOrders = () => {
 		() => {
 			setLoading(true);
 			api
-				.get('api/getorders', header)
+				.get('api/getDrivers', header)
 				.then((response) => {
 					console.log(response.data);
-					
-					
+
 					setOrders(response.data);
-					const array=orders.filter((pack)=> pack.package.name!=null)
-					setOrders(array)
 					setLoading(false);
-					orders.map((pack) => (pack.package.service = pack.package.service.name));
+
 					setChange(false);
 				})
 				.catch((err) => {
 					console.log(err.response);
 				});
 		},
-		[ change ]
+		[change]
 	);
 
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentorders = orders.slice(indexOfFirstPack, indexOfLastPack);
+	const currentOrders = Orders.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -120,43 +139,56 @@ const ListOrders = () => {
 							<table class="min-w-screen divide-y divide-gray-200 table-fixed dark:divide-gray-700">
 								<thead class="bg-gray-100">
 									<tr>
-										<th scope="col" class="p-4" />
 										<th
 											scope="col"
 											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
-											Order
+											CIN
 										</th>
 										<th
 											scope="col"
 											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
-											Descripton
+											Driver
 										</th>
 										<th
 											scope="col"
 											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
-											Client
+											Email
 										</th>
 										<th
 											scope="col"
 											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
-											Package
+											Phone
 										</th>
 										<th
 											scope="col"
 											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
-											Service
+											Adress
 										</th>
 										<th
 											scope="col"
 											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
 										>
-											BILL
+											Working place
 										</th>
+										<th
+											scope="col"
+											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+										>
+											Specialité
+										</th>
+										<th
+											scope="col"
+											class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase"
+										>
+											Verification
+										</th>
+
+
 										<th scope="col">
 											<button class="py-3 px-6 text-xs font-medium tracking-wider text-left text-slate-900 uppercase">
 												Edit
@@ -165,36 +197,43 @@ const ListOrders = () => {
 									</tr>
 								</thead>
 								<tbody class="bg-white divide-y divide-gray-200  ">
-									{orders.map((pack) => (
+									{Orders.map((pack) => (
 										<tr class="hover:bg-gray-100">
-											<td class="p-4 w-4" />
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{pack.name}
+												{pack.CIN}
 											</td>
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{pack.description}
+												{pack.username}
 											</td>
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{pack.client.username}
+												{pack.email}
 											</td>
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{pack.package.name}
+												{pack.phone_number}
 											</td>
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{pack.package.service.name}
+												{pack.Adress}
 											</td>
 											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
-												{pack.bill} DT
+												{pack.WorkAt.name}
+											</td>
+											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+												{pack.Speciality}
+											</td>
+											<td class="py-4 px-6 text-sm font-medium text-slate-900 whitespace-nowrap">
+												{(pack.Verified ? <span>verified</span> : <span>not verified</span>)}
 											</td>
 											<td class="py-4 pr-8 text-sm font-medium text-right whitespace-nowrap">
 												<button
 													onClick={() => {
-														order.name = pack.name;
-														order.description = pack.description;
-														order.bill = pack.bill;
-														order.package = pack.package.name;
-														setOrder({ ...order });
-														console.log(order);
+														Driver.CIN = pack.CIN;
+														Driver.email = pack.email;
+														Driver.phone = pack.phone_number
+														Driver.adress = pack.Adress;
+														Driver.work = pack.WorkAt.name;
+														Driver.specialite = pack.Speciality
+														setDriver({ ...Driver });
+														console.log(Driver);
 													}}
 													class="text-sm font-medium text-slate-900  no-underline"
 												>
@@ -208,78 +247,94 @@ const ListOrders = () => {
 									<div class="flex items-center mx-auto">
 										<Pagination
 											postsPerPage={postsPerPage}
-											totalPosts={orders.length}
+											totalPosts={Orders.length}
 											paginate={paginate}
 										/>
 									</div>
 								</tfoot>
 							</table>
-							<h2>modify an Order</h2>
+							<h2> MODIFY Driver</h2>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
-									value={order.name}
+									value={Driver.CIN}
 									type="text"
 									required
-									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="Name of Order"
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="CIN of DRIVER"
 									onChange={(e) => {
-										order.name = e.target.value;
-										setOrder({ ...order });
+										Driver.CIN = e.target.value;
+										setDriver({ ...Driver });
 									}}
 								/>
 							</div>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
-									value={order.name_2}
+									value={Driver.name_2}
 									type="text"
-									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="New Name of Package"
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="New Name of Driver"
 									onChange={(e) => {
-										order.name_2 = e.target.value;
-										setOrder({ ...order });
+										Driver.name_2 = e.target.value;
+										setDriver({ ...Driver });
 									}}
 								/>
 							</div>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
-									value={order.description}
-									type="text"
+									value={Driver.email}
+									type="email"
 									required
-									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="Description"
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="email"
 									onChange={(e) => {
-										order.description = e.target.value;
-										setOrder({ ...order });
+										Driver.email = e.target.value;
+										setDriver({ ...Driver });
 									}}
 								/>
 							</div>
 							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
 								<input
-									value={order.bill}
-									type="number"
-									required
-									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="Price"
-									onChange={(e) => {
-										order.bill = e.target.value;
-										setOrder({ ...order });
-									}}
-								/>
-							</div>
-							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
-								<input
-									value={order.package}
+									value={Driver.work}
 									type="text"
 									required
-									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-									placeholder="package"
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="Working place"
 									onChange={(e) => {
-										order.package = e.target.value;
-										setOrder({ ...order });
+										Driver.work = e.target.value;
+										setDriver({ ...Driver });
 									}}
 								/>
 							</div>
-							<button className="px-6 border-2 border-slate-900" onClick={modifyOrder}>
+							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
+								<input
+									value={Driver.adress}
+									type="text"
+									required
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="Adress"
+									onChange={(e) => {
+										Driver.adress = e.target.value;
+										setDriver({ ...Driver });
+									}}
+								/>
+							</div>
+							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
+								<input
+									value={Driver.specialite}
+									type="text"
+									required
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="Speciality"
+									onChange={(e) => {
+										Driver.specialite = e.target.value;
+										setDriver({ ...Driver });
+									}}
+								/>
+							</div>
+							<button className="px-6 bDriver-2 bDriver-slate-900" onClick={addDriver}>
+								Add
+							</button>
+							<button className="px-6 bDriver-2 bDriver-slate-900" onClick={modifyDriver}>
 								Modify
 							</button>
 						</div>
@@ -288,14 +343,14 @@ const ListOrders = () => {
 								value={nom.name}
 								type="text"
 								required
-								className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-								placeholder="Package name"
+								className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 bDriver bDriver-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:bDriver-indigo-500 focus:z-10 sm:text-sm"
+								placeholder="Driver CIN"
 								onChange={(e) => {
 									setNom(e.target.value);
 								}}
 							/>
 						</div>
-						<button className="px-6 border-2 border-slate-900" onClick={deleteOrder}>
+						<button className="px-6 bDriver-2 bDriver-slate-900" onClick={deleteDriver}>
 							delete
 						</button>
 					</div>
@@ -305,4 +360,4 @@ const ListOrders = () => {
 	);
 };
 
-export default ListOrders;
+export default ListDrivers;

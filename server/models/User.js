@@ -16,10 +16,10 @@ const options = {
 
 
 const Planning = new mongoose.Schema({
-	date: { type: Date, required: true },
-	order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order', required: true },
-	client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-	bill: { type: Number, required: true }
+	date: { type: Date},
+	order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
+	client: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+	bill: { type: Number}
 });
 const Userschema = new mongoose.Schema(
 	{
@@ -61,9 +61,9 @@ const Driver =User.discriminator("Driver", new mongoose.Schema({
 		default: [0,0]
 	}},
 	WorkAt: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
-	Specialité: { type: String, required: true },
+	Speciality: { type: String, required: true },
 	Verified: { type: Boolean, default: false },
-	planning: { type: [ Planning ], default: [null] },
+	planning: { type: [ Planning ]},
 	isFree: {type:Boolean , default: true}
 }))
 

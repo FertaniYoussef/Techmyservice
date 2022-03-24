@@ -30,6 +30,7 @@ Router.post('/addservice',verify,async(req,res)=> {
 })
 Router.get('/getservice/:id',async(req,res)=> {
     try {
+       
         const service= await Service.findById(req.params.id)
         console.log(service);
         
@@ -39,7 +40,7 @@ Router.get('/getservice/:id',async(req,res)=> {
         return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
     }
 })
-Router.get('/getservices',async(req,res)=> {
+Router.get('/getservices',verify,async(req,res)=> {
     try {
         const service= await Service.find().populate('admin','username')
         console.log(service);

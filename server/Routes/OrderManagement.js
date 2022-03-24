@@ -34,10 +34,11 @@ Router.post('/addorder/:service/:name', verify, async (req, res) => {
 });
 Router.get('/getorders', verify, async (req, res) => {
 	try {
+		
 		let orders= []
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User) {
-		orders = await Order.find({ client: req.user_id }).populate({path:'package' ,select:'name service',populate:{path:'service',select:'name'}});
+		orders = await Order.find({ client: req.user._id }).populate({path:'package' ,select:'name service',populate:{path:'service',select:'name'}});
 		
 		} else {
 		orders = await Order.find({hasPackage:true}).populate('client','username').populate({path:'package' ,select:'name service' ,populate:{path:'service',select:'name'}});
@@ -47,7 +48,7 @@ Router.get('/getorders', verify, async (req, res) => {
 		
 		if (!orders) return res.status(httpCodes.NO_CONTENT).send('no order exist yet');
 		
-		
+		console.log(orders)
 		return res.status(httpCodes.OK).send(orders);
 	} catch (err) {
 		console.log(err)
