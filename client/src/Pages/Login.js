@@ -18,7 +18,7 @@ const Login = () => {
       localStorage.setItem('auth-token', response.data.token);
         console.log(localStorage)
                 
-         history('/dashboard')
+         history('/')
 			} 
         
 			}).catch(err=>{

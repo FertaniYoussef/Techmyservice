@@ -14,7 +14,7 @@ function App() {
     <Router>
    <Sidebar/>
           <Routes>
-            {/* <Route exact path="/" element= {<Login/>}/> */}
+           <Route exact path="/login" element= {<Login/>}/> 
             <Route exact path="/" element = {<Home/>}/>
             <Route exact path="/Packages" element= {<Packages/>}/>
             <Route exact path="/Orders" element= {<Orders/>}/>

@@ -6,6 +6,8 @@ var nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const mongodbcode = require('../constants/mongodbCodes');
 const httpCodes = require('../constants/httpCodes');
+const verify = require('../middleware/tokenverif');
+
 
 Router.post('/register', async (req, res) => {
 	try {
@@ -98,5 +100,13 @@ Router.post('/login', async (req, res) => {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
 });
+Router.get('/', verify, async(req,res)=> {
+		try {
+			const user = await User.findById(req.user._id)
+			if (user) return res.status(httpCodes.OK).send(user)
+		}catch (err) {
+			res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
+		}
+})
 
 module.exports = Router;

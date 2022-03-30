@@ -1,27 +1,48 @@
 const Router = require('express').Router();
 const { Package } = require('../models/Package');
+const multer  = require('multer')
+const {  v4: uuidv4 } = require('uuid');
 const { User } = require('../models/User');
 const { Service } = require('../models/Services');
 const {Order}=require('../models/Order')
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 const mongocodes = require('../constants/mongodbCodes');
+const path= require('path')
+const fs = require('fs')
 
-Router.post('/:service/addpackage', verify, async (req, res) => {
+
+//Generating a new name for each image
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+	  cb(null, '/home/fullstack/techmyservice2/techmyservice-v2/server/img/icons')
+	},
+	filename: function (req, file, cb) {
+	  cb(null,uuidv4() + '.png')
+	}
+  })
+const upload= multer({storage: storage})
+
+
+
+Router.post('/:service/addpackage',upload.single('icon'), verify, async (req, res) => {
 	try {
+		const url = req.protocol + '://' + req.get('host')
+		
+		const pack_req=JSON.parse(req.body.pack)
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
 			return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 		const service = await Service.findOne({ name: req.params.service });
 		if (!service) return res.status(httpCodes.NO_CONTENT).send("the service doesn't exist");
-		const pack_name = await Package.findOne({ name: req.body.name });
+		const pack_name = await Package.findOne({ name: pack_req.name });
 		if (pack_name) return res.status(mongocodes.DUPLICATE_KEY).send('Package already exist');
-
 		const package = new Package({
-			name: req.body.name,
-			description: req.body.description,
-			price: req.body.price,
-			service: service._id
+			name: pack_req.name,
+			description: pack_req.description,
+			price: pack_req.price,
+			service: service._id,
+			icon:'/img/icons/' + req.file.filename
 		});
 
 		package.save();
@@ -43,12 +64,22 @@ Router.get('/getpackages', async (req, res) => {
 });
 Router.delete('/deletepackage?', verify, async (req, res) => {
 	try {
+		
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
 			return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 		console.log(req.query);
 		const pack_name = await Package.findOneAndDelete({ name: req.query.name });
+		
+
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
+		const path = "/home/fullstack/techmyservice2/techmyservice-v2/server"+pack_name.icon
+		fs.unlink(path, (err) => {
+			if (err) {
+			  console.error(err)
+			  return
+			}
+		  })
 		const order= await Order.findOneAndUpdate({package:pack_name._id},{hasPackage:false})
 		return res.status(httpCodes.OK).send('the package has been deleted and the order affilied with ');
 	} catch (err) {

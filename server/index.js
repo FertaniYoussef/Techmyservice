@@ -21,6 +21,7 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, (err) => con
 //Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //Route Middleware
 app.use('/api/user', authRoute);

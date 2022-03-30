@@ -28,7 +28,8 @@ const Packageschema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Service',
 			required: true
-		}
+		},
+		icon:{type:String,default:'null'}
 	},
 	options
 );

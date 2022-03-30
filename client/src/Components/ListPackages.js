@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
-
 const ListPackages = () => {
 	const history = useNavigate();
 	const [ loading, setLoading ] = useState(false);
 	const [ currentPage, setCurrentPage ] = useState(1);
 	const [ postsPerPage ] = useState(10);
-    const [ packs, setPacks ] = useState([]);
-    const [change,setChange]=useState(false)
+	const [ packs, setPacks ] = useState([]);
+	const [ change, setChange ] = useState(false);
 	const [ packe2, setPack2 ] = useState({
 		name: '',
 		name_2: '',
@@ -20,6 +19,7 @@ const ListPackages = () => {
 	const [ nom, setNom ] = useState({
 		name: ''
 	});
+	const [ image, setImage ] = useState([]);
 	const auth = localStorage.getItem('auth-token');
 	const header = {
 		headers: {
@@ -29,15 +29,19 @@ const ListPackages = () => {
 
 	const addPackage = async (e) => {
 		e.preventDefault();
+		const formData = new FormData();
+		formData.append('icon', image, image);
+		formData.append('pack', JSON.stringify(packe2));
+	
 		api
-			.post(`api/${packe2.service}/addpackage`, packe2, header)
+			.post(`api/${packe2.service}/addpackage`, formData, header)
 			.then((response) => {
 				if (response.status == 204) {
 					alert("service doesn't exist");
 				} else if (response.status == 11000) {
 					alert('package already exist');
 				} else {
-					setChange(true)
+					setChange(true);
 				}
 			})
 			.catch((err) => {
@@ -52,17 +56,17 @@ const ListPackages = () => {
 				if (response.status == 204) {
 					alert("package doesn't exist");
 				} else {
-					setChange(true)
+					setChange(true);
 				}
 			})
 			.catch((err) => {
 				console.log(err);
 			});
-    };
+	};
 	const deletePackage = async (e) => {
 		e.preventDefault();
 		console.log(nom);
-		
+
 		api
 			.delete(`api/deletepackage?name=${nom}`, header)
 			.then((response) => {
@@ -70,7 +74,7 @@ const ListPackages = () => {
 					alert('package do not exist');
 				} else {
 					alert('package deleted succesfuly');
-					setChange(true)
+					setChange(true);
 				}
 			})
 			.catch((err) => {
@@ -85,21 +89,22 @@ const ListPackages = () => {
 				.get('api/getpackages')
 				.then((response) => {
 					setPacks(response.data);
-					const reponse=response.data
-					console.log(reponse)
-					const array=reponse.filter((pack)=> {return pack.service!=null})
-					
-					setPacks(array)
-                    setLoading(false);
-                    packs.map((pack)=> pack.service=pack.service.name)
-                    setChange(false)
-                })
-                
+					const reponse = response.data;
+					console.log(reponse);
+					const array = reponse.filter((pack) => {
+						return pack.service != null;
+					});
+
+					setPacks(array);
+					setLoading(false);
+					packs.map((pack) => (pack.service = pack.service.name));
+					setChange(false);
+				})
 				.catch((err) => {
 					console.log(err);
 				});
 		},
-		[change]
+		[ change ]
 	);
 
 	//get Current package
@@ -110,19 +115,27 @@ const ListPackages = () => {
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 	if (loading) {
-		return <div className="flex items-center justify-center w-full h-full">
-        <div className="flex justify-center items-center space-x-1 text-sm text-gray-700">
-             
-                    <svg fill='none' className="w-6 h-6 animate-spin" viewBox="0 0 32 32" xmlns='http://www.w3.org/2000/svg'>
-                        <path clip-rule='evenodd'
-                            d='M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z'
-                            fill='currentColor' fill-rule='evenodd' />
-                    </svg>
-    
-             
-            <div>Loading ...</div>
-        </div>
-    </div>;
+		return (
+			<div className="flex items-center justify-center w-full h-full">
+				<div className="flex justify-center items-center space-x-1 text-sm text-gray-700">
+					<svg
+						fill="none"
+						className="w-6 h-6 animate-spin"
+						viewBox="0 0 32 32"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							clip-rule="evenodd"
+							d="M15.165 8.53a.5.5 0 01-.404.58A7 7 0 1023 16a.5.5 0 011 0 8 8 0 11-9.416-7.874.5.5 0 01.58.404z"
+							fill="currentColor"
+							fill-rule="evenodd"
+						/>
+					</svg>
+
+					<div>Loading ...</div>
+				</div>
+			</div>
+		);
 	}
 	return (
 		<div className="max-w-2xl w-screen">
@@ -182,13 +195,16 @@ const ListPackages = () => {
 												{pack.price} DT
 											</td>
 											<td className="py-4 pr-8 text-sm font-medium text-right whitespace-nowrap">
-                                                <button onClick={()=>{
-                                            
-                                                packe2.name=pack.name
-                                                packe2.description=pack.description
-                                                packe2.price=pack.price
-                                                packe2.service=pack.service.name
-                                                setPack2({...packe2})}} className="text-sm font-medium text-slate-900  no-underline">
+												<button
+													onClick={() => {
+														packe2.name = pack.name;
+														packe2.description = pack.description;
+														packe2.price = pack.price;
+														packe2.service = pack.service.name;
+														setPack2({ ...packe2 });
+													}}
+													className="text-sm font-medium text-slate-900  no-underline"
+												>
 													Edit
 												</button>
 											</td>
@@ -267,6 +283,19 @@ const ListPackages = () => {
 									onChange={(e) => {
 										packe2.service = e.target.value;
 										setPack2({ ...packe2 });
+									}}
+								/>
+							</div>
+							<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
+								<input
+									type="file"
+									required
+									enctype="multipart/form-data"
+									name="icon"
+									className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+									placeholder="Service"
+									onChange={(e) => {
+										setImage(e.target.files[0]);
 									}}
 								/>
 							</div>

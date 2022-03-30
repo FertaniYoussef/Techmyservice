@@ -1,144 +1,67 @@
-import {
-	NotificationsNone,
-	Person,
-	Store,
-	Timeline,
-	PermIdentity,
-	Storefront,
-	ShoppingCart,
-	Inventory,
-	MailOutline,
-	DynamicFeed,
-	ChatBubbleOutline,
-	WorkOutline,
-	Report,
-	Settings
-} from '@mui/icons-material';
+import { StoreOutlined, PermIdentity, ShoppingBasketOutlined, DashboardOutlined, Redeem, AnalyticsOutlined, HomeOutlined } from '@mui/icons-material';
 import { useState } from 'react';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
-
-
-	return (<>
-		
-			
-			
-			<div className="Sidebar scrollbar" >
-				<div className="Sidebartop">
-					<div className="topLeft">
-						<span className="logo">TechMyService</span>
-					</div>
+	return (
+		<div className="Sidebar scrollbar">
+			<div className="Sidebartop">
+				<div className="top">
+					<span className="logo">LOGO</span>
 				</div>
-				<div className="sidebarMenu ">
+			</div>
+			<div className="sidebarMenu ">
 				<div className="submenu">
-				<ul class="sidebarList">
-				<li class="sidebarListItem">
-					<Link  to="/Profile">
-						<Person className="sidebarIcon" />
-						Profile
-						</Link>
-					</li>
-					<li class="sidebarListItem">
-					<Link  to="/Profile">
-						<NotificationsNone className="sidebarIcon"/>
-						Notifications
-					</Link>
-					</li>
-					<li class="sidebarListItem">
-					<Link  to="/Profile">
-						<Settings className="sidebarIcon" />
-						Settings
-					</Link>
-					</li>
-					
-					
-					</ul>
-			</div>
-			
-			<div className="submenu">
-			<ul class="sidebarList">
-					<li className="sidebarListItem">
-					<Link  to="/Drivers">
-						<PermIdentity className="sidebarIcon" />
-						Drivers
-						</Link>
-					</li>
-					
-					<li className="sidebarListItem">
-					<Link  to="/Services">
-						<Store className="sidebarIcon" />
-						Services
-						</Link>
-					</li>
+					<ul class="sidebarList">
+						<li class="sidebarListItem">
+							<Link to="/">
+								<HomeOutlined className="sidebarIcon" />
+								Overview
+							</Link>
+						</li>
+						<li class="sidebarListItem">
+							<Link to="/Packages">
+								<DashboardOutlined className="sidebarIcon" />
+								Products
+							</Link>
+						</li>
+						<li class="sidebarListItem">
+							<Link to="/Orders">
+								<ShoppingBasketOutlined className="sidebarIcon" />
+								Orders
+							</Link>
+						</li>
 
-					<li className="sidebarListItem">
-					<Link  to="/Orders">
-						<ShoppingCart className="sidebarIcon" />
-						Orders
-						</Link>
-					</li>
-					<li className="sidebarListItem">
-					<Link  to="/Packages">
-						<Inventory className="sidebarIcon" />
-						Packages
-						</Link>
-					</li>
-				</ul>
-			</div>
-			
-			<div className="submenu">
-			<ul class="sidebarList">
-					<li className="sidebarListItem">
-					<Link  to="/Profile">
-						<MailOutline className="sidebarIcon" />
-						Mail
-						</Link>
-					</li>
-					
-					<li className="sidebarListItem">
-					<Link  to="/Profile">
-						<DynamicFeed className="sidebarIcon" />
-						Feedback
-						</Link>
-					</li>
-					<li className="sidebarListItem">
-					<Link  to="/Profile">
-						<ChatBubbleOutline className="sidebarIcon" />
-						Messages
-						</Link>
-					</li>
-					</ul>
-			</div>
-			
-			<div className="submenu">
-			<ul class="sidebarList">
-					<li className="sidebarListItem">
-					<Link  to="/Profile">
-						<WorkOutline className="sidebarIcon" />
-						Manage
-						</Link>
-					</li>
-					
-					<li className="sidebarListItem">
+						<li className="sidebarListItem">
+							<Link to="/Drivers">
+								<PermIdentity className="sidebarIcon" />
+								Drivers
+							</Link>
+						</li>
 
-					<Link  to="/Profile">
-						<Timeline className="sidebarIcon" />
-						Analytics
-						</Link>
-					</li>
-					<li className="sidebarListItem">
-					<Link  to="/Profile">
-						<Report className="sidebarIcon" />
-						Reports
-						</Link>
-					</li>
-				</ul>
-				
+						<li className="sidebarListItem">
+							<Link to="/Services">
+								<StoreOutlined className="sidebarIcon" />
+								Services
+							</Link>
+						</li>
+						<li className="sidebarListItem">
+							<Link to="/Gifts">
+								<Redeem className="sidebarIcon" />
+							Gifts
+							</Link>
+						</li>
+
+						<li className="sidebarListItem">
+							<Link to="/AnalyticsOutlineds">
+								<AnalyticsOutlined className="sidebarIcon" />
+								Analytics
+							</Link>
+						</li>
+					</ul>
+				</div>
 			</div>
-			</div>
-			</div>
-		</>
+		</div>
 	);
 };
 
