@@ -1,5 +1,5 @@
 const Router = require('express').Router();
-const { Package } = require('../models/Package');
+const { Package, Addon } = require('../models/Package');
 const { Service } = require('../models/Services');
 const { Notify } = require('../middleware/notify');
 const { Order } = require('../models/Order');
@@ -13,14 +13,19 @@ Router.post('/addorder/:service/:name', verify, async (req, res) => {
 		if (!service_name) return res.status(httpCodes.NO_CONTENT).send("Service doesn't exist");
 		const pack_name = await Package.findOne({ name: req.params.name });
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("Package doesn't exist");
-
+		let addon=0
+		if (req.body.addon) {
+			const addon_name= await Addon.findOne({name:req.body.addon})
+			addon= addon_name.supplement
+		}
 		const order = new Order({
 			name: pack_name.name,
 			description: pack_name.description,
 			client: req.user._id,
 			package: pack_name._id,
 			localisation: { coordinates: req.body.coordinates },
-			bill: pack_name.price
+			bill: pack_name.price+addon,
+			service:pack_name.service
 		});
 
 		order.save();

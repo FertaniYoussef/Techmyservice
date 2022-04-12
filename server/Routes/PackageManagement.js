@@ -15,7 +15,7 @@ const fs = require('fs')
 //Generating a new name for each image
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-	  cb(null, '/home/fullstack/techmyservice2/techmyservice-v2/server/img/icons')
+	  cb(null, 'img/icons')
 	},
 	filename: function (req, file, cb) {
 	  cb(null,uuidv4() + '.png')
@@ -27,7 +27,7 @@ const upload= multer({storage: storage})
 
 Router.post('/:service/addpackage',upload.single('icon'), verify, async (req, res) => {
 	try {
-		const url = req.protocol + '://' + req.get('host')
+		
 		
 		const pack_req=JSON.parse(req.body.pack)
 		const user = await User.findById(req.user._id);
@@ -42,7 +42,7 @@ Router.post('/:service/addpackage',upload.single('icon'), verify, async (req, re
 			description: pack_req.description,
 			price: pack_req.price,
 			service: service._id,
-			icon:'/img/icons/' + req.file.filename
+			icon:'/icons/' + req.file.filename
 		});
 
 		package.save();

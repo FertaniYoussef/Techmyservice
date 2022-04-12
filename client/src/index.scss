@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+@tailwind base;
+@tailwind components;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback');
+@import 'additional-styles/utility-patterns.scss';
+@import 'additional-styles/range-slider.scss';
+@import 'additional-styles/toggle-switch.scss';
+@import 'additional-styles/flatpickr.scss';
+@import 'additional-styles/theme.scss';
+@tailwind utilities;
+@layer base {
+	.Sidebar {
+		@apply h-screen w-64 flex flex-col z-40   transform overflow-y-scroll shrink-0 bg-slate-800 p-4 	 z-40 ease-in-out duration-300 overflow-hidden border-r-2 border-gray-200;
+	}
+	.Sidebartop {
+		@apply flex  h-10 items-center top-0 pl-6 text-sky-600 rounded-b-lg font-mono	 font-bold;
+	}
+	.top {
+		@apply items-center mt-10 mx-auto text-3xl;
+	}
+
+	.sidebarMenu {
+		@apply flex flex-col mt-24 justify-between items-start h-full;
+	}
+	.submenu {
+		@apply flex flex-col w-5/6;
+	}
+	.Container {
+		@apply flex h-screen w-screen overflow-x-hidden ml-10
+	}
+	.App {
+		@apply  flex overflow-hidden;
+	}
+.Cards {
+	@apply grid grid-cols-12 gap-6 w-11/12 mt-10 
+}
+	.sidebarList {
+		@apply justify-between;
+	}
+.bouton {
+	 @apply w-fit h-fit border-2 border-slate-900 ml-10
+}
+	
+
+
+
+
+	.Bell {
+		@apply text-xs mt-2
+	}
+	
+	.TopLeft {
+		@apply  text-sky-600 font-mono ml-10 mt-4
+	}
+	.TopRight {
+		@apply absolute flex mr-20 justify-end right-0 top-8 pl-10
+	}
+	.scrollbar::-webkit-scrollbar {
+		width: 10px;
+	}
+	.scrollbar::-webkit-scrollbar-thumb {
+		background: #3f3f46;
+		height: 5px;
+		border-radius: 10px;
+	}
+}
+.Profile {
+	background-color: rgba(54, 158, 255, 0.199) ;
+	padding-left: -10px;
+	padding-right: 10px;
+}

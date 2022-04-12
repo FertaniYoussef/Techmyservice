@@ -1,5 +1,5 @@
 const Router = require('express').Router();
-const {User, Tokenmodel} = require('../models/User');
+const { User, Tokenmodel } = require('../models/User');
 const bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
@@ -34,7 +34,7 @@ Router.post('/register', async (req, res) => {
 		const token = new Tokenmodel({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
 
 		//	Save the verification token
-		token.save(function(err) {
+		token.save(function (err) {
 			if (err) {
 				return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 			}
@@ -64,7 +64,7 @@ Router.post('/register', async (req, res) => {
 				token.token +
 				'.\n'
 		};
-		transporter.sendMail(mailOptions, function(err) {
+		transporter.sendMail(mailOptions, function (err) {
 			if (err) {
 				return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 			}
@@ -94,19 +94,21 @@ Router.post('/login', async (req, res) => {
 			return res.status(httpCodes.BAD_REQUEST).send('User not verified please check your email');
 		//Create and assign a token
 		const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-		return res.header({'auth-token': token,'phone-number':user.phone_number}).status(httpCodes.ACCEPTED).send({user,token});
+		return res.header({ 'auth-token': token, 'phone-number': user.phone_number }).status(httpCodes.ACCEPTED).send({ user, token });
 	} catch (err) {
 		console.error(err);
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
 });
-Router.get('/', verify, async(req,res)=> {
-		try {
-			const user = await User.findById(req.user._id)
-			if (user) return res.status(httpCodes.OK).send(user)
-		}catch (err) {
-			res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
-		}
+Router.get('/', verify, async (req, res) => {
+	try {
+
+		const user = await User.findById(req.user._id)
+		console.log(user);
+		if (user) return res.status(httpCodes.OK).send(user)
+	} catch (err) {
+		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
+	}
 })
 
 module.exports = Router;

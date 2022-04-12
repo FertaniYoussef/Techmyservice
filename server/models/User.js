@@ -3,7 +3,7 @@ const geoSchema = require('./geoposition');
 const options = {
 	toJSON: {
 		// versionKey: false,
-		transform: function(doc, ret) {
+		transform: function (doc, ret) {
 			// ret is the object that will be returned as the result
 			// (and then stringified before being sent)
 			ret['id'] = ret._id;
@@ -16,16 +16,16 @@ const options = {
 
 
 const Planning = new mongoose.Schema({
-	date: { type: Date},
+	date: { type: Date },
 	order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
-	client: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-	bill: { type: Number}
+	client: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+	bill: { type: Number }
 });
 const Userschema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
-		prename:{type:String,required:true},
-		profilepic: {type:String,default:''},
+		prename: { type: String, required: true },
+		profilepic: { type: String, default: '' },
 		email: { type: String, required: true },
 		password: { type: String, required: true },
 		passwordResetToken: String,
@@ -37,7 +37,7 @@ const Userschema = new mongoose.Schema(
 	},
 	options
 );
-const User= new mongoose.model('Users',Userschema)
+const User = new mongoose.model('Users', Userschema)
 
 const tokenSchema = new mongoose.Schema(
 	{
@@ -49,29 +49,34 @@ const tokenSchema = new mongoose.Schema(
 );
 
 
-const Driver =User.discriminator("Driver", new mongoose.Schema({
+const Driver = User.discriminator("Driver", new mongoose.Schema({
 	CIN: { type: Number, min: 00000000, max: 99999999, required: true, unique: true },
 	Adress: { type: String, min: 5, required: true },
 /* 	iban: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'BankAccount' },
- */	geoposition: {type: {
-		default: 'Point',
-		type: String
+ */	geoposition: {
+		type: {
+			default: 'Point',
+			type: String
+		},
+		coordinates: {
+			type: [Number],
+			index: '2dsphere',
+			default: [0, 0]
+		}
 	},
-	coordinates: {
-		type: [ Number ],
-		index: '2dsphere',
-		default: [0,0]
-	}},
 	WorkAt: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
 	Speciality: { type: String, required: true },
 	Verified: { type: Boolean, default: false },
-	planning: { type: [ Planning ]},
-	isFree: {type:Boolean , default: true}
+	planning: { type: [Planning] },
+	isFree: { type: Boolean, default: true }
 }))
 
 //Admin AKA WORKER
-const Admin =User.discriminator("Admin", new mongoose.Schema({
-		service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true }
+const Admin = User.discriminator("Admin", new mongoose.Schema({
+	CIN: { type: Number, min: 00000000, max: 99999999, required: true, unique: true },
+	Adress: { type: String, min: 5, required: true },
+	service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true },
+	Verified: { type: Boolean, default: false },
 }))
 const Tokenmodel = mongoose.model('Tokens', tokenSchema);
 

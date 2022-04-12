@@ -32,6 +32,10 @@ const Ordreschema = new mongoose.Schema(
 			type: [mongoose.Schema.Types.ObjectId],
 			ref: 'Addon',
 	},
+	service:{
+		type:mongoose.Schema.Types.ObjectId,
+		ref:'Service'
+	},
     localisation: 	{type: {
 		default: 'Point',
 		type: String
@@ -41,6 +45,7 @@ const Ordreschema = new mongoose.Schema(
 		index: '2dsphere'
 	}},
 	Before:{type: String , default:''},
+	Pending:{type:Boolean,default:true},
 	After:{type:String,default:''},
     Date:{type:Date, default:Date.now},
 	hasPackage: {type:Boolean, default:true},

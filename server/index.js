@@ -14,11 +14,13 @@ const orderRoute=require('./Routes/OrderManagement')
 const serviceRoute=require('./Routes/ServiceManagement')
 const driverRoute=require('./Routes/DriverManagement')
 const PORT = process.env.PORT || 5000;
-
+const statRoute=require('./Routes/StatsManagement')
+const adminRoute=require('./Routes/AdminManagement')
 //Database connection
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, (err) => console.log('connected to db!', err));
 
 //Middleware
+app.use(express.static('img'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +32,7 @@ app.use('/api',packageRoute)
 app.use('/api',orderRoute)
 app.use('/api',serviceRoute)
 app.use('/api',driverRoute)
-
+app.use('/api',statRoute)
+app.use('/api',adminRoute)
 
 app.listen(PORT, () => console.log(`up and running on port : ${PORT}`));
