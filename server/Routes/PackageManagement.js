@@ -86,19 +86,29 @@ Router.delete('/deletepackage?', verify, async (req, res) => {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 	}
 });
-Router.put('/updatepackage', verify, async (req, res) => {
+Router.put('/updatepackage', verify,upload.single('icon'), async (req, res) => {
 	try {
+
+		const pack_req=JSON.parse(req.body.pack)
+		console.log(req.body)
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
 			return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 		const pack_name = await Package.findOneAndUpdate(
-			{ name: req.body.name },
-			{ name: req.body.name_2, description: req.body.description, price: req.body.price }
+			{ _id: pack_req.id },
+			{ name: pack_req.name, description: pack_req.description, price: pack_req.price,icon:'/icons/' + req.file.filename }
 		);
-		console.log(pack_name)
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
+		console.log(pack_name)
+		const path='img'+pack_name.icon
+		fs.unlink(path, (err) => {
+			if (err) {
+			  console.error(err)
+			  return
+			}})
 		return res.status(httpCodes.OK).send('the package has been updated');
 	} catch (err) {
+		console.log(err)
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });

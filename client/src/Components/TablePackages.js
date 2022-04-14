@@ -2,6 +2,7 @@ import { useState, useEffect,useRef } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
+import {Edit} from '@mui/icons-material';
 
 import EditPackages from './EditPackages';
 const ListPackages = () => {
@@ -52,21 +53,7 @@ const ListPackages = () => {
 				console.log(err);
 			});
 	};
-	const modifyPackage = async (e) => {
-		e.preventDefault();
-		api
-			.put('api/updatepackage', packe2, header)
-			.then((response) => {
-				if (response.status == 204) {
-					alert("package doesn't exist");
-				} else {
-					setChange(true);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
+
 	const deletePackage = async (e) => {
 		e.preventDefault();
 		console.log(nom);
@@ -94,7 +81,7 @@ const ListPackages = () => {
 				.then((response) => {
 					setPacks(response.data);
 					const reponse = response.data;
-					console.log(reponse);
+					
 					const array = reponse.filter((pack) => {
 						return pack.service != null;
 					});
@@ -178,8 +165,8 @@ const ListPackages = () => {
 							<th className="p-2">
 								<div className="font-semibold text-center">Price</div>
 							</th>
-							<th scope="col" class="px-6 py-3 text-center">
-								<span class="sr-only">Edit</span>
+							<th class="p-2">
+							<div className="font-semibold text-center">Options</div>
 							</th>
 						</tr>
 					</thead>
@@ -188,8 +175,8 @@ const ListPackages = () => {
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 								<div className="flex items-center">
-                          <div className="w-10 h-10 shrink-0 mr-2 sm:mr-3">
-                            <img className="rounded-full" src={`http://localhost:3001${pack.icon}`} width="40" height="40" />
+                          <div className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
+                            <img className="mx-auto h-12 w-12" src={`http://localhost:3001${pack.icon}`} width="40" height="40" />
                           </div>
 									{pack.name}
 									</div>
@@ -203,19 +190,15 @@ const ListPackages = () => {
 								<td class="px-6 py-4 text-blue-400 text-center">
 									${pack.price}
 								</td>
-								<td class="px-6 py-4 text-right">
+								<td class="px-6 py-4 text-center">
 								<button
             className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${searchModalOpen && 'bg-slate-200'}`}
-            onClick={(e) => { e.stopPropagation(); setSearchModalOpen(true); current.current=pack }}
+            onClick={(e) => { e.stopPropagation(); setSearchModalOpen(true); current.current=pack; }}
             aria-controls="search-modal"
           >
-              <svg className="w-8 h-8 fill-current" viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="2" />
-          <circle cx="10" cy="16" r="2" />
-          <circle cx="22" cy="16" r="2" />
-        </svg>
+              <Edit/>
           </button>
-		  <EditPackages  id={pack._id} modalOpen={searchModalOpen} setModalOpen={setSearchModalOpen} Pack={current.current} />
+		  <EditPackages  modalOpen={searchModalOpen} setModalOpen={setSearchModalOpen} Pack={current.current} header={header} change={change} setChange={setChange}/>
 								</td>
 							</tr>
 						))}
@@ -227,22 +210,11 @@ const ListPackages = () => {
 					</tfoot>
 				</table>
 			</div>
+			
 		</div>
 
 
-		/* 			<div className="rounded-md w-[80%]  ml-8 items-center shadow-sm -space-y-px">
-						<input
-							type="file"
-							required
-							enctype="multipart/form-data"
-							name="icon"
-							className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-sky-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-							placeholder="Service"
-							onChange={(e) => {
-								setImage(e.target.files[0]);
-							}}
-						/>
-					</div> */
+				
 
 	);
 };

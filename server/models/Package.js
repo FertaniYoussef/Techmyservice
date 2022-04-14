@@ -21,7 +21,7 @@ const Addonschema = new mongoose.Schema({
 });
 const Packageschema = new mongoose.Schema(
 	{
-		name: { type: String, required: true, unique: true },
+		name: { type: String, required: true },
 		description: { type: String },
 		price: { type: Number, required: true, min: 1 },
 		service: {
