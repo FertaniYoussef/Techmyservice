@@ -1,13 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Transition from './cards/utils/Transition';
-import api from '../service';
+import Transition from '../cards/utils/Transition';
+import api from '../../service';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
-
-const EditPackages = ({
+const AddPackage = ({
     modalOpen,
     setModalOpen,
-    Pack,
     header,
     change,
     setChange
@@ -16,16 +19,15 @@ const EditPackages = ({
     const modalContent2 = useRef(null);
     const packInput = useRef(null);
     const [dropped, setDropped] = useState(false)
-
-
+    const [ Services, setServices ] = useState([]);
+    
 
     const [pack, setPack] = useState({
-        id: '',
         name: '',
         description: '',
         price: '',
+        service:''
     });
-
     const wrapperRef = useRef(null);
     const onDragEnter = () => {
         wrapperRef.current.classList.add('dragover')
@@ -48,28 +50,43 @@ const EditPackages = ({
         setImage(undefined);
 
     }
-    const modifyPackage = async (e) => {
-        e.preventDefault();
-        pack.id = Pack.id
-        setPack({ ...pack })
-        const formData = new FormData();
-        formData.append('icon', image, image);
-        console.log(pack)
-        formData.append('pack', JSON.stringify(pack));
-        api
-            .put('api/updatepackage', formData, header)
-            .then((response) => {
-                if (response.status == 204) {
-                    alert("package doesn't exist");
-                } else {
-                    setChange(true);
-                    setModalOpen(false)
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+    useEffect(
+		() => {
+			api
+				.get('api/getservices', header)
+				.then((response) => {
+					console.log(response.data);
+
+					setServices(response.data);
+				})
+				.catch((err) => {
+					console.log(err.response);
+				});
+		},
+		[ change ]
+	);
+    const addPackage = async (e) => {
+		e.preventDefault();
+		const formData = new FormData();
+		formData.append('icon', image, image);
+		formData.append('pack', JSON.stringify(pack));
+
+		api
+			.post(`api/${pack.service}/addpackage`, formData, header)
+			.then((response) => {
+				if (response.status == 204) {
+					alert("service doesn't exist");
+				} else if (response.status == 11000) {
+					alert('package already exist');
+				} else {
+					setChange(true);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
     // close if the esc key is pressed
     useEffect(() => {
         const keyHandler = ({ keyCode }) => {
@@ -97,7 +114,7 @@ const EditPackages = ({
     />
         {/* Modal dialog */}
         <Transition
-            id={Pack.id}
+           
             className="fixed inset-0 z-50 overflow-hidden flex items-start top-20 mb-4 justify-center transform px-4 sm:px-6"
             role="dialog"
             aria-modal="true"
@@ -120,20 +137,21 @@ const EditPackages = ({
                                     <div className="grid grid-cols-4 gap-6">
                                         <div className='flex '>
                                             <div>
+                                                
                                                 <div className="col-span-3 sm:col-span-2">
                                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                                        Name of the Package
+                                                        Name 
                                                     </label>
                                                     <div className="mt-1 flex w-96 rounded-md shadow-sm">
                                                         <input
                                                             type="text"
                                                             name="name"
                                                             value={pack.name}
-                                                            id={Pack.id}
+                                                    
                                                             ref={packInput}
                                                             className="focus:ring-indigo-500  w-96 focus:border-indigo-500 flex-1 block w-full text-slate-900 rounded-none rounded-r-md sm:text-sm border-gray-300"
-                                                            placeholder={Pack.name}
-                                                            defaultValue={Pack.name}
+                                                            placeholder="Name of Package"
+                                                            
                                                             onChange={(e) => {
                                                                 pack.name = e.target.value;
                                                                 setPack({ ...pack });
@@ -150,11 +168,10 @@ const EditPackages = ({
                                                             type="number"
                                                             name="price"
                                                             value={pack.price}
-                                                            id={Pack.id}
+                                                           
                                                             ref={packInput}
                                                             className="focus:ring-indigo-500  text-slate-900 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-                                                            placeholder={Pack.price}
-                                                            defaultValue={Pack.price}
+                                                            placeholder="Price of Package"
                                                             onChange={(e) => {
                                                                 pack.price = e.target.value;
                                                                 setPack({ ...pack });
@@ -163,8 +180,21 @@ const EditPackages = ({
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="inline-block h-36 w-36 ml-12 col-span-1 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3 border-4 border-indigo-500">
-                                                {image === undefined ? <img className="mx-auto h-full w-full" src={`http://localhost:3001${Pack.icon}`} /> : <img className="mx-auto h-full w-full" src={URL.createObjectURL(image)} alt={URL.createObjectURL(image)} />}
+                                            <div className="inline-block h-36 w-36 ml-12 col-span-1 rounded-full overflow-hidden bg-gray-100 shrink-0 mr-2 sm:mr-3 border-4 border-indigo-500">
+                                             {image === undefined ? <div className="space-y-1 text-center my-10"><svg
+                                                        className="mx-auto h-12 w-12 text-gray-400"
+                                                        stroke="currentColor"
+                                                        fill="none"
+                                                        viewBox="0 0 48 48"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <path
+                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                            strokeWidth={2}
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                    </svg> </div> : <img className="mx-auto h-full w-full" src={URL.createObjectURL(image)} alt={URL.createObjectURL(image)} />}
                                             </div>
                                         </div>
                                     </div>
@@ -180,7 +210,7 @@ const EditPackages = ({
                                                 rows={3}
                                                 value={pack.description}
                                                 className="shadow-sm focus:ring-indigo-500   text-slate-900 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-                                                placeholder={Pack.description}
+                                                placeholder="Brief description of the Package"
                                                 onChange={(e) => {
                                                     pack.description = e.target.value;
                                                     setPack({ ...pack });
@@ -191,6 +221,25 @@ const EditPackages = ({
                                             Brief description for the package
                                         </p>
                                     </div>
+                                    <Box sx={{ minWidth: 120 }}>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Service</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={pack.service}
+          label="Service"
+          onChange={(e)=>{
+              pack.service=e.target.value
+              setPack({...pack})
+          }}
+        >
+            {Services.map((service) => (
+          <MenuItem value={service.name}>{service.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
 
 
 
@@ -225,7 +274,7 @@ const EditPackages = ({
                                             <div className="flex text-sm text-gray-600">
 
                                                 <p className="relative bg-transparent border-0 cursor-pointer  rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">Upload a file</p><p className="pl-1">or drag and drop</p>
-                                                <input type="file" id="icon" name="icon" value="" defaultValue={Pack.icon} enctype="multipart/form-data" onChange={onFileDrop} className="absolute top-0 left-0 w-full h-full cursor-pointer opacity-0	hover:border-2 hover:border-blue-900" />
+                                                <input type="file" id="icon" name="icon" value="" enctype="multipart/form-data" onChange={onFileDrop} className="absolute top-0 left-0 w-full h-full cursor-pointer opacity-0	hover:border-2 hover:border-blue-900" />
                                             </div>
                                             <p className="text-xs text-gray-500">
                                                 PNG, JPG, GIF up to 10MB
@@ -254,7 +303,7 @@ const EditPackages = ({
                                     <button
                                         type="submit"
                                         className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        onClick={modifyPackage}
+                                        onClick={addPackage}
                                     >
                                         Save
                                     </button>
@@ -278,4 +327,4 @@ const EditPackages = ({
         </Transition></div>);
 }
 
-export default EditPackages;
+export default AddPackage;
