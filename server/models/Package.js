@@ -29,7 +29,7 @@ const Packageschema = new mongoose.Schema(
 			ref: 'Service',
 			required: true
 		},
-		icon:{type:String,default:'null'}
+		icon:{type:String,default:null}
 	},
 	options
 );

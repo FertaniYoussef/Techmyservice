@@ -1,7 +1,7 @@
-import ListOrders from "../Components/ListOrders"
+import TableOrders from "../Components/TableOrders"
 const Orders = () => {
     return ( <div className="Order">
-            <ListOrders/>
+            <TableOrders/>
     </div> );
 }
  

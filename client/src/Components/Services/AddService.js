@@ -1,32 +1,35 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState,useCallback,useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../cards/utils/Transition';
 import api from '../../service';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import { MapContainer, TileLayer,  useMap, Marker, Popup } from 'react-leaflet'
 
-const AddPackage = ({
+const AddService = ({
     modalOpen,
     setModalOpen,
     header,
     change,
     setChange
 }) => {
+    const center={
+        lat: 36.79443996095986,
+lng: 10.173874748222278}
     const [image, setImage] = useState(undefined);
     const modalContent2 = useRef(null);
     const packInput = useRef(null);
     const [dropped, setDropped] = useState(false)
-    const [ Services, setServices ] = useState([]);
-    
+    const [ Admins, setAdmins ] = useState([]);
+    const [draggable, setDraggable] = useState(true)
+    const [position, setPosition] = useState(center)
+    const markerRef = useRef(null)
+  
 
-    const [pack, setPack] = useState({
+
+    const [service, setService] = useState({
         name: '',
         description: '',
-        price: '',
-        service:''
+        lat:'',
+        lng:''
     });
     const wrapperRef = useRef(null);
     const onDragEnter = () => {
@@ -50,36 +53,39 @@ const AddPackage = ({
         setImage(undefined);
 
     }
-    useEffect(
-		() => {
-			api
-				.get('api/getservices', header)
-				.then((response) => {
-					console.log(response.data);
-
-					setServices(response.data);
-				})
-				.catch((err) => {
-					console.log(err.response);
-				});
-		},
-		[ modalOpen ]
-	);
-    const addPackage = async (e) => {
+    const eventHandlers = useMemo(
+        () => ({
+          dragend() {
+            const marker = markerRef.current
+            if (marker != null) {
+              setPosition(marker.getLatLng())
+            }
+           
+          },
+        }),
+        [],
+      )
+    
+    const addService = async (e) => {
 		e.preventDefault();
-		const formData = new FormData();
-		formData.append('icon', image, image);
-		formData.append('pack', JSON.stringify(pack));
-
+        service.lat=position.lat
+        service.lng=position.lng
+        setService({...service})
+        console.log(image)
+        console.log(service)
+        const formData = new FormData();
+        formData.append('icon', image, image);
+		formData.append('service', JSON.stringify(service));
+		
 		api
-			.post(`api/${pack.service}/addpackage`, formData, header)
+			.post(`api/addservice`, formData, header)
 			.then((response) => {
-				if (response.status == 204) {
-					alert("service doesn't exist");
-				} else if (response.status == 11000) {
-					alert('package already exist');
+				 if (response.status == 11000) {
+					alert('service already exist');
 				} else {
-					setChange(true);
+					alert('service added')
+					setChange(true)
+
 				}
 			})
 			.catch((err) => {
@@ -126,7 +132,7 @@ const AddPackage = ({
             leaveStart="opacity-100 translate-y-0"
             leaveEnd="opacity-0 translate-y-4"
         >
-            <div ref={modalContent2} className="bg-white overflow-auto max-w-2xl w-full max-h-full rounded shadow-md overflow-hidden">
+            <div ref={modalContent2} className="bg-white overflow-auto max-w-2xl w-full max-h-full rounded shadow-md scrollbar ">
                 <div className="px-2">
                     {/* Edit form */}
 
@@ -146,57 +152,62 @@ const AddPackage = ({
                                                         <input
                                                             type="text"
                                                             name="name"
-                                                            value={pack.name}
+                                                            value={service.name}
                                                     
                                                             ref={packInput}
                                                             className="focus:ring-indigo-500  w-96 focus:border-indigo-500 flex-1 block w-full text-slate-900 rounded-none rounded-r-md sm:text-sm border-gray-300"
-                                                            placeholder="Name of Package"
+                                                            placeholder="Name of Service"
                                                             
                                                             onChange={(e) => {
-                                                                pack.name = e.target.value;
-                                                                setPack({ ...pack });
+                                                                service.name = e.target.value;
+                                                                setService({ ...service });
                                                             }}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="col-span-3 sm:col-span-2">
-                                                    <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                                                        Price
+                                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                                        Adress 
                                                     </label>
                                                     <div className="mt-1 flex w-96 rounded-md shadow-sm">
                                                         <input
-                                                            type="number"
-                                                            name="price"
-                                                            value={pack.price}
-                                                           
+                                                            type="text"
+                                                            name="name"
+                                                            value={service.adress}
+                                                    
                                                             ref={packInput}
-                                                            className="focus:ring-indigo-500  text-slate-900 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-                                                            placeholder="Price of Package"
+                                                            className="focus:ring-indigo-500  w-96 focus:border-indigo-500 flex-1 block w-full text-slate-900 rounded-none rounded-r-md sm:text-sm border-gray-300"
+                                                            placeholder="Adress of service"
+                                                            
                                                             onChange={(e) => {
-                                                                pack.price = e.target.value;
-                                                                setPack({ ...pack });
+                                                                service.adress = e.target.value;
+                                                                setService({ ...service });
                                                             }}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="col-span-3 sm:col-span-2">
-        <label className="block text-sm font-medium text-gray-700">Service</label>
-        <select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={pack.service}
-          className="focus:ring-indigo-500  text-slate-900 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-          label="Service"
-          onChange={(e)=>{
-              pack.service=e.target.value
-              setPack({...pack})
-          }}
-        >   <option value=''>None</option>
-            {Services.map((service) => (
-          <option value={service.name}>{service.name}</option>
-          ))}
-        </select>
-</div>
+                                        <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                                            Description
+                                        </label>
+                                        <div className="mt-1">
+                                            <textarea
+                                                id="about"
+                                                name="about"
+                                                rows={3}
+                                                value={service.description}
+                                                className="shadow-sm focus:ring-indigo-500   text-slate-900 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                                                placeholder="Brief description of the Service"
+                                                onChange={(e) => {
+                                                    service.description = e.target.value;
+                                                    setService({ ...service });
+                                                }}
+                                            />
+                                        </div>
+                                        <p className="mt-2 text-sm text-gray-500">
+                                            Brief description for the service
+                                        </p>
+                                    </div>
                                             </div>
                                             <div className="inline-block h-36 w-36 ml-12 col-span-1 rounded-full overflow-hidden bg-gray-100 shrink-0 mr-2 sm:mr-3 border-4 border-indigo-500">
                                              {image === undefined ? <div className="space-y-1 text-center my-10"><svg
@@ -217,28 +228,7 @@ const AddPackage = ({
                                         </div>
                                     </div>
 
-                                    <div className="col-span-3 sm:col-span-2">
-                                        <label htmlFor="about" className="block text-sm font-medium text-gray-700">
-                                            Description
-                                        </label>
-                                        <div className="mt-1">
-                                            <textarea
-                                                id="about"
-                                                name="about"
-                                                rows={3}
-                                                value={pack.description}
-                                                className="shadow-sm focus:ring-indigo-500   text-slate-900 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-                                                placeholder="Brief description of the Package"
-                                                onChange={(e) => {
-                                                    pack.description = e.target.value;
-                                                    setPack({ ...pack });
-                                                }}
-                                            />
-                                        </div>
-                                        <p className="mt-2 text-sm text-gray-500">
-                                            Brief description for the package
-                                        </p>
-                                    </div>
+                                  
                                    
  
 
@@ -297,14 +287,26 @@ const AddPackage = ({
                                             <button className="inline-flex justify-center py-2 h-10 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={() => fileRemove(image)}>Delete</button>
                                         </div>
                                         )
-                                    }
-
+                                    }<div  className=' h-48 w-full border-b-2 border-indigo-400 '>
+                                      <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
+    <TileLayer
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    />
+    <Marker
+      draggable='true'
+      eventHandlers={eventHandlers}
+      position={position}
+      ref={markerRef}>
+    </Marker>
+  </MapContainer>
+  </div>
                                 </div>
                                 <div className="px-4 py-1 bg-gray-50 text-right sm:px-6">
                                     <button
                                         type="submit"
                                         className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        onClick={addPackage}
+                                        onClick={addService}
                                     >
                                         Save
                                     </button>
@@ -328,4 +330,4 @@ const AddPackage = ({
         </Transition></div>);
 }
 
-export default AddPackage;
+export default AddService;

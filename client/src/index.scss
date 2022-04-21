@@ -41,7 +41,6 @@
 .bouton {
 	 @apply w-fit h-fit border-2 border-slate-900 ml-10
 }
-	
 
 
 
@@ -70,3 +69,8 @@
 	padding-left: -10px;
 	padding-right: 10px;
 }
+.leaflet-container{
+	height: 100%;
+	width: 100%;
+	  }
+	

@@ -1,63 +1,112 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Visibility, Delete,Add } from '@mui/icons-material';
+import { Edit, Visibility, Delete,Add,CalendarToday } from '@mui/icons-material';
+import Calendar from 'react-calendar'
 
-import EditPackages from './Packages/EditPackages';
-import ViewPackage from './Packages/ViewPackage';
-import DeletePackage from './Packages/DeletePackage';
-import AddPackage from './Packages/AddPackage';
-
-const ListPackages = () => {
+const ListDrivers = () => {
 	const history = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage] = useState(10);
-	const [packs, setPacks] = useState([]);
-	const [change, setChange] = useState(false);
+	const [Drivers, setDrivers] = useState([]);
 	const current = useRef('')
-	const [editPackage, setEditPackage] = useState(false)
-	const [viewPackage, setViewPackage] = useState(false)
-	const [deletePackage, setDeletePackage] = useState(false)
-	const [addPackage, setaddPackage] = useState(false);
+	const [change, setChange] = useState(false);
+	const [Driver, setDriver] = useState({
+		CIN: '',
+		name_2: '',
+		phone: '',
+		email: '',
+		work: '',
+		adress: '',
+		specialite: ''
+	});
+	const [nom, setNom] = useState({
+		name: ''
+	});
 	const auth = localStorage.getItem('auth-token');
 	const header = {
 		headers: {
 			'auth-token': auth
 		}
 	};
+	// const addDriver = async (e) => {
+	// 	e.preventDefault();
+	// 	console.log(Driver);
 
-	
+	// 	api
+	// 		.post(`api/addDriver`, Driver, header)
+	// 		.then((response) => {
+	// 			if (response.status == 11000) {
+	// 				alert('Driver already exist');
+	// 			} else {
+	// 				alert('Driver added')
+	// 				setChange(true)
+
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// };
+	// const modifyDriver = async (e) => {
+	// 	e.preventDefault();
+	// 	api
+	// 		.put(`api/updatedriver`, Driver, header)
+	// 		.then((response) => {
+	// 			if (response.status == 204) {
+	// 				alert("Driver doesn't exist");
+	// 			} else {
+	// 				alert("Driver updated")
+	// 				setChange(true);
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// };
+	// const deleteDriver = async (e) => {
+	// 	e.preventDefault();
+	// 	api
+	// 		.delete(`api/deleteDriver?CIN=${nom}`, header)
+	// 		.then((response) => {
+	// 			if (response.status == 204) {
+	// 				alert('Driver do not exist');
+	// 			} else {
+	// 				alert('Driver deleted succesfuly');
+	// 				setChange(true);
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// };
 
 	useEffect(
 		() => {
 			setLoading(true);
 			api
-				.get('api/getpackages')
+				.get('api/getDrivers', header)
 				.then((response) => {
-					setPacks(response.data);
-					const reponse = response.data;
+					console.log(response.data);
 
-					const array = reponse.filter((pack) => {
-						return pack.service != null;
-					});
-
-					setPacks(array);
+					setDrivers(response.data);
 					setLoading(false);
-					packs.map((pack) => (pack.service = pack.service.name));
+
 					setChange(false);
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log(err.response);
 				});
 		},
 		[change]
 	);
+
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentPacks = packs.slice(indexOfFirstPack, indexOfLastPack);
+	const currentDrivers = Drivers.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -89,7 +138,7 @@ const ListPackages = () => {
 
 					<Pagination
 						postsPerPage={postsPerPage}
-						totalPosts={packs.length}
+						totalPosts={Drivers.length}
 						paginate={paginate}
 					/>
 				</div>
@@ -99,26 +148,39 @@ const ListPackages = () => {
 				<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse table-auto">
 					<thead className="text-xs uppercase text-slate-50 bg-indigo-500 ">
 						<tr>
-							<th className="p-2 ">
-								<div className="font-semibold text-left">Package</div>
+						<th className="p-2 ">
+								<div className="font-semibold text-left">CIN</div>
 							</th>
-							<th className="p-2">
-								<div className="font-semibold text-center">Description</div>
+							<th className="p-2 ">
+								<div className="font-semibold text-center">Driver</div>
 							</th>
 							<th className="p-2">
 								<div className="font-semibold text-center">Service</div>
 							</th>
 							<th className="p-2">
-								<div className="font-semibold text-center">Price</div>
+								<div className="font-semibold text-center">Speciality</div>
 							</th>
+							<th className="p-2">
+								<div className="font-semibold text-center">Verification</div>
+							</th>
+							<th class="p-2">
+								<div className="font-semibold text-center">Status</div>
+							</th>
+							<th class="p-2">
+								<div className="font-semibold text-center">Planning</div>
+							</th>
+							
 							<th class="p-2">
 								<div className="font-semibold text-center">Options</div>
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{packs.map((pack) => (
+						{Drivers.map((pack) => (
 							<tr class="rounded-lg ">
+								<td class="px-6 py-4 text-slate-700 text-center">
+									{pack.CIN}
+								</td>
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">
 										<div className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
@@ -137,44 +199,54 @@ const ListPackages = () => {
                                                         />
                                                     </svg>:<img className="mx-auto h-12 w-12" src={`http://localhost:3001${pack.icon}`} width="40" height="40" />}
 										</div>
-										{pack.name}
+										{pack.name} {pack.prename}
 									</div>
 								</th>
-								<td class="px-6 py-4 text-center">
-									{pack.description}
+								<td class="px-6 py-4 text-slate-700 text-center">
+									{pack.WorkAt.name}
 								</td>
-								<td class="px-6 py-4 text-center">
-									{pack.service!=undefined ?pack.service.name : <span className="text-red-500">Service </span>}
+								<td class="px-6 py-4 text-slate-700 text-center">
+										{pack.Speciality}
+										</td>
+								<td class="px-6 py-4  text-center">
+									{pack.Verified ? <div className='text-green-800 font-bold'>Verified</div>:<div className='text-red-800 font-bold'>Pending</div> }
 								</td>
-								<td class="px-6 py-4 text-blue-400 text-center">
-									${pack.price}
+							
+								<td class="px-6 py-4 text-center">
+									{pack.isFree ? <div className='text-green-800 font-bold'>Free</div>:<div className='text-red-800 font-bold'>Working</div> }
+								</td>
+								<td class="px-6 py-4  text-center">
+								<button
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
+										onClick={(e) => { e.stopPropagation(); current.current = pack; }}
+										aria-controls="search-modal"
+									>
+										<CalendarToday />
+									</button>
 								</td>
 								<td class=" py-4 justify-center items-right flex">
 
 									<button
-										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${editPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setEditPackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
+										onClick={(e) => { e.stopPropagation();current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Edit />
 									</button>
 									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setViewPackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
+										onClick={(e) => { e.stopPropagation(); current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Visibility />
 									</button>
 									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setDeletePackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
+										onClick={(e) => { e.stopPropagation(); current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<EditPackages modalOpen={editPackage} setModalOpen={setEditPackage} Pack={current.current} header={header} change={change} setChange={setChange} />
-									<ViewPackage modalOpen={viewPackage} setModalOpen={setViewPackage} Pack={current.current} />
-									<DeletePackage modalOpen={deletePackage} setModalOpen={setDeletePackage} Pack={current.current} header={header} change={change} setChange={setChange} />
 								</td>
 							</tr>
 						))}
@@ -182,15 +254,15 @@ const ListPackages = () => {
 					<tfoot>
 
 					<tr >
-						<td colSpan={5} >
+						<td colSpan={7} >
 						<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto ${editPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setaddPackage(true); }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto mt-5`}
+										onClick={(e) => { e.stopPropagation(); }}
 										aria-controls="search-modal"
 									>
 										<Add className='text-green-400' />
 									</button>
-									<AddPackage modalOpen={addPackage} setModalOpen={setaddPackage} header={header} change={change} setChange={setChange}/>
+								
 						</td>
 					</tr>
 
@@ -206,4 +278,4 @@ const ListPackages = () => {
 	);
 };
 
-export default ListPackages;
+export default ListDrivers;

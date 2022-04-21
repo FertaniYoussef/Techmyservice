@@ -62,6 +62,15 @@ Router.get('/getpackages', async (req, res) => {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });
+Router.get('/:service/getpackages', verify , async(req,res)=> {
+	try {
+		const packages= await Package.where({service:req.params.service}).countDocuments()
+		if (!packages) return res.status(httpCodes.NO_CONTENT).send('No packages');
+		return res.status(httpCodes.OK).send(JSON.stringify(packages))
+	}catch(err) {
+		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
+	}
+})
 Router.delete('/deletepackage?', verify, async (req, res) => {
 	try {
 		
@@ -89,7 +98,7 @@ Router.delete('/deletepackage?', verify, async (req, res) => {
 Router.put('/updatepackage', verify,upload.single('icon'), async (req, res) => {
 	try {
 
-		const pack_req=JSON.parse(req.body.pack)
+		const pack_req=JSON.parse(req.body.service)
 		console.log(req.body)
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
@@ -102,6 +111,9 @@ Router.put('/updatepackage', verify,upload.single('icon'), async (req, res) => {
 		console.log(pack_name)
 		const path='img'+pack_name.icon
 		fs.unlink(path, (err) => {
+			if (path===null ) {
+				return
+			}
 			if (err) {
 			  console.error(err)
 			  return

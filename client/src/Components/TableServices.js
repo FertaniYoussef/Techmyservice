@@ -1,26 +1,26 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
-import { useNavigate } from 'react-router-dom';
+
 import { Edit, Visibility, Delete,Add } from '@mui/icons-material';
+import Editservice from './Services/EditServices';
+import ViewService from './Services/ViewServices';
+import DeleteServices from './Services/DeleteServices';
+import AddService from './Services/AddService';
 
-import EditPackages from './Packages/EditPackages';
-import ViewPackage from './Packages/ViewPackage';
-import DeletePackage from './Packages/DeletePackage';
-import AddPackage from './Packages/AddPackage';
-
-const ListPackages = () => {
-	const history = useNavigate();
-	const [loading, setLoading] = useState(false);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [postsPerPage] = useState(10);
-	const [packs, setPacks] = useState([]);
-	const [change, setChange] = useState(false);
+const ListServices = () => {
+	const [viewService, setviewService] = useState(false);
+	const [ loading, setLoading ] = useState(false);
+	const [ currentPage, setCurrentPage ] = useState(1);
+	const [ postsPerPage ] = useState(10);
+	const [ Services, setServices ] = useState([]);
+	const [editService,setEditService]=useState(false)
+	const [deleteService,setDeleteService]=useState(false)
+	const [addService,setAddService]=useState(false)
+	const [ change, setChange ] = useState(false);
 	const current = useRef('')
-	const [editPackage, setEditPackage] = useState(false)
-	const [viewPackage, setViewPackage] = useState(false)
-	const [deletePackage, setDeletePackage] = useState(false)
-	const [addPackage, setaddPackage] = useState(false);
+	const currpos=useRef('')
+
 	const auth = localStorage.getItem('auth-token');
 	const header = {
 		headers: {
@@ -28,36 +28,33 @@ const ListPackages = () => {
 		}
 	};
 
-	
+
+
 
 	useEffect(
 		() => {
 			setLoading(true);
 			api
-				.get('api/getpackages')
+				.get('api/getservices', header)
 				.then((response) => {
-					setPacks(response.data);
-					const reponse = response.data;
+					console.log(response.data);
 
-					const array = reponse.filter((pack) => {
-						return pack.service != null;
-					});
-
-					setPacks(array);
+					setServices(response.data);
 					setLoading(false);
-					packs.map((pack) => (pack.service = pack.service.name));
+					
 					setChange(false);
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log(err.response);
 				});
 		},
 		[change]
 	);
+
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentPacks = packs.slice(indexOfFirstPack, indexOfLastPack);
+	const currentServices = Services.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -89,7 +86,7 @@ const ListPackages = () => {
 
 					<Pagination
 						postsPerPage={postsPerPage}
-						totalPosts={packs.length}
+						totalPosts={Services.length}
 						paginate={paginate}
 					/>
 				</div>
@@ -100,16 +97,18 @@ const ListPackages = () => {
 					<thead className="text-xs uppercase text-slate-50 bg-indigo-500 ">
 						<tr>
 							<th className="p-2 ">
-								<div className="font-semibold text-left">Package</div>
+								<div className="font-semibold text-left">Service</div>
 							</th>
 							<th className="p-2">
 								<div className="font-semibold text-center">Description</div>
 							</th>
+						
 							<th className="p-2">
-								<div className="font-semibold text-center">Service</div>
+								<div className="font-semibold text-center">Adress</div>
 							</th>
+						
 							<th className="p-2">
-								<div className="font-semibold text-center">Price</div>
+								<div className="font-semibold text-center">Admin</div>
 							</th>
 							<th class="p-2">
 								<div className="font-semibold text-center">Options</div>
@@ -117,13 +116,13 @@ const ListPackages = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{packs.map((pack) => (
+						{Services.map((pack) => (
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">
-										<div className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
-										{pack.icon===undefined ?<svg
-                                                        className="mx-auto h-12 w-12 text-gray-400"
+									<div className="inline-block h-12 w-12 justify-center rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
+										{pack.icon===null ?<svg
+                                                        className=" h-10 w-10 text-gray-400 "
                                                         stroke="currentColor"
                                                         fill="none"
                                                         viewBox="0 0 48 48"
@@ -144,37 +143,40 @@ const ListPackages = () => {
 									{pack.description}
 								</td>
 								<td class="px-6 py-4 text-center">
-									{pack.service!=undefined ?pack.service.name : <span className="text-red-500">Service </span>}
+									{pack.adress}
 								</td>
-								<td class="px-6 py-4 text-blue-400 text-center">
-									${pack.price}
+							
+							
+								<td class="px-6 py-4 text-center">
+									{pack.hasAdmin===false? <div className="font-semibold text-center text-red-400">No admin</div>:<div className="font-semibold text-center text-green-400"> {pack.admin.name} {pack.admin.prename} </div>}
 								</td>
 								<td class=" py-4 justify-center items-right flex">
 
 									<button
-										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${editPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setEditPackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
+										onClick={(e) => { e.stopPropagation(); setEditService(true);current.current=pack}}
 										aria-controls="search-modal"
 									>
 										<Edit />
 									</button>
 									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setViewPackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3`}
+										onClick={(e) => { e.stopPropagation(); setviewService(true); current.current=pack ; currpos.current=pack.geoposition.coordinates}}
 										aria-controls="search-modal"
 									>
 										<Visibility />
 									</button>
 									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setDeletePackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3`}
+										onClick={(e) => { e.stopPropagation(); setDeleteService(true);  current.current=pack }}
 										aria-controls="search-modal"
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<EditPackages modalOpen={editPackage} setModalOpen={setEditPackage} Pack={current.current} header={header} change={change} setChange={setChange} />
-									<ViewPackage modalOpen={viewPackage} setModalOpen={setViewPackage} Pack={current.current} />
-									<DeletePackage modalOpen={deletePackage} setModalOpen={setDeletePackage} Pack={current.current} header={header} change={change} setChange={setChange} />
+									<Editservice modalOpen={editService} setModalOpen={setEditService} Service={current.current} header={header} change={change} setChange={setChange}/>
+									<ViewService modalOpen={viewService} setModalOpen={setviewService} Service={current.current} Position={currpos.current} header={header}/>
+									<DeleteServices modalOpen={deleteService} setModalOpen={setDeleteService} Service={current.current} header={header} change={change} setChange={setChange} />
+										
 								</td>
 							</tr>
 						))}
@@ -184,13 +186,13 @@ const ListPackages = () => {
 					<tr >
 						<td colSpan={5} >
 						<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto ${editPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setaddPackage(true); }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto `}
+										onClick={(e) => { e.stopPropagation(); setAddService(true)}}
 										aria-controls="search-modal"
 									>
 										<Add className='text-green-400' />
 									</button>
-									<AddPackage modalOpen={addPackage} setModalOpen={setaddPackage} header={header} change={change} setChange={setChange}/>
+									<AddService modalOpen={addService} setModalOpen={setAddService} header={header} change={change} setChange={setChange}/>
 						</td>
 					</tr>
 
@@ -206,4 +208,4 @@ const ListPackages = () => {
 	);
 };
 
-export default ListPackages;
+export default ListServices;

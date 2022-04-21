@@ -11,8 +11,10 @@ const { REPL_MODE_STRICT } = require('repl');
 
 Router.post('/join', async (req, res) => {
 	try {
-		const service = await Service.findOne({ name: req.body.work })
+		console.log(req.body)
+		const service = await Service.findOne({ name: req.body.WorkAt })
 		if (!service) return res.status(httpCodes.NO_CONTENT).send("service doesn't exist")
+		console.log(service)
 		const drives = await Driver.findOne({ CIN: req.body.CIN });
 		if (drives) return res.status(httpCodes.UNAUTHORIZED).send('You are already a driver');
 		//Hash IBAN
@@ -22,7 +24,8 @@ Router.post('/join', async (req, res) => {
  */		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(req.body.password, salt);
 		const driver = new Driver({
-			username: req.body.username,
+			name: req.body.name,
+			prename: req.body.prename,
 			email: req.body.email,
 			password: hashPassword,
 			phone_number: req.body.phone_number,
@@ -32,10 +35,9 @@ Router.post('/join', async (req, res) => {
 /* 			iban: hashiban,
  */			WorkAt: service._id,
 			Speciality: req.body.Speciality,
-			role: process.env.Driver
+			role: process.env.Driver,
+			geoposition: { coordinates: req.body.coordinates }
 		});
-
-
 
 
 		driver.save()
@@ -55,8 +57,8 @@ Router.post('/join', async (req, res) => {
 
 		const mailOptions = {
 			from: 'no-reply@yourwebapplication.com',
-			to: user.email,
-			subject: `User ` + user.name + ` request to work`,
+			to: driver.email,
+			subject: `User ` + driver.name + ` request to work`,
 			text:
 				'Hello,\n\n' +
 				`This is a request from the user to join the drivers of ${req.body.name}: \nhttp://` +
@@ -120,8 +122,7 @@ Router.delete('/deleteDriver?', verify, async (req, res) => {
 		let driver = []
 		const user = await User.findById(req.user._id)
 		if (user.role == process.env.User) return res.status(httpCodes.UNAUTHORIZED).send('ACCESS DENIED')
-		if (user.role ==
-			process.env.Driver) {
+		if (user.role ==process.env.Driver) {
 			driver = await Driver.findOneAndDelete(req.user._id)
 			if (!driver) return res.status(httpCodes.NO_CONTENT).send('Driver do not exist')
 		}
@@ -137,7 +138,7 @@ Router.delete('/deleteDriver?', verify, async (req, res) => {
 			if (!driver) return res.status(httpCodes.NO_CONTENT).send('Driver do not exist')
 
 		}
-		
+
 		return res.status(httpCodes.OK).send('Driver deleted')
 	} catch (err) {
 		res.status(httpCodes.BAD_REQUEST).send(err)
@@ -154,6 +155,15 @@ Router.get('/getDrivers', verify, async (req, res) => {
 
 
 		return res.status(httpCodes.OK).send(drivers);
+	} catch (err) {
+		return res.status(httpCodes.BAD_REQUEST).send(err);
+	}
+})
+Router.put('/confirmation/:id', verify, async (req, res) => {
+	try {
+		const driver = await Driver.findOneAndUpdate({ _id: req.params.id }, { isVerified: true })
+		if (!drivers) return res.status(httpCodes.NO_CONTENT).send('no driver with that ID exist ');
+		return res.status(httpCodes.OK).send(driver);
 	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send(err);
 	}

@@ -12,8 +12,7 @@ const { REPL_MODE_STRICT } = require('repl');
 
 Router.post('/Adminregister',async(req,res)=> {
     try {
-		const service = await Service.findOne({ name: req.body.service })
-		if (!service) return res.status(httpCodes.NO_CONTENT).send("service doesn't exist")
+
 		const admin_name = await Admin.findOne({ CIN: req.body.CIN });
 		if (admin_name) return res.status(httpCodes.UNAUTHORIZED).send('You are already an admin');
 		//Hash IBAN
@@ -32,7 +31,7 @@ Router.post('/Adminregister',async(req,res)=> {
 			CIN: req.body.CIN,
 			Adress: req.body.Adress,
 /* 			iban: hashiban,
- */			service: service._id,
+ */	
 			role: process.env.Admin
 		});
 
@@ -78,6 +77,29 @@ Router.post('/Adminregister',async(req,res)=> {
 		console.log(err);
 		return res.status(httpCodes.BAD_REQUEST).send(err);
 	}   
+})
+
+Router.get('/getAdmins',verify,async(req,res)=> {
+	try {
+
+        const admin = await Admin.find()
+    
+
+        if (!admin) return res.status(httpCodes.NO_CONTENT).send('No admin available')
+        return res.status(httpCodes.OK).send(admin)
+    } catch (err) {
+        return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
+    }
+})
+Router.get('/getFreeAdmin',verify,async(req,res)=> {
+	try {
+		if (user.role != process.env.SuperAdmin) return res.status(httpCodes.UNAUTHORIZED).send('Access Denied')
+		const admin = await Admin.find({service:undefined})
+        if (!admin) return res.status(httpCodes.NO_CONTENT).send('No admin available')
+        return res.status(httpCodes.OK).send(admin)
+	}catch(err) {
+		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
+	}
 })
 
 module.exports=Router

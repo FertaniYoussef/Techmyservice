@@ -66,7 +66,6 @@ const Driver = User.discriminator("Driver", new mongoose.Schema({
 	},
 	WorkAt: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
 	Speciality: { type: String, required: true },
-	Verified: { type: Boolean, default: false },
 	planning: { type: [Planning] },
 	isFree: { type: Boolean, default: true }
 }))
@@ -76,7 +75,6 @@ const Admin = User.discriminator("Admin", new mongoose.Schema({
 	CIN: { type: Number, min: 00000000, max: 99999999, required: true, unique: true },
 	Adress: { type: String, min: 5, required: true },
 	service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true },
-	Verified: { type: Boolean, default: false },
 }))
 const Tokenmodel = mongoose.model('Tokens', tokenSchema);
 

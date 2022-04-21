@@ -1,63 +1,90 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Visibility, Delete,Add } from '@mui/icons-material';
 
-import EditPackages from './Packages/EditPackages';
-import ViewPackage from './Packages/ViewPackage';
-import DeletePackage from './Packages/DeletePackage';
-import AddPackage from './Packages/AddPackage';
-
-const ListPackages = () => {
+const ListOrders = () => {
 	const history = useNavigate();
-	const [loading, setLoading] = useState(false);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [postsPerPage] = useState(10);
-	const [packs, setPacks] = useState([]);
-	const [change, setChange] = useState(false);
-	const current = useRef('')
-	const [editPackage, setEditPackage] = useState(false)
-	const [viewPackage, setViewPackage] = useState(false)
-	const [deletePackage, setDeletePackage] = useState(false)
-	const [addPackage, setaddPackage] = useState(false);
+	const [ loading, setLoading ] = useState(false);
+	const [ currentPage, setCurrentPage ] = useState(1);
+	const [ postsPerPage ] = useState(10);
+	const [ orders, setOrders ] = useState([]);
+	const [ change, setChange ] = useState(false);
+	const [ order, setOrder ] = useState({
+		name: '',
+		name_2: '',
+		description: '',
+		bill: '',
+		package: ''
+	});
+	const [ nom, setNom ] = useState({
+		name: ''
+	});
 	const auth = localStorage.getItem('auth-token');
 	const header = {
 		headers: {
 			'auth-token': auth
 		}
 	};
-
-	
+	const modifyOrder = async (e) => {
+		e.preventDefault();
+		api
+			.put(`api/modifyorder/${order.name}`, order, header)
+			.then((response) => {
+				if (response.status == 204) {
+					alert("order doesn't exist");
+				} else {
+					setChange(true);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+	const deleteOrder = async (e) => {
+		e.preventDefault();
+		api
+			.delete(`api/deleteorder?name=${nom}`, header)
+			.then((response) => {
+				if (response.status == 204) {
+					alert('package do not exist');
+				} else {
+					alert('package deleted succesfuly');
+					setChange(true);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	useEffect(
 		() => {
 			setLoading(true);
 			api
-				.get('api/getpackages')
+				.get('api/getorders', header)
 				.then((response) => {
-					setPacks(response.data);
-					const reponse = response.data;
-
-					const array = reponse.filter((pack) => {
-						return pack.service != null;
-					});
-
-					setPacks(array);
+					console.log(response.data);
+					
+					
+					setOrders(response.data);
+					const array=orders.filter((pack)=> pack.package.name!=null)
+					setOrders(array)
 					setLoading(false);
-					packs.map((pack) => (pack.service = pack.service.name));
+					orders.map((pack) => (pack.package.service = pack.package.service.name));
 					setChange(false);
 				})
 				.catch((err) => {
-					console.log(err);
+					console.log(err.response);
 				});
 		},
-		[change]
+		[ change ]
 	);
+
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentPacks = packs.slice(indexOfFirstPack, indexOfLastPack);
+	const currentorders = orders.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -144,7 +171,7 @@ const ListPackages = () => {
 									{pack.description}
 								</td>
 								<td class="px-6 py-4 text-center">
-									{pack.service!=undefined ?pack.service.name : <span className="text-red-500">Service </span>}
+									{pack.service.name}
 								</td>
 								<td class="px-6 py-4 text-blue-400 text-center">
 									${pack.price}
@@ -206,4 +233,4 @@ const ListPackages = () => {
 	);
 };
 
-export default ListPackages;
+export default ListOrders;

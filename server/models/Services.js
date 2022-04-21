@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({
 	name: { type: String, unique: true, required: true },
-    admin : {type :mongoose.Schema.Types.ObjectId,ref : 'Users' ,unique:true},
+    admin : {type :mongoose.Schema.Types.ObjectId,ref : 'Admin' ,unique:true},
     adress: {type: String , required: true, default:''},
     description : {type: String ,default : ''},
-    icon: {type:String,default:''},
+    icon: {type:String,default:null},
+    hasAdmin:{type:Boolean,default:false},
     geoposition: {
         type :{
             default: "Point",
