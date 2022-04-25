@@ -82,7 +82,7 @@ Router.delete('/deletepackage?', verify, async (req, res) => {
 		
 
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
-		const path = "/home/fullstack/techmyservice2/techmyservice-v2/server"+pack_name.icon
+		const path = 'img'+pack_name.icon
 		fs.unlink(path, (err) => {
 			if (err) {
 			  console.error(err)
@@ -90,6 +90,7 @@ Router.delete('/deletepackage?', verify, async (req, res) => {
 			}
 		  })
 		const order= await Order.findOneAndUpdate({package:pack_name._id},{hasPackage:false})
+		
 		return res.status(httpCodes.OK).send('the package has been deleted and the order affilied with ');
 	} catch (err) {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });

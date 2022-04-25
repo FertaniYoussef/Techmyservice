@@ -7,6 +7,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { Close } from '@mui/icons-material';
 
 const AddPackage = ({
     modalOpen,
@@ -126,7 +127,15 @@ const AddPackage = ({
             leaveStart="opacity-100 translate-y-0"
             leaveEnd="opacity-0 translate-y-4"
         >
-            <div ref={modalContent2} className="bg-white overflow-auto max-w-2xl w-full max-h-full rounded shadow-md overflow-hidden">
+            <div ref={modalContent2} className=" relative bg-white overflow-auto max-w-2xl w-full max-h-full rounded shadow-md overflow-hidden">
+            <button
+                  type="button"
+                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-500 sm:top-8 sm:right-6 md:top-6 md:right-6 lg:top-5 lg:right-8"
+                  onClick={() => setModalOpen(false)}
+                >
+                  <span className="sr-only">Close</span>
+                  <Close className="h-6 w-6 text-black"/>
+                </button>
                 <div className="px-2">
                     {/* Edit form */}
 
@@ -308,17 +317,7 @@ const AddPackage = ({
                                     >
                                         Save
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.preventDefault()
-                                            setModalOpen(false);
-
-                                        }}
-                                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        Close
-                                    </button>
+                            
                                 </div>
                             </div>
                         </form>

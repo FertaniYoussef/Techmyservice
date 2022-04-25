@@ -3,15 +3,23 @@ import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Visibility, Delete,Add,CalendarToday } from '@mui/icons-material';
-import Calendar from 'react-calendar'
-
+import Calendars from '../Pages/Calendar';
+import { Link } from 'react-router-dom';
+import ViewDrivers from './Drivers/ViewDrivers';
+import DeleteDrivers from './Drivers/DeleteDrivers';
 const ListDrivers = () => {
 	const history = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage] = useState(10);
 	const [Drivers, setDrivers] = useState([]);
-	const current = useRef('')
+	const current=useRef(null)
+	const currpos=useRef(null)
+	
+	const [viewDriver,setViewDriver]=useState(false)
+	const [modifyDriver,setModifyDriver]=useState(false)
+	const [deleteDriver,setDeleteDriver]=useState(false)
+	const [addDriver,setAddDriver]=useState(true)
 	const [change, setChange] = useState(false);
 	const [Driver, setDriver] = useState({
 		CIN: '',
@@ -209,64 +217,48 @@ const ListDrivers = () => {
 										{pack.Speciality}
 										</td>
 								<td class="px-6 py-4  text-center">
-									{pack.Verified ? <div className='text-green-800 font-bold'>Verified</div>:<div className='text-red-800 font-bold'>Pending</div> }
+									{pack.isVerified ? <div className='text-green-800 font-bold'>Verified</div>:<div className='text-red-800 font-bold'>Pending</div> }
 								</td>
 							
 								<td class="px-6 py-4 text-center">
 									{pack.isFree ? <div className='text-green-800 font-bold'>Free</div>:<div className='text-red-800 font-bold'>Working</div> }
 								</td>
 								<td class="px-6 py-4  text-center">
-								<button
+								<Link
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation(); current.current = pack; }}
+										onClick={(e) => { e.stopPropagation(); current.current= pack.id; }}
 										aria-controls="search-modal"
+										to={"/Drivers/Calendar"}
+										state={{current:pack.id,header:header}}
+										  
 									>
-										<CalendarToday />
-									</button>
+										<CalendarToday/>
+					
+									</Link>
+									
 								</td>
 								<td class=" py-4 justify-center items-right flex">
-
 									<button
-										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation();current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
+										onClick={(e) => {e.stopPropagation(); setViewDriver(true); current.current=pack ; currpos.current=pack.geoposition.coordinates }}
 										aria-controls="search-modal"
 									>
-										<Edit />
+										<Visibility  />
 									</button>
 									<button
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation(); current.current = pack; }}
-										aria-controls="search-modal"
-									>
-										<Visibility />
-									</button>
-									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation(); current.current = pack; }}
+										onClick={(e) => { e.stopPropagation(); current.current = pack; setDeleteDriver(true) }}
 										aria-controls="search-modal"
 									>
 										<Delete className='text-red-400' />
 									</button>
+									<ViewDrivers modalOpen={viewDriver} setModalOpen={setViewDriver} Driver={current.current} Position={currpos.current} header={header}/>
+									<DeleteDrivers modalOpen={deleteDriver} setModalOpen={setDeleteDriver} Driver={current.current} header={header} change={change} setChange={setChange}/>
 								</td>
 							</tr>
 						))}
 					</tbody>
-					<tfoot>
-
-					<tr >
-						<td colSpan={7} >
-						<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto mt-5`}
-										onClick={(e) => { e.stopPropagation(); }}
-										aria-controls="search-modal"
-									>
-										<Add className='text-green-400' />
-									</button>
-								
-						</td>
-					</tr>
-
-					</tfoot>
+					
 				</table>
 			</div>
 

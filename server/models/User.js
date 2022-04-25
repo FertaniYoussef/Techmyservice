@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const geoSchema = require('./geoposition');
+const moment = require('moment');
+const now = moment();
+const Order= require('./Order')
+
 const options = {
 	toJSON: {
 		// versionKey: false,
@@ -14,13 +18,6 @@ const options = {
 	}
 };
 
-
-const Planning = new mongoose.Schema({
-	date: { type: Date },
-	order: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' },
-	client: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-	bill: { type: Number }
-});
 const Userschema = new mongoose.Schema(
 	{
 		name: { type: String, required: true },
@@ -64,9 +61,9 @@ const Driver = User.discriminator("Driver", new mongoose.Schema({
 			default: [0, 0]
 		}
 	},
+	icon:{type:String},
 	WorkAt: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
 	Speciality: { type: String, required: true },
-	planning: { type: [Planning] },
 	isFree: { type: Boolean, default: true }
 }))
 

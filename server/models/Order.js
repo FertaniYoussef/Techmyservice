@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const geoSchema = require('./geoposition');
+const moment = require('moment');
+const now = moment();
 
 const options = {
 	toJSON: {
@@ -17,14 +19,14 @@ const options = {
 
 const Ordreschema = new mongoose.Schema(
 	{
-		name: { type: String },
+		title: { type: String },
 		description: { type: String },
 		client: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Users'
 		},
 		package: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: [mongoose.Schema.Types.ObjectId],
 			ref: 'Packages',
 			required: true
 		},
@@ -42,13 +44,15 @@ const Ordreschema = new mongoose.Schema(
 	},
 	coordinates: {
 		type: [ Number ],
-		index: '2dsphere'
+		index: '2dsphere',
+		default:[0,0]
 	}},
 	Before:{type: String , default:''},
 	Pending:{type:Boolean,default:true},
 	After:{type:String,default:''},
-    Date:{type:Date, default:Date.now},
-	hasPackage: {type:Boolean, default:true},
+    start:{type:Date,},
+	end: {type:Date},
+	driver: {type:mongoose.Schema.Types.ObjectId,ref:'Driver'},
     bill: {type : Number, required: true}
 	},
 	options

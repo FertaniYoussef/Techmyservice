@@ -20,6 +20,7 @@
     "express": "^4.17.3",
     "free-mobile-sms-api": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.3",
     "mongoose": "^6.2.2",
     "mongoose-iban": "^1.0.2",
     "multer": "^1.4.4",

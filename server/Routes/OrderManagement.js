@@ -19,12 +19,14 @@ Router.post('/addorder/:service/:name', verify, async (req, res) => {
 			addon= addon_name.supplement
 		}
 		const order = new Order({
-			name: pack_name.name,
+			title: pack_name.name,
 			description: pack_name.description,
 			client: req.user._id,
 			package: pack_name._id,
 			localisation: { coordinates: req.body.coordinates },
 			bill: pack_name.price+addon,
+			start:req.body.start,
+			end:req.body.end,
 			service:pack_name.service
 		});
 
@@ -41,14 +43,39 @@ Router.get('/getorders', verify, async (req, res) => {
 	try {
 		
 		let orders= []
-		const user = await User.findById(req.user._id);
-		if (user.role == process.env.User) {
+		if (req.user.role == process.env.User) {
 		orders = await Order.find({ client: req.user._id }).populate({path:'package' ,select:'name service',populate:{path:'service',select:'name'}});
 		
-		} else {
-		orders = await Order.find({hasPackage:true}).populate('client','username').populate({path:'package' ,select:'name service' ,populate:{path:'service',select:'name'}});
+		} else if (req.user.role==process.env.Driver) {
+		orders = await Order.find({hasPackage:true,driver:req.user._id}).populate('client','name prename').populate({path:'package' ,select:'name'})
+		} else if (req.user.role==process.env.Admin) {
+			order= await Order.find({hasPackage:true,service:req.user.service}).populate('client','name prename').populate({path:'package' ,select:'name'})
+		}else {
+			order=await Order.find({hasPackage:true}).populate('client','name prename').populate({path:'package' ,select:'name'}).populate({path:'service',select:'name'});
+		}
 		
+		if (!orders) return res.status(httpCodes.NO_CONTENT).send('no order exist yet');
 		
+		console.log(orders)
+		return res.status(httpCodes.OK).send(orders);
+	} catch (err) {
+		console.log(err)
+		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
+	}
+});
+Router.get('/getorder/:id', verify, async (req, res) => {
+	try {
+		
+		let orders= []
+		if (req.user.role == process.env.User) {
+		orders = await Order.find({ _id:req.params.id,client: req.user._id }).populate({path:'package' ,select:'name service',populate:{path:'service',select:'name'}});
+		
+		} else if (req.user.role==process.env.Driver) {
+		orders = await Order.find({ _id:req.params.id,hasPackage:true,driver:req.user._id}).populate('client','name prename').populate({path:'package' ,select:'name'})
+		} else if (req.user.role==process.env.Admin) {
+			orders= await Order.find({ _id:req.params.id,hasPackage:true,service:req.user.service}).populate('client','name prename').populate({path:'package' ,select:'name'})
+		}else {
+			orders=await Order.find({ _id:req.params.id,hasPackage:true}).populate('client','name prename').populate({path:'package' ,select:'name'}).populate({path:'service',select:'name'});
 		}
 		
 		if (!orders) return res.status(httpCodes.NO_CONTENT).send('no order exist yet');
@@ -87,5 +114,17 @@ Router.put('/modifyorder/:name', verify, async (req, res) => {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });
+Router.get('/getagendaorder?',verify, async(req,res)=> {
+	try {
+		console.log(req.query.id)
+		if (req.user.role==process.env.User) return res.status(401).send('DENIED ACCESS')
+		const order = await Order.find({hasPackage:true,driver:req.query.id}).populate('client','name prename').populate('package','icon')
+		console.log(order)
+		return res.status(httpCodes.OK).send(order);
+	} catch (err) {
+		console.log(err)
+		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
+	}
+})
 
 module.exports = Router;

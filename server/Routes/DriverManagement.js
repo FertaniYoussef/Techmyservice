@@ -118,7 +118,7 @@ Router.put('/updatedriver', verify, async (req, res) => {
 })
 Router.delete('/deleteDriver?', verify, async (req, res) => {
 	try {
-		console.log(req.query)
+		
 		let driver = []
 		const user = await User.findById(req.user._id)
 		if (user.role == process.env.User) return res.status(httpCodes.UNAUTHORIZED).send('ACCESS DENIED')
@@ -130,15 +130,23 @@ Router.delete('/deleteDriver?', verify, async (req, res) => {
 			const admin = await Admin.findById(req.user._id)
 			const work = await Service.findById(admin.service)
 			if (work.length == 0) return res.status(httpCodes.NO_CONTENT).send('service do not exist')
-			driver = await Driver.findOneAndDelete({ WorkAt: work._id, CIN: req.query.CIN })
+			driver = await Driver.findOneAndDelete({ WorkAt: work._id, _ID: req.query.id })
 			if (!driver) return res.status(httpCodes.NO_CONTENT).send('Driver do not exist')
 		}
 		if (user.role == process.env.SuperAdmin) {
-			driver = await Driver.findOneAndDelete({ CIN: req.query.CIN })
+			driver = await Driver.findOneAndDelete({ _id: req.query.id })
 			if (!driver) return res.status(httpCodes.NO_CONTENT).send('Driver do not exist')
 
 		}
-
+		if (profilepic!='') {
+		const path = 'img'+driver.profilepic
+		fs.unlink(path, (err) => {
+			if (err) {
+			  console.error(err)
+			  return
+			}
+		  })
+		}
 		return res.status(httpCodes.OK).send('Driver deleted')
 	} catch (err) {
 		res.status(httpCodes.BAD_REQUEST).send(err)
@@ -169,6 +177,8 @@ Router.put('/confirmation/:id', verify, async (req, res) => {
 	}
 })
 
-
+Router.put('/acceptorder/:id',verify,async(req,res)=> {
+	
+})
 
 module.exports = Router

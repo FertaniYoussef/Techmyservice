@@ -3,6 +3,7 @@
 @tailwind components;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback');
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
 @import 'additional-styles/utility-patterns.scss';
 @import 'additional-styles/range-slider.scss';
 @import 'additional-styles/toggle-switch.scss';
@@ -73,4 +74,3 @@
 	height: 100%;
 	width: 100%;
 	  }
-	
