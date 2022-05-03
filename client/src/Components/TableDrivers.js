@@ -1,95 +1,34 @@
-import { useState, useEffect,useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Visibility, Delete,Add,CalendarToday } from '@mui/icons-material';
+import { Edit, Visibility, Delete, Add, CalendarToday } from '@mui/icons-material';
 import Calendars from '../Pages/Calendar';
 import { Link } from 'react-router-dom';
 import ViewDrivers from './Drivers/ViewDrivers';
 import DeleteDrivers from './Drivers/DeleteDrivers';
+import VerifyDrivers from './Drivers/VerifyDrivers'
 const ListDrivers = () => {
 	const history = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage] = useState(10);
 	const [Drivers, setDrivers] = useState([]);
-	const current=useRef(null)
-	const currpos=useRef(null)
-	
-	const [viewDriver,setViewDriver]=useState(false)
-	const [modifyDriver,setModifyDriver]=useState(false)
-	const [deleteDriver,setDeleteDriver]=useState(false)
-	const [addDriver,setAddDriver]=useState(true)
+	const current = useRef(null)
+	const currpos = useRef(null)
+
+	const [viewDriver, setViewDriver] = useState(false)
+	const [deleteDriver, setDeleteDriver] = useState(false)
+	const [verifyDriver, setVerifyDriver] = useState(false)
 	const [change, setChange] = useState(false);
-	const [Driver, setDriver] = useState({
-		CIN: '',
-		name_2: '',
-		phone: '',
-		email: '',
-		work: '',
-		adress: '',
-		specialite: ''
-	});
-	const [nom, setNom] = useState({
-		name: ''
-	});
+
+
 	const auth = localStorage.getItem('auth-token');
 	const header = {
 		headers: {
 			'auth-token': auth
 		}
 	};
-	// const addDriver = async (e) => {
-	// 	e.preventDefault();
-	// 	console.log(Driver);
-
-	// 	api
-	// 		.post(`api/addDriver`, Driver, header)
-	// 		.then((response) => {
-	// 			if (response.status == 11000) {
-	// 				alert('Driver already exist');
-	// 			} else {
-	// 				alert('Driver added')
-	// 				setChange(true)
-
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// };
-	// const modifyDriver = async (e) => {
-	// 	e.preventDefault();
-	// 	api
-	// 		.put(`api/updatedriver`, Driver, header)
-	// 		.then((response) => {
-	// 			if (response.status == 204) {
-	// 				alert("Driver doesn't exist");
-	// 			} else {
-	// 				alert("Driver updated")
-	// 				setChange(true);
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// };
-	// const deleteDriver = async (e) => {
-	// 	e.preventDefault();
-	// 	api
-	// 		.delete(`api/deleteDriver?CIN=${nom}`, header)
-	// 		.then((response) => {
-	// 			if (response.status == 204) {
-	// 				alert('Driver do not exist');
-	// 			} else {
-	// 				alert('Driver deleted succesfuly');
-	// 				setChange(true);
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// };
 
 	useEffect(
 		() => {
@@ -156,7 +95,7 @@ const ListDrivers = () => {
 				<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse table-auto">
 					<thead className="text-xs uppercase text-slate-50 bg-indigo-500 ">
 						<tr>
-						<th className="p-2 ">
+							<th className="p-2 ">
 								<div className="font-semibold text-left">CIN</div>
 							</th>
 							<th className="p-2 ">
@@ -177,7 +116,7 @@ const ListDrivers = () => {
 							<th class="p-2">
 								<div className="font-semibold text-center">Planning</div>
 							</th>
-							
+
 							<th class="p-2">
 								<div className="font-semibold text-center">Options</div>
 							</th>
@@ -192,20 +131,20 @@ const ListDrivers = () => {
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">
 										<div className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
-										{pack.icon===undefined ?<svg
-                                                        className="mx-auto h-12 w-12 text-gray-400"
-                                                        stroke="currentColor"
-                                                        fill="none"
-                                                        viewBox="0 0 48 48"
-                                                        aria-hidden="true"
-                                                    >
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            strokeWidth={2}
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg>:<img className="mx-auto h-12 w-12" src={`http://localhost:3001${pack.icon}`} width="40" height="40" />}
+											{pack.icon === undefined ? <svg
+												className="mx-auto h-12 w-12 text-gray-400"
+												stroke="currentColor"
+												fill="none"
+												viewBox="0 0 48 48"
+												aria-hidden="true"
+											>
+												<path
+													d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+													strokeWidth={2}
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												/>
+											</svg> : <img className="mx-auto h-12 w-12" src={`http://localhost:3001${pack.icon}`} width="40" height="40" />}
 										</div>
 										{pack.name} {pack.prename}
 									</div>
@@ -214,36 +153,43 @@ const ListDrivers = () => {
 									{pack.WorkAt.name}
 								</td>
 								<td class="px-6 py-4 text-slate-700 text-center">
-										{pack.Speciality}
-										</td>
-								<td class="px-6 py-4  text-center">
-									{pack.isVerified ? <div className='text-green-800 font-bold'>Verified</div>:<div className='text-red-800 font-bold'>Pending</div> }
+									{pack.Speciality}
 								</td>
-							
+								<td class="px-6 py-4  text-center ">
+									{pack.isVerified ? <div className='text-slate-50 bg-green-700 rounded-lg font-bold cursor-pointer ' >Verified</div> : <div className='text-slate-50 bg-red-700  rounded-lg font-bold cursor-pointer' onClick={(e) => {
+										e.preventDefault()
+										setVerifyDriver(true)
+										current.current=pack
+
+
+									}}>Pending</div>}
+									<VerifyDrivers modalOpen={verifyDriver} setModalOpen={setVerifyDriver} Driver={current.current} header={header} change={change} setChange={setChange}/>
+								</td>
+
 								<td class="px-6 py-4 text-center">
-									{pack.isFree ? <div className='text-green-800 font-bold'>Free</div>:<div className='text-red-800 font-bold'>Working</div> }
+									{pack.isFree ? <div className='text-green-800 font-bold'>Free</div> : <div className='text-red-800 font-bold'  >Working</div>}
 								</td>
 								<td class="px-6 py-4  text-center">
-								<Link
+									<Link
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation(); current.current= pack.id; }}
+										onClick={(e) => { e.stopPropagation(); current.current = pack.id; }}
 										aria-controls="search-modal"
 										to={"/Drivers/Calendar"}
-										state={{current:pack.id,header:header}}
-										  
+										state={{ current: pack.id, header: header }}
+
 									>
-										<CalendarToday/>
-					
+										<CalendarToday />
+
 									</Link>
-									
+
 								</td>
 								<td class=" py-4 justify-center items-right flex">
 									<button
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => {e.stopPropagation(); setViewDriver(true); current.current=pack ; currpos.current=pack.geoposition.coordinates }}
+										onClick={(e) => { e.stopPropagation(); setViewDriver(true); current.current = pack; currpos.current = pack.geoposition.coordinates }}
 										aria-controls="search-modal"
 									>
-										<Visibility  />
+										<Visibility />
 									</button>
 									<button
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
@@ -252,13 +198,13 @@ const ListDrivers = () => {
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<ViewDrivers modalOpen={viewDriver} setModalOpen={setViewDriver} Driver={current.current} Position={currpos.current} header={header}/>
-									<DeleteDrivers modalOpen={deleteDriver} setModalOpen={setDeleteDriver} Driver={current.current} header={header} change={change} setChange={setChange}/>
+									<ViewDrivers modalOpen={viewDriver} setModalOpen={setViewDriver} Driver={current.current} Position={currpos.current} header={header} />
+									<DeleteDrivers modalOpen={deleteDriver} setModalOpen={setDeleteDriver} Driver={current.current} header={header} change={change} setChange={setChange} />
 								</td>
 							</tr>
 						))}
 					</tbody>
-					
+
 				</table>
 			</div>
 

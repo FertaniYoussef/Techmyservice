@@ -17,7 +17,12 @@ const options = {
 const Addonschema = new mongoose.Schema({
 	name: { type: String, required: true },
 	description: { type: String },
-	supplement: { type: Number, required: true, min: 1 }
+	supplement: { type: Number, required: true, min: 1 },
+	service: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Service',
+		required: true
+	},
 });
 const Packageschema = new mongoose.Schema(
 	{

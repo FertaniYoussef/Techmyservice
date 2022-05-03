@@ -34,7 +34,7 @@ const ListPackages = () => {
 		() => {
 			setLoading(true);
 			api
-				.get('api/getpackages')
+				.get('api/getpackagelist',header)
 				.then((response) => {
 					setPacks(response.data);
 					const reponse = response.data;

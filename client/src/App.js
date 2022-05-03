@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes,useNavigate } from 'react-router-dom';
+import { useState,useEffect } from 'react';
 import Login from "./Pages/Login";
 import Home from "./Pages/Home"
 import Sidebar from "./Components/Sidebar"
@@ -7,14 +8,18 @@ import Orders from './Pages/Orders';
 import Service from './Pages/Service';
 import Drivers from './Pages/Drivers';
 import Calendar from './Pages/Calendar'
+import Signup from './Pages/Signup';
+import api from './service';
 
 
 function App() {
-  
+
+
   return (
     <div className="App">
     <Router>
           <Routes>
+       
             <Route element={<Sidebar/>}>
             <Route exact path="/" element = {<Home/>}/>
             <Route exact path="/Packages" element= {<Packages/>}/>
@@ -23,7 +28,10 @@ function App() {
             <Route exact path="/Drivers/Calendar" element={<Calendar/>}/>
             <Route exact path="/Drivers" element= {<Drivers/>}/>
             </Route>
-            <Route exact path="/login" element= {<Login/>}/> 
+         
+            <Route exact path="/signup" element={<Signup/>}/>
+            <Route exact path="/login" element= {<Login/>}/>
+      
           </Routes>
     </Router>
     </div>

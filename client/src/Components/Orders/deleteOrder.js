@@ -4,26 +4,26 @@ import Transition from '../cards/utils/Transition';
 import api from '../../service';
 
 
-const VerifyDrivers = ({
+const DeleteOrder = ({
     modalOpen,
     setModalOpen,
-    Driver,
+    Order,
     header,
     change,
     setChange
 }) => {
     const modalContent2 = useRef(null);
-    const packInput = useRef(null);
+
   
-    const verifyDriver = async (e) => {
+    const deleteOrder = async (e) => {
 		e.preventDefault();
 		api
-			.put(`api/confirmation?id=${Driver.id}`,{}, header)
+			.delete(`api/deleteorder?id=${Order.id}`, header)
 			.then((response) => {
 				if (response.status == 204) {
-					alert('Driver do not exist');
+					alert('Order do not exist');
 				} else {
-					alert('The Driver has been verified succesfuly');
+					alert('The Order has been deleted succesfuly');
 					setChange(true);
 				}
 			})
@@ -31,6 +31,8 @@ const VerifyDrivers = ({
 				console.log(err);
 			});
 	};
+
+
 
 
 
@@ -74,15 +76,15 @@ const VerifyDrivers = ({
                 {/* Edit form */}
                 <div class="relative  w-full  items-center  ">
                     
-                        <h1 class="font-bold text-base text-slate-900 mt-5 text-center mb-1">Do you really want to verify this Driver ?</h1>
+                        <h1 class="font-bold text-base text-slate-900 mt-5 text-center mb-1">Do you really want to delete this Order ?</h1>
                         <h2 className='text-sm font-medium text-center text-red-500'>This process cannot be undone</h2>
                         <div className="px-4 py-1  text-right sm:px-6">
                         <button
                             type="button"
-                            onClick={verifyDriver}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={deleteOrder}
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Verify
+                            Delete
                         </button>
                         <button
                             type="button"
@@ -106,4 +108,4 @@ const VerifyDrivers = ({
         </Transition></div>);
 }
 
-export default VerifyDrivers;
+export default DeleteOrder;

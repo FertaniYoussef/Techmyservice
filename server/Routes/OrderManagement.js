@@ -7,24 +7,33 @@ const { User } = require('../models/User');
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 
-Router.post('/addorder/:service/:name', verify, async (req, res) => {
+Router.post('/addorder/:service/:name?', verify, async (req, res) => {
 	try {
 		const service_name = await Service.findOne({ name: req.params.service });
 		if (!service_name) return res.status(httpCodes.NO_CONTENT).send("Service doesn't exist");
 		const pack_name = await Package.findOne({ name: req.params.name });
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("Package doesn't exist");
-		let addon=0
+		let addon_price=0
+		let addon_name=[]
+		
 		if (req.body.addon) {
-			const addon_name= await Addon.findOne({name:req.body.addon})
-			addon= addon_name.supplement
+			const addons=req.body.addon
+			addons.forEach(async (addon)=> {
+				const temp = await Addon.findOne({name:addon.name})
+				addon_name.append(temp._id)
+				addon_price=addon_price+temp.supplement
+			})
+			
 		}
+
 		const order = new Order({
 			title: pack_name.name,
 			description: pack_name.description,
-			client: req.user._id,
+			addon:addon_name,
+			client: req.query.user,
 			package: pack_name._id,
 			localisation: { coordinates: req.body.coordinates },
-			bill: pack_name.price+addon,
+			bill: pack_name.price+addon_price,
 			start:req.body.start,
 			end:req.body.end,
 			service:pack_name.service
@@ -47,16 +56,16 @@ Router.get('/getorders', verify, async (req, res) => {
 		orders = await Order.find({ client: req.user._id }).populate({path:'package' ,select:'name service',populate:{path:'service',select:'name'}});
 		
 		} else if (req.user.role==process.env.Driver) {
-		orders = await Order.find({hasPackage:true,driver:req.user._id}).populate('client','name prename').populate({path:'package' ,select:'name'})
+		orders = await Order.find({hasPackage:true,driver:req.user._id}).populate('client','name prename email').populate({path:'package' ,select:'name'})
 		} else if (req.user.role==process.env.Admin) {
-			order= await Order.find({hasPackage:true,service:req.user.service}).populate('client','name prename').populate({path:'package' ,select:'name'})
+			orders= await Order.find({hasPackage:true,service:req.user.service}).populate('client','name prename phone_number email').populate('package','icon price name').populate('driver','name prename').populate('addon','name supplement')
 		}else {
-			order=await Order.find({hasPackage:true}).populate('client','name prename').populate({path:'package' ,select:'name'}).populate({path:'service',select:'name'});
+			orders=await Order.find({hasPackage:true}).populate('client','name prename phone_number email').populate('package','icon price name').populate('driver','name prename').populate('service','name icon').populate('addon','name supplement')
 		}
 		
 		if (!orders) return res.status(httpCodes.NO_CONTENT).send('no order exist yet');
 		
-		console.log(orders)
+	
 		return res.status(httpCodes.OK).send(orders);
 	} catch (err) {
 		console.log(err)
@@ -80,17 +89,16 @@ Router.get('/getorder/:id', verify, async (req, res) => {
 		
 		if (!orders) return res.status(httpCodes.NO_CONTENT).send('no order exist yet');
 		
-		console.log(orders)
 		return res.status(httpCodes.OK).send(orders);
 	} catch (err) {
-		console.log(err)
+	
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });
 
 Router.delete('/deleteorder?', verify, async (req, res) => {
 	try {
-		console.log(req.query)
+
 		const order = await Order.findOneAndDelete({ name: req.query.name });
 		if (!order) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
 		return res.status(httpCodes.OK).send('The order has been cancelled');
@@ -104,10 +112,10 @@ Router.put('/modifyorder/:name', verify, async (req, res) => {
 	
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("Package doesn't exist");
 		const order = await Order.findOneAndUpdate(
-			{ name: req.params.name },
-			{ name: req.body.name_2, description: pack_name.description, package: pack_name }
+			{ title: req.params.name },
+			{ title: pack_name.name, description: pack_name.description, package: pack_name }
 		);
-		console.log(order)
+
 		if (!order) return res.status(httpCodes.NO_CONTENT).send("the order doesn't exist");
 		return res.status(httpCodes.OK).send('the order has been updated');
 	} catch (err) {
@@ -116,9 +124,9 @@ Router.put('/modifyorder/:name', verify, async (req, res) => {
 });
 Router.get('/getagendaorder?',verify, async(req,res)=> {
 	try {
-		console.log(req.query.id)
+	
 		if (req.user.role==process.env.User) return res.status(401).send('DENIED ACCESS')
-		const order = await Order.find({hasPackage:true,driver:req.query.id}).populate('client','name prename').populate('package','icon')
+		const order = await Order.find({hasPackage:true,driver:req.query.id}).populate('client','name prename phone_number email').populate('package','icon price name').populate('driver','name prename').populate('service','name icon').populate('addon','name supplement')
 		console.log(order)
 		return res.status(httpCodes.OK).send(order);
 	} catch (err) {

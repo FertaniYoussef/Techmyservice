@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState,useCallback,useMemo } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../cards/utils/Transition';
 import api from '../../service';
-import { MapContainer, TileLayer,  useMap, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+import Confirmations from '../Confirmation';
 
 const AddService = ({
     modalOpen,
@@ -11,25 +12,26 @@ const AddService = ({
     change,
     setChange
 }) => {
-    const center={
+    const center = {
         lat: 36.79443996095986,
-lng: 10.173874748222278}
+        lng: 10.173874748222278
+    }
     const [image, setImage] = useState(undefined);
     const modalContent2 = useRef(null);
     const packInput = useRef(null);
     const [dropped, setDropped] = useState(false)
-    const [ Admins, setAdmins ] = useState([]);
+    const [Admins, setAdmins] = useState([]);
     const [draggable, setDraggable] = useState(true)
     const [position, setPosition] = useState(center)
     const markerRef = useRef(null)
-  
+    const [Confirmation, setConfirmation] = useState(false)
 
 
     const [service, setService] = useState({
         name: '',
         description: '',
-        lat:'',
-        lng:''
+        lat: '',
+        lng: ''
     });
     const wrapperRef = useRef(null);
     const onDragEnter = () => {
@@ -55,43 +57,42 @@ lng: 10.173874748222278}
     }
     const eventHandlers = useMemo(
         () => ({
-          dragend() {
-            const marker = markerRef.current
-            if (marker != null) {
-              setPosition(marker.getLatLng())
-            }
-           
-          },
+            dragend() {
+                const marker = markerRef.current
+                if (marker != null) {
+                    setPosition(marker.getLatLng())
+                }
+
+            },
         }),
         [],
-      )
-    
+    )
+
     const addService = async (e) => {
-		e.preventDefault();
-        service.lat=position.lat
-        service.lng=position.lng
-        setService({...service})
+        e.preventDefault();
+        service.lat = position.lat
+        service.lng = position.lng
+        setService({ ...service })
         console.log(image)
         console.log(service)
         const formData = new FormData();
         formData.append('icon', image, image);
-		formData.append('service', JSON.stringify(service));
-		
-		api
-			.post(`api/addservice`, formData, header)
-			.then((response) => {
-				 if (response.status == 11000) {
-					alert('service already exist');
-				} else {
-					alert('service added')
-					setChange(true)
+        formData.append('service', JSON.stringify(service));
 
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
+        api
+            .post(`api/addservice`, formData, header)
+            .then((response) => {
+                if (response.status == 11000) {
+                    alert('service already exist');
+                } else {
+                    setConfirmation(true)
+
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     // close if the esc key is pressed
     useEffect(() => {
@@ -120,7 +121,7 @@ lng: 10.173874748222278}
     />
         {/* Modal dialog */}
         <Transition
-           
+
             className="fixed inset-0 z-50 overflow-hidden flex items-start top-20 mb-4 justify-center transform px-4 sm:px-6"
             role="dialog"
             aria-modal="true"
@@ -143,21 +144,21 @@ lng: 10.173874748222278}
                                     <div className="grid grid-cols-4 gap-6">
                                         <div className='flex '>
                                             <div>
-                                                
+
                                                 <div className="col-span-3 sm:col-span-2">
                                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                                        Name 
+                                                        Name
                                                     </label>
                                                     <div className="mt-1 flex w-96 rounded-md shadow-sm">
                                                         <input
                                                             type="text"
                                                             name="name"
                                                             value={service.name}
-                                                    
+
                                                             ref={packInput}
                                                             className="focus:ring-indigo-500  w-96 focus:border-indigo-500 flex-1 block w-full text-slate-900 rounded-none rounded-r-md sm:text-sm border-gray-300"
                                                             placeholder="Name of Service"
-                                                            
+
                                                             onChange={(e) => {
                                                                 service.name = e.target.value;
                                                                 setService({ ...service });
@@ -167,18 +168,18 @@ lng: 10.173874748222278}
                                                 </div>
                                                 <div className="col-span-3 sm:col-span-2">
                                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                                        Adress 
+                                                        Adress
                                                     </label>
                                                     <div className="mt-1 flex w-96 rounded-md shadow-sm">
                                                         <input
                                                             type="text"
                                                             name="name"
                                                             value={service.adress}
-                                                    
+
                                                             ref={packInput}
                                                             className="focus:ring-indigo-500  w-96 focus:border-indigo-500 flex-1 block w-full text-slate-900 rounded-none rounded-r-md sm:text-sm border-gray-300"
                                                             placeholder="Adress of service"
-                                                            
+
                                                             onChange={(e) => {
                                                                 service.adress = e.target.value;
                                                                 setService({ ...service });
@@ -187,50 +188,50 @@ lng: 10.173874748222278}
                                                     </div>
                                                 </div>
                                                 <div className="col-span-3 sm:col-span-2">
-                                        <label htmlFor="about" className="block text-sm font-medium text-gray-700">
-                                            Description
-                                        </label>
-                                        <div className="mt-1">
-                                            <textarea
-                                                id="about"
-                                                name="about"
-                                                rows={3}
-                                                value={service.description}
-                                                className="shadow-sm focus:ring-indigo-500   text-slate-900 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-                                                placeholder="Brief description of the Service"
-                                                onChange={(e) => {
-                                                    service.description = e.target.value;
-                                                    setService({ ...service });
-                                                }}
-                                            />
-                                        </div>
-                                        <p className="mt-2 text-sm text-gray-500">
-                                            Brief description for the service
-                                        </p>
-                                    </div>
+                                                    <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                                                        Description
+                                                    </label>
+                                                    <div className="mt-1">
+                                                        <textarea
+                                                            id="about"
+                                                            name="about"
+                                                            rows={3}
+                                                            value={service.description}
+                                                            className="shadow-sm focus:ring-indigo-500   text-slate-900 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                                                            placeholder="Brief description of the Service"
+                                                            onChange={(e) => {
+                                                                service.description = e.target.value;
+                                                                setService({ ...service });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <p className="mt-2 text-sm text-gray-500">
+                                                        Brief description for the service
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="inline-block h-36 w-36 ml-12 col-span-1 rounded-full overflow-hidden bg-gray-100 shrink-0 mr-2 sm:mr-3 border-4 border-indigo-500">
-                                             {image === undefined ? <div className="space-y-1 text-center my-10"><svg
-                                                        className="mx-auto h-12 w-12 text-gray-400"
-                                                        stroke="currentColor"
-                                                        fill="none"
-                                                        viewBox="0 0 48 48"
-                                                        aria-hidden="true"
-                                                    >
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            strokeWidth={2}
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg> </div> : <img className="mx-auto h-full w-full" src={URL.createObjectURL(image)} alt={URL.createObjectURL(image)} />}
+                                                {image === undefined ? <div className="space-y-1 text-center my-10"><svg
+                                                    className="mx-auto h-12 w-12 text-gray-400"
+                                                    stroke="currentColor"
+                                                    fill="none"
+                                                    viewBox="0 0 48 48"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path
+                                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                        strokeWidth={2}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg> </div> : <img className="mx-auto h-full w-full" src={URL.createObjectURL(image)} alt={URL.createObjectURL(image)} />}
                                             </div>
                                         </div>
                                     </div>
 
-                                  
-                                   
- 
+
+
+
 
 
 
@@ -240,7 +241,7 @@ lng: 10.173874748222278}
                                         onDragEnter={onDragEnter}
                                         onDragLeave={onDragLeave}
                                         onDrop={onDrop}
-                                        className={`mt-1 relative flex justify-center px-6 pt-5 pb-6 border-2  bg-coverborder-gray-300 ${dropped===true ? 'border-indigo-500':'border-dashed'}	  rounded-md 	`}>
+                                        className={`mt-1 relative flex justify-center px-6 pt-5 pb-6 border-2  bg-coverborder-gray-300 ${dropped === true ? 'border-indigo-500' : 'border-dashed'}	  rounded-md 	`}>
                                         <div className="space-y-1 text-center">
                                             <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
                                                 {image === undefined ?
@@ -287,20 +288,20 @@ lng: 10.173874748222278}
                                             <button className="inline-flex justify-center py-2 h-10 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={() => fileRemove(image)}>Delete</button>
                                         </div>
                                         )
-                                    }<div  className=' h-48 w-full border-b-2 border-indigo-400 '>
-                                      <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
-    <TileLayer
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-    <Marker
-      draggable='true'
-      eventHandlers={eventHandlers}
-      position={position}
-      ref={markerRef}>
-    </Marker>
-  </MapContainer>
-  </div>
+                                    }<div className=' h-48 w-full border-b-2 border-indigo-400 '>
+                                        <MapContainer center={center} zoom={13} scrollWheelZoom={false}>
+                                            <TileLayer
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            />
+                                            <Marker
+                                                draggable='true'
+                                                eventHandlers={eventHandlers}
+                                                position={position}
+                                                ref={markerRef}>
+                                            </Marker>
+                                        </MapContainer>
+                                    </div>
                                 </div>
                                 <div className="px-4 py-1 bg-gray-50 text-right sm:px-6">
                                     <button
@@ -326,6 +327,7 @@ lng: 10.173874748222278}
                         </form>
                     </div>
                 </div>
+                <Confirmations modalOpen2={Confirmation} setModalOpen2={setConfirmation} message="Service added succesfully" modalOpen={modalOpen} setModalOpen={setModalOpen} change={change} setChange={setChange} />
             </div>
         </Transition></div>);
 }

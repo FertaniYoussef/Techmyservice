@@ -1,36 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Transition from '../cards/utils/Transition';
-import api from '../../service';
+import Transition from './cards/utils/Transition';
+import api from '../service';
+import {Done} from '@mui/icons-material'
 
-
-const VerifyDrivers = ({
+const Confirmations = ({
+    modalOpen2,
+    setModalOpen2,
+    message,
     modalOpen,
     setModalOpen,
-    Driver,
-    header,
     change,
     setChange
+
 }) => {
     const modalContent2 = useRef(null);
     const packInput = useRef(null);
   
-    const verifyDriver = async (e) => {
-		e.preventDefault();
-		api
-			.put(`api/confirmation?id=${Driver.id}`,{}, header)
-			.then((response) => {
-				if (response.status == 204) {
-					alert('Driver do not exist');
-				} else {
-					alert('The Driver has been verified succesfuly');
-					setChange(true);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
+
 
 
 
@@ -38,8 +25,8 @@ const VerifyDrivers = ({
     // close if the esc key is pressed
     useEffect(() => {
         const keyHandler = ({ keyCode }) => {
-            if (!modalOpen || keyCode !== 27) return;
-            setModalOpen(false);
+            if (!modalOpen2 || keyCode !== 27) return;
+            setModalOpen2(false);
         };
         document.addEventListener('keydown', keyHandler);
         return () => document.removeEventListener('keydown', keyHandler);
@@ -47,7 +34,7 @@ const VerifyDrivers = ({
 
     return (<div>  <Transition
         className="fixed inset-0 bg-slate-900 bg-opacity-30 z-50 transition-opacity"
-        show={modalOpen}
+        show={modalOpen2}
         enter="transition ease-out duration-200"
         enterStart="opacity-0"
         enterEnd="opacity-100"
@@ -61,7 +48,7 @@ const VerifyDrivers = ({
             className="fixed inset-0 z-50 overflow-hidden flex items-start top-20 mb-4 justify-center transform px-4 sm:px-6"
             role="dialog"
             aria-modal="true"
-            show={modalOpen}
+            show={modalOpen2}
             enter="transition ease-in-out duration-200"
             enterStart="opacity-0 translate-y-4"
             enterEnd="opacity-100 translate-y-0"
@@ -74,26 +61,21 @@ const VerifyDrivers = ({
                 {/* Edit form */}
                 <div class="relative  w-full  items-center  ">
                     
-                        <h1 class="font-bold text-base text-slate-900 mt-5 text-center mb-1">Do you really want to verify this Driver ?</h1>
-                        <h2 className='text-sm font-medium text-center text-red-500'>This process cannot be undone</h2>
+                        <h1 class="font-bold text-base text-slate-900 mt-5 text-center mb-1"><Done/></h1>
+                        <h2 className='text-sm font-medium text-center text-green-500'>{message}</h2>
                         <div className="px-4 py-1  text-right sm:px-6">
-                        <button
-                            type="button"
-                            onClick={verifyDriver}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Verify
-                        </button>
                         <button
                             type="button"
                             onClick={(e) => {
                                 e.preventDefault()
-                                setModalOpen(false);
+                                setModalOpen2(false);
+                                setModalOpen(false)
+                                setChange(true)
 
                             }}
                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Close
+                            Okay
                         </button>
                     </div>
                     </div>
@@ -106,4 +88,4 @@ const VerifyDrivers = ({
         </Transition></div>);
 }
 
-export default VerifyDrivers;
+export default Confirmations;

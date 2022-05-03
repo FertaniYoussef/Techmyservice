@@ -102,10 +102,10 @@ Router.post('/login', async (req, res) => {
 });
 Router.get('/', verify, async (req, res) => {
 	try {
-
+		
 		const user = await User.findById(req.user._id)
-		console.log(user);
 		if (user) return res.status(httpCodes.OK).send(user)
+		else return res.status(httpCodes.UNAUTHORIZED)
 	} catch (err) {
 		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}

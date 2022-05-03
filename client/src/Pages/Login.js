@@ -30,7 +30,7 @@ const Login = () => {
 	};
 
     return (  <div className="h-screen w-screen flex items-center bg-slate-900 justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
+        <div className="max-w-md w-full rounded-lg border-2 border-white space-y-8 p-4 bg-">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-white">TechMyService</h2>
           </div>

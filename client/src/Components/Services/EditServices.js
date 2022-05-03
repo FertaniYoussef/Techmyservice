@@ -16,8 +16,8 @@ const Editservice = ({
     const modalContent2 = useRef(null);
     const serviceInput = useRef(null);
     const [dropped, setDropped] = useState(false)
-    const [Admins,setAdmins]=useState([])
-    const [oneAdmin,setOneAdmin]=useState('')
+    const [Admins, setAdmins] = useState([])
+    const [oneAdmin, setOneAdmin] = useState('')
 
 
     const [service, setService] = useState({
@@ -49,25 +49,25 @@ const Editservice = ({
 
     }
     useEffect(
-		() => {
-			api
-				.get('api/getFreeAdmin', header)
-				.then((response) => {
-					console.log(response.data);
+        () => {
+            api
+                .get('api/getFreeAdmin', header)
+                .then((response) => {
+                    console.log(response.data);
 
-					setAdmins(response.data);
-				})
-				.catch((err) => {
-					console.log(err.response);
-				});
-		},
-		[ modalOpen ]
-	);
+                    setAdmins(response.data);
+                })
+                .catch((err) => {
+                    console.log(err.response);
+                });
+        },
+        [modalOpen]
+    );
     const modifyservice = async (e) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('icon', image, image);
-        formData.append('admin',JSON.stringify(oneAdmin))
+        formData.append('admin', JSON.stringify(oneAdmin))
         formData.append('service', JSON.stringify(service));
         api
             .put(`api/modifyservice/${Service._id}`, formData, header)
@@ -133,7 +133,7 @@ const Editservice = ({
                                     <div className="grid grid-cols-4 gap-6">
                                         <div className='flex '>
                                             <div>
-                                                
+
                                                 <div className="col-span-3 sm:col-span-2">
                                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                                                         Name
@@ -142,7 +142,7 @@ const Editservice = ({
                                                         <input
                                                             type="text"
                                                             name="name"
-                                                        
+
                                                             value={service.name}
                                                             id={Service._id}
                                                             ref={serviceInput}
@@ -158,12 +158,12 @@ const Editservice = ({
                                                 </div>
                                                 <div className="col-span-3 sm:col-span-2">
                                                     <label htmlFor="adress" className="block text-sm font-medium text-gray-700">
-                                                       Adress
+                                                        Adress
                                                     </label>
                                                     <div className="mt-1 flex w-96 rounded-md shadow-sm">
                                                         <input
                                                             type="text"
-                                                          
+
                                                             name="Adress of the service"
                                                             value={service.adress}
                                                             id={Service._id}
@@ -180,25 +180,25 @@ const Editservice = ({
 
                                                 </div>
                                                 <div className="col-span-3 sm:col-span-2">
-        <label className="block text-sm font-medium text-gray-700">Administrator</label>
-        <select
-     
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={oneAdmin}
-          className="focus:ring-indigo-500  text-slate-900 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-          label="Administrator"
-          placeholder='Administrator'
-          onChange={(e)=>{
-              console.log(e.target.value)
-            setOneAdmin(e.target.value)
-          }}
-        ><option value=''>None</option>
-            {Admins.map((admin) => (
-          <option value={admin.name}>{admin.name}</option>
-          ))}
-        </select>
-</div>
+                                                    <label className="block text-sm font-medium text-gray-700">Administrator</label>
+                                                    <select
+
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={oneAdmin}
+                                                        className="focus:ring-indigo-500  text-slate-900 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
+                                                        label="Administrator"
+                                                        placeholder='Administrator'
+                                                        onChange={(e) => {
+                                                            console.log(e.target.value)
+                                                            setOneAdmin(e.target.value)
+                                                        }}
+                                                    ><option value=''>None</option>
+                                                        {Admins.map((admin) => (
+                                                            <option value={admin.name}>{admin.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div className="inline-block h-36 w-36 ml-12 col-span-1 rounded-full overflow-hidden bg-gray-100 shrink-0 mr-2 sm:mr-3 border-4 border-indigo-500">
                                                 {image === undefined ? <img className="mx-auto h-full w-full" src={`http://localhost:3001${service.icon}`} /> : <img className="mx-auto h-full w-full" src={URL.createObjectURL(image)} alt={URL.createObjectURL(image)} />}
@@ -238,7 +238,7 @@ const Editservice = ({
                                         onDragEnter={onDragEnter}
                                         onDragLeave={onDragLeave}
                                         onDrop={onDrop}
-                                        className={`mt-1 relative flex justify-center px-6 pt-5 pb-6 border-2  bg-coverborder-gray-300 ${dropped===true ? 'border-indigo-500':'border-dashed'}	  rounded-md 	`}>
+                                        className={`mt-1 relative flex justify-center px-6 pt-5 pb-6 border-2  bg-coverborder-gray-300 ${dropped === true ? 'border-indigo-500' : 'border-dashed'}	  rounded-md 	`}>
                                         <div className="space-y-1 text-center">
                                             <span className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
                                                 {image === undefined ?

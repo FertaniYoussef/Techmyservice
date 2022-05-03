@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import Transition from '../cards/utils/Transition';
 
 import UserAvatar from '../../images/pdp.png';
 
 function UserMenu(user) {
-
+  const history=useNavigate()
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef(null);
@@ -73,7 +73,7 @@ function UserMenu(user) {
           <ul>
             <li>
               <Link
-                className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
+                className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 pr-3 no-underline"
                 to="/"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
@@ -82,9 +82,12 @@ function UserMenu(user) {
             </li>
             <li>
               <Link
-                className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
+                className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 pr-3 no-underline"
                 to="/"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={async (e) =>{
+                  e.preventDefault()
+                  localStorage.removeItem('auth-token');
+                  history('/login',{replace:true})}}
               >
                 Sign Out
               </Link>

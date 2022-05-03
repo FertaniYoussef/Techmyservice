@@ -26,7 +26,7 @@ const Ordreschema = new mongoose.Schema(
 			ref: 'Users'
 		},
 		package: {
-			type: [mongoose.Schema.Types.ObjectId],
+			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Packages',
 			required: true
 		},
@@ -42,6 +42,7 @@ const Ordreschema = new mongoose.Schema(
 		default: 'Point',
 		type: String
 	},
+	adress:{type:String,required:true},
 	coordinates: {
 		type: [ Number ],
 		index: '2dsphere',

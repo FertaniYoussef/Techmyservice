@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema({
 	name: { type: String, unique: true, required: true },
-    admin : {type :mongoose.Schema.Types.ObjectId,ref : 'Admin' ,unique:true},
+    admin : {type :mongoose.Schema.Types.ObjectId,ref : 'Admin' },
     adress: {type: String , required: true, default:''},
     description : {type: String ,default : ''},
     icon: {type:String,default:null},

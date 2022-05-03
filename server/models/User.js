@@ -64,7 +64,8 @@ const Driver = User.discriminator("Driver", new mongoose.Schema({
 	icon:{type:String},
 	WorkAt: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
 	Speciality: { type: String, required: true },
-	isFree: { type: Boolean, default: true }
+	isFree: { type: Boolean, default: true },
+	Orders: {type:[mongoose.Schema.Types.ObjectId],ref:'Order'}
 }))
 
 //Admin AKA WORKER

@@ -1,20 +1,20 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import { useState, useEffect } from 'react';
 import DashboardCard01 from '../Components/cards/DashboardCard1';
 import DashboardCard02 from '../Components/cards/DashboardCard2';
 import DashboardCard03 from '../Components/cards/DashboardCard3';
-
+import Login from './Login';
 import WelcomeBanner from '../Components/WelcomeBanner';
 import api from '../service';
-import { useNavigate } from 'react-router-dom';
+import { Navigate  } from 'react-router-dom';
 import DashboardCard10 from '../Components/cards/DashboardCard4';
 import DashboardCard13 from '../Components/cards/DashboardCard5';
 import DashboardCard07 from '../Components/cards/DashboardCard7';
 const Home = () => {
-
-    const history = useNavigate();
+    const [loggedIn,setloggedIn]=useState(false)
     const auth = localStorage.getItem('auth-token');
+    let navigate = useNavigate();
     const header = {
         headers: {
             'auth-token': auth
@@ -29,18 +29,30 @@ const Home = () => {
 
     useEffect(
         () => {
+            console.log(loggedIn);
             api.get('api/user', header).then((response) => {
+                console.log(response.status)
                 if (response.status == 200) {
                     user.name = response.data.name
                     user.prename = response.data.prename
                     setName({ ...user })
+                    setloggedIn(true)
+                    
                 }
                 else {
-                    history('/login')
+                    navigate("/login", {replace:true})
                 }
-            })
-        }, [setName])
-    return (<div className="Container ">
+                   
+            }
+            )
+            
+        
+        }, [loggedIn])
+
+    return (<>
+   
+    <div className="Container ">
+
         <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <div className='welcomebar'>
                 <Navbar user={user} />
@@ -59,7 +71,10 @@ const Home = () => {
                 </div>
             </div>
         </div>
-    </div>);
+    </div>
+    
+    </>)
+
 }
 
 export default Home;

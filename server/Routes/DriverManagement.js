@@ -11,7 +11,7 @@ const { REPL_MODE_STRICT } = require('repl');
 
 Router.post('/join', async (req, res) => {
 	try {
-		console.log(req.body)
+		
 		const service = await Service.findOne({ name: req.body.WorkAt })
 		if (!service) return res.status(httpCodes.NO_CONTENT).send("service doesn't exist")
 		console.log(service)
@@ -85,7 +85,7 @@ Router.put('/updatedriver', verify, async (req, res) => {
 		const user = await User.findById(req.user._id)
 		let work = []
 		let driver = []
-		console.log(user)
+
 
 		if (user.role == process.env.User)
 			return res.status(httpCodes.UNAUTHORIZED).send('ACCESS DENIED')
@@ -110,7 +110,7 @@ Router.put('/updatedriver', verify, async (req, res) => {
 			if (!driver) return res.status(httpCodes.NO_CONTENT).send('Driver do not exist')
 		}
 
-		console.log(driver)
+
 		return res.status(httpCodes.OK).send('Driver updated')
 	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send(err)
@@ -167,10 +167,11 @@ Router.get('/getDrivers', verify, async (req, res) => {
 		return res.status(httpCodes.BAD_REQUEST).send(err);
 	}
 })
-Router.put('/confirmation/:id', verify, async (req, res) => {
+Router.put('/confirmation?', verify, async (req, res) => {
 	try {
-		const driver = await Driver.findOneAndUpdate({ _id: req.params.id }, { isVerified: true })
-		if (!drivers) return res.status(httpCodes.NO_CONTENT).send('no driver with that ID exist ');
+	
+		const driver = await Driver.findOneAndUpdate({ _id: req.query.id }, { isVerified: true })
+		if (!driver) return res.status(httpCodes.NO_CONTENT).send('no driver with that ID exist ');
 		return res.status(httpCodes.OK).send(driver);
 	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send(err);
