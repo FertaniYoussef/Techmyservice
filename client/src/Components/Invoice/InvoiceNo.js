@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
             </View >
             <View style={styles.invoiceDateContainer}>
                 <Text style={styles.label}>Driver: </Text>
-                <Text >{invoice.driver.name} {invoice.driver.prename}</Text>
+              {invoice.driver!=undefined ?  <Text >{invoice.driver.name} {invoice.driver.prename}</Text>: null}
             </View >
             </div>
        )

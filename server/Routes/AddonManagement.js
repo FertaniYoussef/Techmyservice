@@ -48,7 +48,7 @@ Router.get('/getaddonlist',verify, async (req, res) => {
 		let addons=[]
 		if (req.user.role==process.env.SuperAdmin) {addons = await Addon.find({}).populate('service', ['name']);}
 		if (req.user.role==process.env.Admin) {addons = await Addon.find({service:req.user.service}).populate('service', ['name']);}
-		if (!addons) return res.status(httpCodes.NO_CONTENT).send('no addon exist yet');
+		if (!addons) return res.status(httpCodes.NO_CONTENT).send(addons);
 		return res.status(httpCodes.OK).send(addons);
 	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });

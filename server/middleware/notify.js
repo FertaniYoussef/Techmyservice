@@ -55,7 +55,7 @@ module.exports.Notify = async function(order, services) {
 			}
 		}
 		console.log(small)
-		const user = await User.findById(small.user_id);
+		const user = await Driver.findById(small._id);
 		
 
 		const from = 'Vonage APIs';

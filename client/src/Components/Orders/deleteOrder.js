@@ -15,7 +15,7 @@ const DeleteOrder = ({
     const modalContent2 = useRef(null);
 
   
-    const deleteOrder = async (e) => {
+    const deleteOrder = (e) => {
 		e.preventDefault();
 		api
 			.delete(`api/deleteorder?id=${Order.id}`, header)
@@ -81,7 +81,8 @@ const DeleteOrder = ({
                         <div className="px-4 py-1  text-right sm:px-6">
                         <button
                             type="button"
-                            onClick={deleteOrder}
+                            onClick={deleteOrder
+                            }
                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             Delete

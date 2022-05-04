@@ -159,7 +159,7 @@ const OrderDetail = ({
             </p>
             <div className="flex border-t border-gray-200 py-2">
               <span className="text-gray-500">Driver</span>
-              <span className="ml-auto text-gray-900 uppercase">{Order.driver.name}</span>
+              <span className="ml-auto text-gray-900 uppercase">{Order.driver!=undefined ?Order.driver.name:null}</span>
             </div>
             <div className="flex border-t border-gray-200 py-2">
               <span className="text-gray-500">Service</span>

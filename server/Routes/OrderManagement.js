@@ -31,6 +31,7 @@ Router.post('/addorder/:service/:name?', verify, async (req, res) => {
 			description: pack_name.description,
 			addon:addon_name,
 			client: req.query.user,
+			adress:req.body.adress,
 			package: pack_name._id,
 			localisation: { coordinates: req.body.coordinates },
 			bill: pack_name.price+addon_price,
@@ -99,7 +100,7 @@ Router.get('/getorder/:id', verify, async (req, res) => {
 Router.delete('/deleteorder?', verify, async (req, res) => {
 	try {
 
-		const order = await Order.findOneAndDelete({ name: req.query.name });
+		const order = await Order.findOneAndDelete({ _id: req.query.id });
 		if (!order) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
 		return res.status(httpCodes.OK).send('The order has been cancelled');
 	} catch (err) {
@@ -108,17 +109,37 @@ Router.delete('/deleteorder?', verify, async (req, res) => {
 });
 Router.put('/modifyorder/:name', verify, async (req, res) => {
 	try {
+		console.log(req.body, req.params)
 		const pack_name = await Package.findOne({ name: req.body.package });
-	
+		let order=[]
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("Package doesn't exist");
-		const order = await Order.findOneAndUpdate(
+		if (req.body.addon===[])
+		{ order= await Order.findOneAndUpdate(
 			{ title: req.params.name },
-			{ title: pack_name.name, description: pack_name.description, package: pack_name }
+			{ title: pack_name.name, description: pack_name.description, adress:req.body.adress,package: pack_name,bill:pack_name.price,start:req.body.start,end:req.body.end  }
+		);}
+		else  {
+			let addon_name=[]
+			let addon_price=0
+			const addons= req.body.addon
+			addons.forEach(async (addon)=> {
+				const temp = await Addon.findOne({name:addon.name})
+				addon_name.append(temp._id)
+				addon_price=addon_price+temp.supplement
+			})
+			
+			order= await Order.findOneAndUpdate(
+			{ title: req.params.name },
+			{ title: pack_name.name, description: pack_name.description, adress:req.body.adress, package: pack_name,addon:addon_name,bill:pack_name.price+addon_price,start:req.body.start,end:req.body.end }
 		);
+
+		}
 
 		if (!order) return res.status(httpCodes.NO_CONTENT).send("the order doesn't exist");
 		return res.status(httpCodes.OK).send('the order has been updated');
 	} catch (err) {
+		console.log(err.message);
+		
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });

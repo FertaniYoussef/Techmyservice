@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import api from '../service';
 import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Visibility, Delete,Add } from '@mui/icons-material';
+import { Edit, Visibility, Delete,PersonAddAlt1 } from '@mui/icons-material';
 
-import editOrders from './Orders/editOrders';
+import EditOrders from './Orders/editOrders';
 import OrderDetail from './Orders/OrderDetail';
 import DeleteOrder from './Orders/deleteOrder';
 
@@ -167,12 +167,19 @@ const TableOrders = () => {
 									</button>
 									<button
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewOrder && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setdeleteOrder(true); current.current = pack; }}
+										onClick={(e) => { e.stopPropagation(); setdeleteOrder(true); current.current = pack; console.log(current.current)}}
 										aria-controls="search-modal"
 									>
 										<Delete className='text-red-400' />
 									</button>
-									 <editOrders modalOpen={editOrder} setModalOpen={seteditOrder} Order={current.current} header={header} change={change} setChange={setChange} />
+									<button
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewOrder && 'bg-slate-200'}`}
+										onClick={(e) => { e.stopPropagation(); setassignOrder(true); current.current = pack; }}
+										aria-controls="search-modal"
+									>
+										<PersonAddAlt1 className='text-red-400' />
+									</button>
+									 <EditOrders modalOpen={editOrder} setModalOpen={seteditOrder} Order={current.current} header={header} change={change} setChange={setChange} />
 									<OrderDetail modalOpen={viewOrder} setModalOpen={setviewOrder} Order={current.current} />
 									<DeleteOrder modalOpen={deleteOrder} setModalOpen={setdeleteOrder} Order={current.current} header={header} change={change} setChange={setChange} /> 
 								</td>

@@ -42,12 +42,12 @@ const Ordreschema = new mongoose.Schema(
 		default: 'Point',
 		type: String
 	},
-	adress:{type:String,required:true},
 	coordinates: {
 		type: [ Number ],
 		index: '2dsphere',
 		default:[0,0]
 	}},
+	adress:{type:String,required:true},
 	Before:{type: String , default:''},
 	Pending:{type:Boolean,default:true},
 	After:{type:String,default:''},
