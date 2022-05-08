@@ -10,6 +10,8 @@ import Drivers from './Pages/Drivers';
 import Calendar from './Pages/Calendar'
 import Signup from './Pages/Signup';
 import api from './service';
+import Admins from './Pages/Admins';
+import Addons from './Pages/Addons';
 
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
             <Route exact path="/Services" element={<Service/>}/>
             <Route exact path="/Drivers/Calendar" element={<Calendar/>}/>
             <Route exact path="/Drivers" element= {<Drivers/>}/>
+            <Route exact path="/Admins" element={<Admins/>} />
+            <Route exact path="/Addons" element={<Addons/>} />
             </Route>
          
             <Route exact path="/signup" element={<Signup/>}/>

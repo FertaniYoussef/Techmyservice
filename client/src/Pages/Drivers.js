@@ -39,7 +39,7 @@ const Drivers = () => {
         <Navbar user={user} />
     </div> 
 
-<div className="w-3/5  mx-auto  scrollbar">
+<div className="w-full mx-auto  scrollbar">
           
             <TableDrivers/>
     </div> 

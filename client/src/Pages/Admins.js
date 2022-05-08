@@ -1,9 +1,9 @@
-import TableOrders from "../Components/TableOrders"
+import TableAdmins from "../Components/TableAdmins"
 import Navbar from '../Components/Navbar';
 import api from '../service';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-const Orders = () => {
+const Admins = () => {
     
     const history = useNavigate();
     const auth = localStorage.getItem('auth-token');
@@ -40,9 +40,9 @@ const Orders = () => {
 
 <div className="w-full  mx-auto  scrollbar">
           
-            <TableOrders/>
+            <TableAdmins/>
     </div> 
     </div></div> );
 }
  
-export default Orders;
+export default Admins;

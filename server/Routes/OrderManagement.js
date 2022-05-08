@@ -3,7 +3,7 @@ const { Package, Addon } = require('../models/Package');
 const { Service } = require('../models/Services');
 const { Notify } = require('../middleware/notify');
 const { Order } = require('../models/Order');
-const { User } = require('../models/User');
+const { User, Driver } = require('../models/User');
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 
@@ -143,12 +143,26 @@ Router.put('/modifyorder/:name', verify, async (req, res) => {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });
+Router.put('/assignOrder?',verify,async(req,res)=> {
+	try { 
+		// if (req.user.role!= process.env.Admin || req.user.role!= process.env.SuperAdmin) return res.status(httpCodes.UNAUTHORIZED).send('DENIED ACCESS')
+		const driver = await Driver.findByIdAndUpdate(req.query.id_driver,{$push: {Orders:req.query.id_order}})
+		if (!driver) return res.status(httpCodes.NO_CONTENT).send("the driver doesn't exist");
+		const order = await Order.findByIdAndUpdate(req.query.id_order,{driver:driver._id})
+		if (!order)return res.status(httpCodes.NO_CONTENT).send("the order doesn't exist");
+		return res.status(httpCodes.OK).send('the order has been assigned');
+	}catch(err) {
+			
+		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
+	}
+})
+
 Router.get('/getagendaorder?',verify, async(req,res)=> {
 	try {
 	
 		if (req.user.role==process.env.User) return res.status(401).send('DENIED ACCESS')
 		const order = await Order.find({hasPackage:true,driver:req.query.id}).populate('client','name prename phone_number email').populate('package','icon price name').populate('driver','name prename').populate('service','name icon').populate('addon','name supplement')
-		console.log(order)
+		if (!order)return res.status(httpCodes.NO_CONTENT).send("No order exist");
 		return res.status(httpCodes.OK).send(order);
 	} catch (err) {
 		console.log(err)

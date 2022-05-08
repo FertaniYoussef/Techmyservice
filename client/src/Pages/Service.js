@@ -38,7 +38,7 @@ const Services = () => {
                 <Navbar user={user} />
             </div>
 
-            <div className="w-3/5  mx-auto">
+            <div className="w-full  mx-auto">
 
                 <TableServices />
             </div>

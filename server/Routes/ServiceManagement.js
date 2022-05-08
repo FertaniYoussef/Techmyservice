@@ -80,7 +80,8 @@ Router.put('/modifyservice/:id',upload.single('icon'), verify, async (req, res) 
             administration = true
             console.log(admin_name)
             service = await Service.findOneAndUpdate({ _id: req.params.id }, { name: service_req.name, description:service_req.description, admin: admin_name._id, adress: service_req.adress, hasAdmin: administration,icon:'/icons/' + req.file.filename  });
-        }
+            
+            }
         else { service = await Service.findOneAndUpdate({ _id: req.params.id  }, { name:service_req.name, description: service_req.description, adress: service_req.adress, hasAdmin: administration,icon:'/icons/' + req.file.filename  }) };
 
 
@@ -94,7 +95,7 @@ Router.put('/modifyservice/:id',upload.single('icon'), verify, async (req, res) 
 			  console.error(err)
 			  return
 			}})
-
+            const admin_upd=await Admin.findById(service.admin,{service:service._id})
         return res.status(httpCodes.OK).send('the service has been updated');
     } catch (err) {
         return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });

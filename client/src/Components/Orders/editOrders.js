@@ -42,6 +42,7 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
 		[]
 	);
 	useEffect(() => {
+		modalOpen &&
 		api
 			.get('api/getpackagelist', header)
 			.then((res) => {
@@ -64,13 +65,10 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
 			.catch((err) => {
 				console.log(err);
 			});
-	}, []);
+	}, [modalOpen]);
 
 	const modifyOrder = async (e) => {
 		e.preventDefault();
-
-		order.end = new Date(order.start.getHours() + 1);
-		setOrder({ ...order });
 		api
 			.put(`api/modifyorder/${Order.title}`, order, header)
 			.then((response) => {
@@ -210,7 +208,6 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
                                                             order.end.setHours(order.end.getHours()+1)
                                                             setOrder({ ...order });
                                                             
-                                                                console.log(order);
                                                                 
 														}}
 														placeholderText={new Date(Order.start)}

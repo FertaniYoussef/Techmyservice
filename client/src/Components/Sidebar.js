@@ -1,11 +1,13 @@
 import { StoreOutlined, PermIdentity, ShoppingBasketOutlined, DashboardOutlined, Redeem, AnalyticsOutlined, HomeOutlined } from '@mui/icons-material';
-
+import React, { useState } from 'react';
 import { Link,Outlet,NavLink,useNavigate,useLocation  } from 'react-router-dom';
 
 
 const Sidebar = () => {
 	const location = useLocation();
 	const {pathname}=location
+
+	const [sidebarExpanded, setSidebarExpanded] = useState(false);	
 	return (
 		<>
 		<div className="Sidebar scrollbar">
@@ -33,8 +35,8 @@ const Sidebar = () => {
           {/* Pages group */}
           <div>
             <h3 className="text-xs uppercase text-slate-500 font-semibold pl-3">
-              <span className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">•••</span>
-              <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">Pages</span>
+              <span className="hidden block sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">•••</span>
+              <span className="hidden sidebar-expanded:block 2xl:block">Pages</span>
             </h3>
 				
 				<ul className="mt-3 px-0">
@@ -46,23 +48,53 @@ const Sidebar = () => {
                       <path className={`fill-current text-slate-600 ${pathname === '/' && 'text-indigo-600'}`} d="M12 3c-4.963 0-9 4.037-9 9s4.037 9 9 9 9-4.037 9-9-4.037-9-9-9z" />
                       <path className={`fill-current text-slate-400 ${pathname === '/' && 'text-indigo-200'}`} d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z" />
                     </svg>
-                    <span className="text-sm font-medium ml-3 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Dashboard</span>
+                    <span className="text-sm font-medium ml-3 sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Dashboard</span>
                   </div>
                 </NavLink>
               </li>
-			  <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes('Packages') && 'bg-slate-900'}`}>
-							<NavLink end to="Packages" className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes('Packages') && 'hover:text-slate-200'} no-underline`}>
-							<div className="flex items-center">
-							<svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                              <path className={`fill-current text-slate-400 ${pathname.includes('Packages') && 'text-indigo-300'}`} d="M13 15l11-7L11.504.136a1 1 0 00-1.019.007L0 7l13 8z" />
+			  <React.Fragment>
+			  <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 `} onClick={(e) => { e.preventDefault(); setSidebarExpanded(!sidebarExpanded) ; console.log(sidebarExpanded); }}>
+			  <a href="#0" className={`block text-slate-200 hover:text-white truncate transition duration-150  no-underline ${pathname.includes('ecommerce') && 'hover:text-slate-200'}`}>
+			  <div className="flex items-center justify-between">
+			  <div className="flex items-center">
+			  <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
+                              <path className={`fill-current text-slate-400 ${pathname.includes('Packages')  && 'text-indigo-300'}`} d="M13 15l11-7L11.504.136a1 1 0 00-1.019.007L0 7l13 8z" />
                               <path className={`fill-current text-slate-700 ${pathname.includes('Packages') && '!text-indigo-600'}`} d="M13 15L0 7v9c0 .355.189.685.496.864L13 24v-9z" />
                               <path className={`fill-current text-slate-600 ${pathname.includes('Packages') && 'text-indigo-500'}`} d="M13 15.047V24l10.573-7.181A.999.999 0 0024 16V8l-11 7.047z" />
                             </svg>
+							<span className="text-sm font-medium ml-3  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Products</span>
+						</div>
+						<div className="flex shrink-0 ml-2">
+                            <svg className={`w-3 h-3 shrink-0 ml-1 fill-current text-slate-400 ${sidebarExpanded && 'transform rotate-180'}`} viewBox="0 0 12 12">
+                              <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                            </svg>
+                          </div>
+						  </div>
+							</a>
+						</li>	
+						<div className="hidden sidebar-expanded:block 2xl:block">
+                        <ul className={`pl-9 mt-1 ${!sidebarExpanded && 'hidden'}`}>
+                          <li className={`mb-1 last:mb-0 text-center ${pathname.includes('Packages') && 'text-slate-200'}`} >
+						  <NavLink end to="Packages" className={`block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${pathname.includes('Packages') && 'text-white'} no-underline`}>
+							<div className="flex items-center">
+						
 
-							<span className="text-sm font-medium ml-3  lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Products</span>
+							<span className="text-sm font-medium ml-3 px-4 py-2  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Packages</span>
 							</div>
 							</NavLink>
-						</li>
+                          </li>
+                          <li className={`mb-1 last:mb-0 ${pathname.includes('Addons') && 'bg-slate-900 rounded-sm'}`}>
+						  <NavLink end to="Addons" className={`block text-slate-400 hover:text-slate-200 truncate transition duration-150 ${pathname.includes('Addons') && 'text-white'} no-underline rounded-lg`}>
+							<div className="flex items-center">
+						
+
+							<span className="text-sm font-medium ml-3 px-4 py-2  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Addons</span>
+							</div>
+							</NavLink>
+                          </li>
+						  </ul>
+						  </div>
+						</React.Fragment>
 						<li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes('Services') && 'bg-slate-900'}`}>
 							<NavLink end to="Services" className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes('Services') && 'hover:text-slate-200'} no-underline`}>
 							<div className="flex items-center">
@@ -71,8 +103,9 @@ const Sidebar = () => {
                       <path className={`fill-current text-slate-400 ${pathname.includes('Services')  && 'text-indigo-300'}`} d="M17 23a1 1 0 01-1-1 4 4 0 00-4-4 1 1 0 010-2 4 4 0 004-4 1 1 0 012 0 4 4 0 004 4 1 1 0 010 2 4 4 0 00-4 4 1 1 0 01-1 1zM7 13a1 1 0 01-1-1 4 4 0 00-4-4 1 1 0 110-2 4 4 0 004-4 1 1 0 112 0 4 4 0 004 4 1 1 0 010 2 4 4 0 00-4 4 1 1 0 01-1 1z" />
                     </svg>
 
-							<span className="text-sm font-medium ml-3  lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Services</span>
+							<span className="text-sm font-medium ml-3  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Services</span>
 							</div>
+							
 							</NavLink>
 						</li>
 
@@ -84,7 +117,7 @@ const Sidebar = () => {
                               <path className={`fill-current text-slate-400 ${pathname.includes('Drivers') && 'text-indigo-300'}`} d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z" />
                             </svg>
 
-							<span className="text-sm font-medium ml-3  lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Drivers</span>
+							<span className="text-sm font-medium ml-3  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Drivers</span>
 							</div>
 							</NavLink>
 						</li>
@@ -97,7 +130,7 @@ const Sidebar = () => {
                       <path className={`fill-current text-slate-400 ${pathname.includes('Orders') && 'text-indigo-300'}`} d="M15 10.586L16.414 12 11 17.414 7.586 14 9 12.586l2 2zM5 0h14v4H5z" />
                     </svg>
 
-							<span className="text-sm font-medium ml-3  lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Orders</span>
+							<span className="text-sm font-medium ml-3  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Orders</span>
 							</div>
 							</NavLink>
 						</li>
@@ -110,7 +143,7 @@ const Sidebar = () => {
                               <path className={`fill-current text-slate-400 ${pathname.includes('Admins') && 'text-indigo-300'}`} d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z" />
                             </svg>
 
-							<span className="text-sm font-medium ml-3  lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Admins</span>
+							<span className="text-sm font-medium ml-3  sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Admins</span>
 							</div>
 							</NavLink>
 						</li>

@@ -37,7 +37,7 @@ const Navbar = ({sidebarOpen,
     <NavLink end to="/Packages" className={` inline-flex block text-slate-900 hover:text-slate-500 truncate transition duration-150 ${pathname.includes('Packages') ? 'hover:text-slate-200' : 'hidden'} no-underline`}>
     <div className="flex items-center">
     <svg class="w-6 h-6 text-gray-400 mt-1  " fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                    <span className="ml-1 text-sm font-medium  text-indigo-500">Products</span>
+                    <span className="ml-1 text-sm font-medium  text-indigo-500">Packages</span>
                   </div>
       </NavLink>
     </li>
@@ -70,6 +70,14 @@ const Navbar = ({sidebarOpen,
     <div className="flex items-center">
     <svg class="w-6 h-6 text-gray-400 mt-1  " fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                     <span className=" text-sm font-medium  text-indigo-500">Orders</span>
+                  </div>
+      </NavLink>
+    </li>
+    <li class="inline-flex items-center absolute left-40">
+    <NavLink end to="/Admins" className={` inline-flex block text-slate-900 hover:text-slate-500 truncate transition duration-150 ${pathname.includes('Admins') ? 'hover:text-slate-200' : 'hidden'} no-underline`}>
+    <div className="flex items-center">
+    <svg class="w-6 h-6 text-gray-400 mt-1  " fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                    <span className=" text-sm font-medium  text-indigo-500">Admins</span>
                   </div>
       </NavLink>
     </li>

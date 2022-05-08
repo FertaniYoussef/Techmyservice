@@ -1,10 +1,10 @@
-import ListPackages from "../Components/TablePackages"
+import ListAddons from "../Components/TableAddons"
 import Navbar from '../Components/Navbar';
 import api from '../service';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-const Packages = () => {
+const Addons = () => {
     const history = useNavigate();
 const auth = localStorage.getItem('auth-token');
 const header = {
@@ -42,9 +42,9 @@ useEffect(
 
 <div className="w-full  mx-auto">
           
-            <ListPackages/>
+            <ListAddons/>
     </div> 
     </div></div>);
 }
  
-export default Packages;
+export default Addons;

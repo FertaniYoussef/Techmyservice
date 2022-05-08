@@ -78,11 +78,37 @@ Router.post('/Adminregister',async(req,res)=> {
 		return res.status(httpCodes.BAD_REQUEST).send(err);
 	}   
 })
+Router.put('/adminConfirmation?',verify,async(req,res)=> {
+	try {
+		const user = await User.findById(req.user._id)
+		if (user.role != process.env.SuperAdmin) return res.status(httpCodes.UNAUTHORIZED).send('Access Denied')
+       const admin = await Admin.findByIdAndUpdate(req.query.id,{isVerified:true})
+	   
+	   if (!admin) return res.status(httpCodes.NO_CONTENT).send('No admin with that ID exist')
+	   return res.status(httpCodes.OK).send(admin)
+	}catch(err) {
+		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
+	}	
+})
+
+Router.delete('/deleteAdmin?',verify,async(req,res)=> {
+	try {
+		const user = await User.findById(req.user._id)
+		if (user.role != process.env.SuperAdmin) return res.status(httpCodes.UNAUTHORIZED).send('Access Denied')
+       const admin = await Admin.findByIdAndDelete(req.query.ID)
+	   
+	   if (!admin) return res.status(httpCodes.NO_CONTENT).send('No admin with that ID exist')
+	   return res.status(httpCodes.OK).send(admin)
+	}catch(err) {
+		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
+	}
+})
 
 Router.get('/getAdmins',verify,async(req,res)=> {
 	try {
-
-        const admin = await Admin.find()
+		const user = await User.findById(req.user._id)
+		if (user.role != process.env.SuperAdmin) return res.status(httpCodes.UNAUTHORIZED).send('Access Denied')
+        const admin = await Admin.find().populate('service','name')
     
 
         if (!admin) return res.status(httpCodes.NO_CONTENT).send('No admin available')
@@ -93,6 +119,7 @@ Router.get('/getAdmins',verify,async(req,res)=> {
 })
 Router.get('/getFreeAdmin',verify,async(req,res)=> {
 	try {
+		const user = await User.findById(req.user._id)
 		if (user.role != process.env.SuperAdmin) return res.status(httpCodes.UNAUTHORIZED).send('Access Denied')
 		const admin = await Admin.find({service:undefined})
         if (!admin) return res.status(httpCodes.NO_CONTENT).send('No admin available')

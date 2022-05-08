@@ -16,6 +16,7 @@ const driverRoute=require('./Routes/DriverManagement')
 const PORT = process.env.PORT || 5000;
 const statRoute=require('./Routes/StatsManagement')
 const adminRoute=require('./Routes/AdminManagement')
+const addonRoute= require('./Routes/AddonManagement')
 //Database connection
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, (err) => console.log('connected to db!', err));
 
@@ -34,5 +35,6 @@ app.use('/api',serviceRoute)
 app.use('/api',driverRoute)
 app.use('/api',statRoute)
 app.use('/api',adminRoute)
+app.use('/api',addonRoute)
 
 app.listen(PORT, () => console.log(`up and running on port : ${PORT}`));

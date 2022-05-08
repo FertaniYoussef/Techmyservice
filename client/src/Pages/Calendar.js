@@ -90,9 +90,9 @@ if (current!=null){
         <Navbar user={user} />
     </div> 
 
-<div className="w-3/5  mx-auto  scrollbar">
+<div className="w-4/5  mx-auto  scrollbar">
           
-        <div className="mt-24 relative col-span-full overflow-x-auto shadow-md border border-gray-200 rounded-lg bg-indigo-50 ">
+        <div className="mt-24 relative col-span-full overflow-x-auto shadow-md border-2 border-indigo-200 rounded-lg ">
           <div className="p-2">
           <Calendar
       localizer={localizer}

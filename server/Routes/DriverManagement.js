@@ -8,6 +8,7 @@ const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 const { Service } = require('../models/Services');
 const { REPL_MODE_STRICT } = require('repl');
+const { Order } = require('../models/Order');
 
 Router.post('/join', async (req, res) => {
 	try {
@@ -163,6 +164,36 @@ Router.get('/getDrivers', verify, async (req, res) => {
 
 
 		return res.status(httpCodes.OK).send(drivers);
+	} catch (err) {
+		return res.status(httpCodes.BAD_REQUEST).send(err);
+	}
+})
+Router.get('/getFreeDrivers?', verify, async (req, res) => {
+	try {
+		console.log(req.query.id)
+		const order_req=await Order.findById(req.query.id)
+		console.log(order_req)	
+		const user = await User.findById(req.user._id)
+		console.log(user)
+		if (user.role == process.env.Admin  || user.role==process.env.SuperAdmin) {
+			const	drivers = await Driver.find({})
+			if (!drivers) return res.status(httpCodes.NO_CONTENT).send('no drivers exist yet');
+			
+			const temp =drivers.filter(driver=> {
+					if (driver.Orders.length >0 )
+					return driver.Orders.find(order=> {
+						order.start!=order_req.start
+					})
+					else return driver
+			})
+			console.log(temp)
+		return res.status(httpCodes.OK).send(temp);
+
+	} else {return res.status(httpCodes.UNAUTHORIZED).send('ACCESS DENIED') }
+
+
+		
+
 	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send(err);
 	}

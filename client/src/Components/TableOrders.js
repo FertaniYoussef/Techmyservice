@@ -7,6 +7,7 @@ import { Edit, Visibility, Delete,PersonAddAlt1 } from '@mui/icons-material';
 import EditOrders from './Orders/editOrders';
 import OrderDetail from './Orders/OrderDetail';
 import DeleteOrder from './Orders/deleteOrder';
+import AssignOrder from './Orders/AssignOrder';
 
 const TableOrders = () => {
 	const history = useNavigate();
@@ -16,7 +17,7 @@ const TableOrders = () => {
 	const [orders, setorders] = useState([]);
 	const [change, setChange] = useState(false);
 	const current = useRef('')
-	
+	const [search,setSearch]=useState('')
 	const [editOrder, seteditOrder] = useState(false)
 	const [viewOrder, setviewOrder] = useState(false)
 	const [deleteOrder, setdeleteOrder] = useState(false)
@@ -76,8 +77,10 @@ const TableOrders = () => {
 						<svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path className="fill-current text-slate-500" d="M7 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zM7 2C4.243 2 2 4.243 2 7s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5z" />
 							<path className="fill-current text-slate-400" d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z" /></svg>
 					</div>
-					<input type="text" id="table-search" class="bg-slate-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 " placeholder="Search for items" />
-				</div>
+					<input type="text" id="table-search" class="bg-slate-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 " placeholder="Search for items" onChange={(e)=> {
+						e.preventDefault();
+						setSearch(e.target.value)
+					}} /></div>
 
 				<div className='pt-2.5 text-right w-full'>
 
@@ -114,7 +117,9 @@ const TableOrders = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{orders.map((pack) => (
+						{orders.filter((pack,index)=> 
+						 pack.title.toLowerCase().includes(search.toLowerCase())
+						).map((pack) => (
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">
@@ -177,11 +182,12 @@ const TableOrders = () => {
 										onClick={(e) => { e.stopPropagation(); setassignOrder(true); current.current = pack; }}
 										aria-controls="search-modal"
 									>
-										<PersonAddAlt1 className='text-red-400' />
+										<PersonAddAlt1 className='text-green-400' />
 									</button>
 									 <EditOrders modalOpen={editOrder} setModalOpen={seteditOrder} Order={current.current} header={header} change={change} setChange={setChange} />
 									<OrderDetail modalOpen={viewOrder} setModalOpen={setviewOrder} Order={current.current} />
 									<DeleteOrder modalOpen={deleteOrder} setModalOpen={setdeleteOrder} Order={current.current} header={header} change={change} setChange={setChange} /> 
+									<AssignOrder  modalOpen={assignOrder} setModalOpen={setassignOrder} Order={current.current} header={header} change={change} setChange={setChange} />
 								</td>
 							</tr>
 						))}

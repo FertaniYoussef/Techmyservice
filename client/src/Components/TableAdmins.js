@@ -5,21 +5,21 @@ import { useNavigate } from 'react-router-dom';
 import { Edit, Visibility, Delete, Add, CalendarToday } from '@mui/icons-material';
 import Calendars from '../Pages/Calendar';
 import { Link } from 'react-router-dom';
-import ViewDrivers from './Drivers/ViewDrivers';
-import DeleteDrivers from './Drivers/DeleteDrivers';
-import VerifyDrivers from './Drivers/VerifyDrivers'
-const ListDrivers = () => {
+import ViewAdmins from './Admins/ViewAdmins';
+import DeleteAdmins from './Admins/DeleteAdmins';
+import VerifyAdmins from './Admins/VerifyAdmins'
+const ListAdmins = () => {
 	const history = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage] = useState(10);
-	const [Drivers, setDrivers] = useState([]);
+	const [Admins, setAdmins] = useState([]);
 	const current = useRef(null)
 	const currpos = useRef(null)
-const [search,setSearch]=useState('')
-	const [viewDriver, setViewDriver] = useState(false)
-	const [deleteDriver, setDeleteDriver] = useState(false)
-	const [verifyDriver, setVerifyDriver] = useState(false)
+	const [search,setSearch]=useState('')
+	const [viewAdmin, setViewAdmin] = useState(false)
+	const [deleteAdmin, setDeleteAdmin] = useState(false)
+	const [verifyAdmin, setVerifyAdmin] = useState(false)
 	const [change, setChange] = useState(false);
 
 
@@ -34,11 +34,11 @@ const [search,setSearch]=useState('')
 		() => {
 			setLoading(true);
 			api
-				.get('api/getDrivers', header)
+				.get('api/getAdmins', header)
 				.then((response) => {
-					console.log(response.data);
+					
 
-					setDrivers(response.data);
+					setAdmins(response.data);
 					setLoading(false);
 
 					setChange(false);
@@ -53,7 +53,7 @@ const [search,setSearch]=useState('')
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentDrivers = Drivers.slice(indexOfFirstPack, indexOfLastPack);
+	const currentAdmins = Admins.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -79,6 +79,7 @@ const [search,setSearch]=useState('')
 							<path className="fill-current text-slate-400" d="M15.707 14.293L13.314 11.9a8.019 8.019 0 01-1.414 1.414l2.393 2.393a.997.997 0 001.414 0 .999.999 0 000-1.414z" /></svg>
 					</div>
 					<input type="text" id="table-search" class="bg-slate-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 " placeholder="Search for items" onChange={(e)=> {
+						e.preventDefault();
 						setSearch(e.target.value)
 					}} />
 				</div>
@@ -87,7 +88,7 @@ const [search,setSearch]=useState('')
 
 					<Pagination
 						postsPerPage={postsPerPage}
-						totalPosts={Drivers.length}
+						totalPosts={Admins.length}
 						paginate={paginate}
 					/>
 				</div>
@@ -98,40 +99,36 @@ const [search,setSearch]=useState('')
 					<thead className="text-xs uppercase text-slate-50 bg-indigo-500 ">
 						<tr>
 							<th className="p-2 ">
-								<div className="font-semibold text-center">CIN</div>
+								<div className="font-semibold text-left">CIN</div>
 							</th>
 							<th className="p-2 ">
-								<div className="font-semibold text-center">Driver</div>
+								<div className="font-semibold text-center">Admin</div>
 							</th>
 							<th className="p-2">
 								<div className="font-semibold text-center">Service</div>
 							</th>
 							<th className="p-2">
-								<div className="font-semibold text-center">Speciality</div>
+								<div className="font-semibold text-center">Phone Number</div>
 							</th>
 							<th className="p-2">
 								<div className="font-semibold text-center">Verification</div>
 							</th>
-							<th class="p-2">
-								<div className="font-semibold text-center">Status</div>
-							</th>
-				
-
+			
 							<th class="p-2">
 								<div className="font-semibold text-center">Options</div>
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{Drivers.filter((pack,index)=> 
-						 pack.name.toLowerCase().includes(search.toLowerCase())
-						).map((pack) => (
-							<tr class="rounded-lg ">
-								<td class="px-6 py-4 text-slate-700 text-center">
+						{Admins.filter((pack,index)=> 
+						 pack.name.toLowerCase().includes(search)
+						).map((pack,index) => (
+							<tr  class="rounded-lg ">
+								<td class="px-6 py-4 text-slate-700 text-left">
 									{pack.CIN}
 								</td>
-								<th scope="row" class="px-6 py-4 text-center font-medium text-slate-900 uppercase whitespace-nowrap">
-									<div className="flex items-center place-content-center">
+								<td scope="row" class="px-6 py-4 font-medium  text-slate-900 uppercase whitespace-nowrap">
+									<div className="flex items-center place-content-center ">
 										<div className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
 											{pack.icon === undefined ? <svg
 												className="mx-auto h-12 w-12 text-gray-400"
@@ -150,56 +147,41 @@ const [search,setSearch]=useState('')
 										</div>
 										{pack.name} {pack.prename}
 									</div>
-								</th>
-								<td class="px-6 py-4 text-slate-700 text-center">
-									{pack.WorkAt.name}
 								</td>
 								<td class="px-6 py-4 text-slate-700 text-center">
-									{pack.Speciality}
+									{pack.service !=undefined ? pack.service.name: <span className='text-red-400'>No Service</span>}
+								</td>
+                                <td class="px-6 py-4 text-slate-700 text-center">
+									{pack.phone_number}
 								</td>
 								<td class="px-6 py-4  text-center ">
 									{pack.isVerified ? <div className='text-slate-50 bg-green-700 rounded-lg font-bold cursor-pointer ' >Verified</div> : <div className='text-slate-50 bg-red-700  rounded-lg font-bold cursor-pointer' onClick={(e) => {
 										e.preventDefault()
-										setVerifyDriver(true)
+										setVerifyAdmin(true)
 										current.current=pack
 
 
 									}}>Pending</div>}
-									<VerifyDrivers modalOpen={verifyDriver} setModalOpen={setVerifyDriver} Driver={current.current} header={header} change={change} setChange={setChange}/>
+									<VerifyAdmins modalOpen={verifyAdmin} setModalOpen={setVerifyAdmin} Admin={current.current} header={header} change={change} setChange={setChange}/>
 								</td>
 
-								<td class="px-6 py-4 text-center">
-									{pack.isFree ? <div className='text-green-800 font-bold'>Free</div> : <div className='text-red-800 font-bold'  >Working</div>}
-								</td>
-							
 								<td class=" py-4 justify-center items-right flex">
-								<Link
-										className={`w-8 h-8  items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full `}
-										onClick={(e) => { e.stopPropagation(); current.current = pack.id; }}
-										aria-controls="search-modal"
-										to={"/Drivers/Calendar"}
-										state={{ current: pack.id, header: header }}
-
-									>
-										<CalendarToday className='text' />
-
-									</Link>
 									<button
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation(); setViewDriver(true); current.current = pack; currpos.current = pack.geoposition.coordinates }}
+										onClick={(e) => { e.stopPropagation(); setViewAdmin(true); current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Visibility />
 									</button>
 									<button
 										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 `}
-										onClick={(e) => { e.stopPropagation(); current.current = pack; setDeleteDriver(true) }}
+										onClick={(e) => { e.stopPropagation(); current.current = pack; setDeleteAdmin(true) }}
 										aria-controls="search-modal"
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<ViewDrivers modalOpen={viewDriver} setModalOpen={setViewDriver} Driver={current.current} Position={currpos.current} header={header} />
-									<DeleteDrivers modalOpen={deleteDriver} setModalOpen={setDeleteDriver} Driver={current.current} header={header} change={change} setChange={setChange} />
+									<ViewAdmins modalOpen={viewAdmin} setModalOpen={setViewAdmin} Admin={current.current}header={header} />
+									<DeleteAdmins modalOpen={deleteAdmin} setModalOpen={setDeleteAdmin} Admin={current.current} header={header} change={change} setChange={setChange} />
 								</td>
 							</tr>
 						))}
@@ -216,4 +198,4 @@ const [search,setSearch]=useState('')
 	);
 };
 
-export default ListDrivers;
+export default ListAdmins;

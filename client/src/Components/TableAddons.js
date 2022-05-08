@@ -4,24 +4,24 @@ import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Visibility, Delete,Add } from '@mui/icons-material';
 
-import EditPackages from './Packages/EditPackages';
-import ViewPackage from './Packages/ViewPackage';
-import DeletePackage from './Packages/DeletePackage';
-import AddPackage from './Packages/AddPackage';
+// import EditAddons from './Addons/EditAddons';
+// import ViewAddon from './Addons/ViewAddon';
+// import DeleteAddon from './Addons/DeleteAddon';
+// import AddAddon from './Addons/AddAddon';
 
-const ListPackages = () => {
+const ListAddons = () => {
 	const history = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage] = useState(10);
-	const [packs, setPacks] = useState([]);
+	const [addons, setaddons] = useState([]);
 	const [change, setChange] = useState(false);
 	const current = useRef('')
 	const [search,setSearch]=useState('')
-	const [editPackage, setEditPackage] = useState(false)
-	const [viewPackage, setViewPackage] = useState(false)
-	const [deletePackage, setDeletePackage] = useState(false)
-	const [addPackage, setaddPackage] = useState(false);
+	const [editAddon, setEditAddon] = useState(false)
+	const [viewAddon, setViewAddon] = useState(false)
+	const [deleteAddon, setDeleteAddon] = useState(false)
+	const [addAddon, setaddAddon] = useState(false);
 	const auth = localStorage.getItem('auth-token');
 	const header = {
 		headers: {
@@ -35,18 +35,17 @@ const ListPackages = () => {
 		() => {
 			setLoading(true);
 			api
-				.get('api/getpackagelist',header)
+				.get('api/getaddonlist',header)
 				.then((response) => {
-					setPacks(response.data);
+					setaddons(response.data);
 					const reponse = response.data;
 
 					const array = reponse.filter((pack) => {
 						return pack.service != null;
 					});
-
-					setPacks(array);
+					setaddons(array);
 					setLoading(false);
-					packs.map((pack) => (pack.service = pack.service.name));
+		
 					setChange(false);
 				})
 				.catch((err) => {
@@ -55,16 +54,13 @@ const ListPackages = () => {
 		},
 		[change]
 	);
-	//get Current package
+	//get Current Addon
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentPacks = packs.slice(indexOfFirstPack, indexOfLastPack);
+	const currentaddons = addons.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
-	const paginateFront = () => setCurrentPage(currentPage + 1);
-	const paginateBack = () => {if (currentPage>1) return setCurrentPage(currentPage - 1)};
-
 	if (loading) {
 		return (
 			<div className="flex mt-48  justify-center w-full h-full">
@@ -95,11 +91,8 @@ const ListPackages = () => {
 
 					<Pagination
 						postsPerPage={postsPerPage}
-						totalPosts={packs.length}
-						paginateBack={paginateBack}
-						paginateFront={paginateFront}
+						totalPosts={addons.length}
 						paginate={paginate}
-						currentPage={currentPage}
 					/>
 				</div>
 
@@ -109,7 +102,7 @@ const ListPackages = () => {
 					<thead className="text-xs uppercase text-slate-50 bg-indigo-500 ">
 						<tr>
 							<th className="p-2 ">
-								<div className="font-semibold text-left">Package</div>
+								<div className="font-semibold text-left">Addon</div>
 							</th>
 							<th className="p-2">
 								<div className="font-semibold text-center">Description</div>
@@ -126,9 +119,9 @@ const ListPackages = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{packs.filter((pack,index)=> 
-						  (pack.name.toLowerCase().includes(search.toLowerCase()) || pack.description.toLowerCase().includes(search.toLowerCase()) || pack.service.name.toLowerCase().includes(search.toLowerCase()) )
-						).slice(indexOfFirstPack, indexOfLastPack).map((pack) => (
+						{addons.filter((pack,index)=> 
+						 pack.name.toLowerCase().includes(search.toLowerCase())
+						).map((pack) => (
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">
@@ -155,7 +148,7 @@ const ListPackages = () => {
 									{pack.description}
 								</td>
 								<td class="px-6 py-4 text-center">
-									{pack.service!=undefined ?pack.service.name : <span className="text-red-500">Service </span>}
+									{pack.service!=undefined ?pack.service.name : <span className="text-red-500">No Service </span>}
 								</td>
 								<td class="px-6 py-4 text-blue-400 text-center">
 									${pack.price}
@@ -163,29 +156,29 @@ const ListPackages = () => {
 								<td class=" py-4 justify-center items-right flex">
 
 									<button
-										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${editPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setEditPackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-right justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${editAddon && 'bg-slate-200'}`}
+										onClick={(e) => { e.stopPropagation(); setEditAddon(true); current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Edit />
 									</button>
 									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setViewPackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewAddon && 'bg-slate-200'}`}
+										onClick={(e) => { e.stopPropagation(); setViewAddon(true); current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Visibility />
 									</button>
 									<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setDeletePackage(true); current.current = pack; }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full ml-3 ${viewAddon && 'bg-slate-200'}`}
+										onClick={(e) => { e.stopPropagation(); setDeleteAddon(true); current.current = pack; }}
 										aria-controls="search-modal"
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<EditPackages modalOpen={editPackage} setModalOpen={setEditPackage} Pack={current.current} header={header} change={change} setChange={setChange} />
-									<ViewPackage modalOpen={viewPackage} setModalOpen={setViewPackage} Pack={current.current} />
-									<DeletePackage modalOpen={deletePackage} setModalOpen={setDeletePackage} Pack={current.current} header={header} change={change} setChange={setChange} />
+									{/* <EditAddons modalOpen={editAddon} setModalOpen={setEditAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
+									<ViewAddon modalOpen={viewAddon} setModalOpen={setViewAddon} Pack={current.current} />
+									<DeleteAddon modalOpen={deleteAddon} setModalOpen={setDeleteAddon} Pack={current.current} header={header} change={change} setChange={setChange} /> */}
 								</td>
 							</tr>
 						))}
@@ -195,13 +188,13 @@ const ListPackages = () => {
 					<tr >
 						<td colSpan={5} >
 						<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto ${editPackage && 'bg-slate-200'}`}
-										onClick={(e) => { e.stopPropagation(); setaddPackage(true); }}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto ${editAddon && 'bg-slate-200'}`}
+										onClick={(e) => { e.stopPropagation(); setaddAddon(true); }}
 										aria-controls="search-modal"
 									>
 										<Add className='text-green-400' />
 									</button>
-									<AddPackage modalOpen={addPackage} setModalOpen={setaddPackage} header={header} change={change} setChange={setChange}/>
+									{/* <AddAddon modalOpen={addAddon} setModalOpen={setaddAddon} header={header} change={change} setChange={setChange}/> */}
 						</td>
 					</tr>
 
@@ -217,4 +210,4 @@ const ListPackages = () => {
 	);
 };
 
-export default ListPackages;
+export default ListAddons;
