@@ -4,10 +4,10 @@ import Pagination from './Pagination';
 import { useNavigate } from 'react-router-dom';
 import { Edit, Visibility, Delete,Add } from '@mui/icons-material';
 
-// import EditAddons from './Addons/EditAddons';
-// import ViewAddon from './Addons/ViewAddon';
-// import DeleteAddon from './Addons/DeleteAddon';
-// import AddAddon from './Addons/AddAddon';
+import EditAddons from './Addons/EditAddon';
+ import ViewAddon from './Addons/ViewAddon';
+import DeleteAddon from './Addons/DeleteAddon';
+import AddAddon from './Addons/AddAddons'
 
 const ListAddons = () => {
 	const history = useNavigate();
@@ -39,7 +39,7 @@ const ListAddons = () => {
 				.then((response) => {
 					setaddons(response.data);
 					const reponse = response.data;
-
+					
 					const array = reponse.filter((pack) => {
 						return pack.service != null;
 					});
@@ -125,22 +125,6 @@ const ListAddons = () => {
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">
-										<div className="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 w-10 h-10 shrink-0 mr-2 sm:mr-3">
-										{pack.icon===undefined ?<svg
-                                                        className="mx-auto h-12 w-12 text-gray-400"
-                                                        stroke="currentColor"
-                                                        fill="none"
-                                                        viewBox="0 0 48 48"
-                                                        aria-hidden="true"
-                                                    >
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            strokeWidth={2}
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg>:<img className="mx-auto h-12 w-12" src={`http://localhost:3001${pack.icon}`} width="40" height="40" />}
-										</div>
 										{pack.name}
 									</div>
 								</th>
@@ -151,7 +135,7 @@ const ListAddons = () => {
 									{pack.service!=undefined ?pack.service.name : <span className="text-red-500">No Service </span>}
 								</td>
 								<td class="px-6 py-4 text-blue-400 text-center">
-									${pack.price}
+									${pack.supplement}
 								</td>
 								<td class=" py-4 justify-center items-right flex">
 
@@ -176,9 +160,9 @@ const ListAddons = () => {
 									>
 										<Delete className='text-red-400' />
 									</button>
-									{/* <EditAddons modalOpen={editAddon} setModalOpen={setEditAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
-									<ViewAddon modalOpen={viewAddon} setModalOpen={setViewAddon} Pack={current.current} />
-									<DeleteAddon modalOpen={deleteAddon} setModalOpen={setDeleteAddon} Pack={current.current} header={header} change={change} setChange={setChange} /> */}
+									 <EditAddons modalOpen={editAddon} setModalOpen={setEditAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
+								<ViewAddon modalOpen={viewAddon} setModalOpen={setViewAddon} Pack={current.current} />
+									<DeleteAddon modalOpen={deleteAddon} setModalOpen={setDeleteAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
 								</td>
 							</tr>
 						))}
@@ -188,13 +172,13 @@ const ListAddons = () => {
 					<tr >
 						<td colSpan={5} >
 						<button
-										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto ${editAddon && 'bg-slate-200'}`}
+										className={`w-8 h-8 flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition duration-150 rounded-full mx-auto ${addAddon && 'bg-slate-200'}`}
 										onClick={(e) => { e.stopPropagation(); setaddAddon(true); }}
 										aria-controls="search-modal"
 									>
 										<Add className='text-green-400' />
 									</button>
-									{/* <AddAddon modalOpen={addAddon} setModalOpen={setaddAddon} header={header} change={change} setChange={setChange}/> */}
+									<AddAddon modalOpen={addAddon} setModalOpen={setaddAddon} header={header} change={change} setChange={setChange}/> 
 						</td>
 					</tr>
 

@@ -13,17 +13,18 @@ Router.post('/:service/addaddon', verify, async (req, res) => {
 	try {
 		
 		
+		
 		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
 			return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 		const service = await Service.findOne({ name: req.params.service });
 		if (!service) return res.status(httpCodes.NO_CONTENT).send("the service doesn't exist");
-		const addon_name = await addon_name.findOne({ name: req.body.name });
-		if (pack_name) return res.status(mongocodes.DUPLICATE_KEY).send('Addon already exist');
+		const addon_name = await Addon.findOne({ name: req.body.name });
+		if (addon_name) return res.status(mongocodes.DUPLICATE_KEY).send('Addon already exist');
 		const addon = new Addon({
 			name: req.body.name,
 			description: req.body.description,
-			supplement: req.body.price,
+			supplement: req.body.supplement,
 			service: service._id
 		});
 
@@ -36,7 +37,11 @@ Router.post('/:service/addaddon', verify, async (req, res) => {
 });
 
 Router.put('/:service/editaddon?',verify,async(req,res)=> {
-	try{if (req.user.role==process.env.User || req.user.role==process.env.Driver)
+
+	try{
+		
+		const user = await User.findById(req.user._id)
+		if (user.role==process.env.User || user.role==process.env.Driver)
 	return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 	const service=await Service.findOne({ name: req.params.service });
 	if (!service) return res.status(httpCodes.NO_CONTENT).send("the service doesn't exist");
@@ -49,7 +54,8 @@ Router.put('/:service/editaddon?',verify,async(req,res)=> {
 })
 
 Router.delete('/:service/deleteaddon?',verify,async(req,res)=> {
-	try{if (req.user.role==process.env.User || req.user.role==process.env.Driver)
+	try{		const user = await User.findById(req.user._id)
+		if (user.role==process.env.User || user.role==process.env.Driver)
 		return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 		const service=await Service.findOne({ name: req.params.service });
 		if (!service) return res.status(httpCodes.NO_CONTENT).send("the service doesn't exist");
@@ -72,9 +78,12 @@ Router.get('/getaddons',verify,async(req,res)=> {
 Router.get('/getaddonlist',verify, async (req, res) => {
 	try {
 		let addons=[]
-		if (req.user.role==process.env.SuperAdmin) {addons = await Addon.find({}).populate('service', ['name']);}
-		if (req.user.role==process.env.Admin) {addons = await Addon.find({service:req.user.service}).populate('service', ['name']);}
-		if (addons==[]) return res.status(httpCodes.NO_CONTENT).send(addons);
+		const user = await User.findById(req.user._id)
+		
+		
+		if (user.role==process.env.SuperAdmin) {addons = await Addon.find({}).populate('service', ['name']);}
+		if (user.role==process.env.Admin) {addons = await Addon.find({service:req.user.service}).populate('service', ['name']);}
+		if (!addons) return res.status(httpCodes.NO_CONTENT).send(addons);
 		
 		return res.status(httpCodes.OK).send(addons);
 	} catch (err) {

@@ -55,9 +55,11 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
 				console.log(err);
 			});
 		api
-			.get('api/getaddonlist')
+			.get('api/getaddonlist',header)
 			.then((res) => {
 				if (res.status == 200) {
+					console.log(res.data);
+					
 					const temp = res.data.map((data) => ({ value: data.name, label: data.name }));
 					setaddons(temp);
 				}
@@ -69,6 +71,8 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
 
 	const modifyOrder = async (e) => {
 		e.preventDefault();
+	
+		
 		api
 			.put(`api/modifyorder/${Order.title}`, order, header)
 			.then((response) => {

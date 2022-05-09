@@ -23,8 +23,8 @@ function DashboardCard01() {
 			api
 				.get('api/earnings', header)
 				.then((response) => {
-					console.log(response.data);
           const reponse=response.data
+          console.log(reponse)
           let label=[]
           let dat=[]
           reponse.forEach(element=> {

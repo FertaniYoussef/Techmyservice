@@ -71,10 +71,19 @@ function UserMenu(user) {
             <div className="text-xs text-slate-500 italic">Administrator</div>
           </div>
           <ul>
+          <li>
+              <Link
+                className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 pr-3 no-underline"
+                to="/Profile"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                Profile
+              </Link>
+            </li>
             <li>
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 pr-3 no-underline"
-                to="/"
+                to="/Settings"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 Settings

@@ -158,7 +158,7 @@ const [search,setSearch]=useState('')
 									{pack.Speciality}
 								</td>
 								<td class="px-6 py-4  text-center ">
-									{pack.isVerified ? <div className='text-slate-50 bg-green-700 rounded-lg font-bold cursor-pointer ' >Verified</div> : <div className='text-slate-50 bg-red-700  rounded-lg font-bold cursor-pointer' onClick={(e) => {
+									{pack.isVerified ? <div className='text-green-400  rounded-lg font-bold cursor-pointer ' >Verified</div> : <div className='text-red-400 hover:text-red-600  rounded-lg font-bold cursor-pointer' onClick={(e) => {
 										e.preventDefault()
 										setVerifyDriver(true)
 										current.current=pack
@@ -169,7 +169,7 @@ const [search,setSearch]=useState('')
 								</td>
 
 								<td class="px-6 py-4 text-center">
-									{pack.isFree ? <div className='text-green-800 font-bold'>Free</div> : <div className='text-red-800 font-bold'  >Working</div>}
+									{pack.isFree ? <div className='text-green-400 font-bold'>Free</div> : <div className='text-red-400 font-bold'  >Working</div>}
 								</td>
 							
 								<td class=" py-4 justify-center items-right flex">
