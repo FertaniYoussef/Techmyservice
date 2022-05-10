@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import LineChart from './charts/LineChart01';
 import Icon from './images/icon-01.svg';
@@ -69,7 +69,7 @@ function DashboardCard01() {
   
 
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-sky-50 shadow-sm  rounded-sm  rounded-lg">
+    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-sky-50  rounded-sm border border-slate-200 rounded-lg">
       <div className="px-5 pt-5">
         <header className="flex justify-between items-start mb-2">
           {/* Icon */}

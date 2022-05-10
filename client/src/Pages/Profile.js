@@ -2,7 +2,8 @@ import Navbar from '../Components/Navbar';
 import api from '../service';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
+import ImageCard from '../Components/ProfileCards/ImageCard';
+import ProfileDetails from '../Components/ProfileCards/ProfileDetails';
 const Profile = () => {
     const history = useNavigate();
     const auth = localStorage.getItem('auth-token');
@@ -11,10 +12,7 @@ const Profile = () => {
             'auth-token': auth
         }
     };
-    const [user, setName] = useState({
-        name: "",
-        prename: ""
-    })
+    const [user, setName] = useState([])
     
     
     
@@ -22,9 +20,7 @@ const Profile = () => {
         () => {
             api.get('api/user', header).then((response) => {
                 if (response.status == 200) {
-                    user.name = response.data.name
-                    user.prename = response.data.prename
-                    setName({ ...user })
+                  setName(response.data)
                 }
                 else {
                     history('/login')
@@ -39,9 +35,9 @@ const Profile = () => {
         <Navbar user={user} />
     </div> 
 
-<div className="w-full  mx-auto">
-          
-     
+<div className="w-full flex  mx-auto h-5/6 my-auto">
+          <ImageCard user={user}/>
+            <ProfileDetails user={user}/>
     </div> 
     </div></div>);
 }

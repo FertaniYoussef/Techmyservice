@@ -155,7 +155,7 @@ const ListAdmins = () => {
 									{pack.phone_number}
 								</td>
 								<td class="px-6 py-4  text-center ">
-									{pack.isVerified ? <div className='text-slate-50 bg-green-700 rounded-lg font-bold cursor-pointer ' >Verified</div> : <div className='text-slate-50 bg-red-700  rounded-lg font-bold cursor-pointer' onClick={(e) => {
+									{pack.isVerified ? <div className='text-green-400 rounded-lg font-bold cursor-pointer ' >Verified</div> : <div className=' text-red-400  rounded-lg font-bold cursor-pointer' onClick={(e) => {
 										e.preventDefault()
 										setVerifyAdmin(true)
 										current.current=pack

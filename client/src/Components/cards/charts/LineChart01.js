@@ -19,7 +19,7 @@ function LineChart01({
   const canvas = useRef(null);
 
   useEffect(() => {
-    console.log(data)
+
     const ctx = canvas.current;
     // eslint-disable-next-line no-unused-vars
     const chart = new Chart(ctx, {
