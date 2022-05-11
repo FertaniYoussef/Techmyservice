@@ -30,7 +30,9 @@ const Userschema = new mongoose.Schema(
 		phone_number: { type: Number, require: true },
 		isVerified: { type: Boolean, default: false },
 		country_code: { type: Number },
-		role: { type: Number, default: 0 }
+		role: { type: Number, default: 0 },
+		Birthday:{type:Date},
+		Account_Creation:{type:Date,default:Date.now}
 	},
 	options
 );
@@ -61,7 +63,6 @@ const Driver = User.discriminator("Driver", new mongoose.Schema({
 			default: [0, 0]
 		}
 	},
-	icon:{type:String},
 	WorkAt: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
 	Speciality: { type: String, required: true },
 	isFree: { type: Boolean, default: true },
@@ -74,6 +75,11 @@ const Admin = User.discriminator("Admin", new mongoose.Schema({
 	Adress: { type: String, min: 5, required: true },
 	service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', unique: true },
 }))
+const SuperAdmin=User.discriminator("SuperAdmin",new  mongoose.Schema({
+	CIN:{ type: Number, min: 00000000, max: 99999999, required: true, unique: true },
+
+}))
+
 const Tokenmodel = mongoose.model('Tokens', tokenSchema);
 
 
@@ -81,7 +87,8 @@ module.exports = {
 	User,
 	Admin,
 	Driver,
-	Tokenmodel
+	Tokenmodel,
+	SuperAdmin
 }
 
 

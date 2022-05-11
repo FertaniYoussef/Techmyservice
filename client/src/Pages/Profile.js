@@ -36,8 +36,9 @@ const Profile = () => {
     </div> 
 
 <div className="w-full flex  mx-auto h-5/6 my-auto">
-          <ImageCard user={user}/>
+         <ImageCard user={user}/>
             <ProfileDetails user={user}/>
+          
     </div> 
     </div></div>);
 }

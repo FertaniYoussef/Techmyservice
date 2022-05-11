@@ -2,11 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../cards/utils/Transition';
 import api from '../../service';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import { Close } from '@mui/icons-material';
 
 const AddPackage = ({

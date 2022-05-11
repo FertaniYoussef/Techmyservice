@@ -74,7 +74,7 @@ const ListAddons = () => {
 		);
 	}
 	return (
-		<div class="mt-24 relative col-span-full overflow-x-auto shadow-md border border-gray-200 rounded-lg bg-indigo-50 ">
+		<div class="mt-24 relative w-11/12  mx-auto overflow-x-auto shadow-md bg-white  rounded-sm  shadow-lg">
 			<div class="p-2 flex justify-between">
 				<label for="table-search" class="sr-only">Search</label>
 				<div class="relative mt-1">

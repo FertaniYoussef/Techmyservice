@@ -40,7 +40,7 @@ useEffect(
         <Navbar user={user} />
     </div> 
 
-<div className="w-full  mx-auto">
+<div className="w-full h-3/4  ">
           
             <ListPackages/>
     </div> 
