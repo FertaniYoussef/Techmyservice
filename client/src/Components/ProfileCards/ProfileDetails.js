@@ -1,8 +1,9 @@
 import { useState,useEffect } from "react";
 const ProfileDetails = ({user}) => {
 
-  
-
+    const [change,setChange]=useState(false)
+    const [edit,setEdit]=useState(false)
+  const [modified,setModified]=useState({user})
 
   const [date,setDate]=useState('')
   const [month,setMonth]=useState('')
@@ -19,7 +20,7 @@ useEffect(() => {
 
 
     return (
-        <div className="w-3/6 ml-4 h-5/6  overflow-hidden shadow-md bg-white  rounded-lg  shadow-lg">
+        <div className="w-3/6 ml-4 h-5/6 relative overflow-hidden shadow-md bg-white  rounded-lg  shadow-lg">
                     
       <div className="px-4 py-4 sm:px-6">
           { user.role==1 ?
@@ -64,6 +65,10 @@ useEffect(() => {
          
         </dl>
       </div>
+        <button className="absolute bottom-4 right-10 p-2 rounded-xl text-white w-24 bg-slate-900">
+          Save
+        </button>
+
     </div>
 
 

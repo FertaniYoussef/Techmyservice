@@ -28,7 +28,6 @@ function UserMenu(user) {
       setDropdownOpen(false);
     
     };
-    console.log(user)
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
   });
@@ -75,6 +74,7 @@ function UserMenu(user) {
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 pr-3 no-underline"
                 to="/Profile"
+                state={{tab:1}}
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 Profile

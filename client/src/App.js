@@ -33,6 +33,7 @@ function App() {
             <Route exact path="/Admins" element={<Admins/>} />
             <Route exact path="/Addons" element={<Addons/>} />
             <Route exact path="/Profile" element={<Profile/>} />
+            <Route exact path="/Profile/Setting"  element={<Profile/>}/>
             </Route>
          
             <Route exact path="/signup" element={<Signup/>}/>
