@@ -34,6 +34,7 @@ function App() {
             <Route exact path="/Addons" element={<Addons/>} />
             <Route exact path="/Profile" element={<Profile/>} />
             <Route exact path="/Profile/Setting"  element={<Profile/>}/>
+            <Route exact path="/Profile/help"  element={<Profile/>}/>
             </Route>
          
             <Route exact path="/signup" element={<Signup/>}/>

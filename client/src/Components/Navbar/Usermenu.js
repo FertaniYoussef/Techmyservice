@@ -83,7 +83,7 @@ function UserMenu(user) {
             <li>
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 pr-3 no-underline"
-                to="/Settings"
+                to="/Profile/Setting"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 Settings

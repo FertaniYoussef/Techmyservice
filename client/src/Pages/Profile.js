@@ -6,6 +6,7 @@ import ImageCard from '../Components/ProfileCards/ImageCard';
 import ProfileDetails from '../Components/ProfileCards/ProfileDetails';
 import ProfileSettings from '../Components/ProfileCards/ProfileSettings'
 import MininavBar from '../Components/ProfileCards/mininavBar';
+import Help from '../Components/ProfileCards/Help';
 const Profile = () => {
 	const location = useLocation();
 	const history = useNavigate();
@@ -46,6 +47,7 @@ const Profile = () => {
 					</div>
            			{location.pathname.endsWith('Profile') &&	<ProfileDetails user={user} />}
                        {location.pathname.endsWith('Setting') &&	<ProfileSettings user={user} />}
+					   {location.pathname.endsWith('help') && <Help/>} 
 				</div>
 			</div>
 		</div>

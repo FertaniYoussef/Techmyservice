@@ -17,7 +17,7 @@ Router.post('/register', async (req, res) => {
 		//Hash passwords
 		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(req.body.password, salt);
-		console.log(hashPassword);
+
 
 		//Create the new user
 		const user = new User({
@@ -25,7 +25,8 @@ Router.post('/register', async (req, res) => {
 			email: req.body.email,
 			password: hashPassword,
 			phone_number: req.body.phone_number,
-			country_code: req.body.country_code
+			country_code: req.body.country_code,
+			Birthday: req.body.Birthday
 		});
 		//	Save it into ther database
 		user.save();
@@ -71,7 +72,6 @@ Router.post('/register', async (req, res) => {
 			return res.status(httpCodes.CREATED).send('A verification email has been sent to ' + user.email + '.');
 		});
 	} catch (err) {
-		console.log(err);
 
 		res.status(httpCodes.BAD_REQUEST).send(err);
 	}
@@ -102,12 +102,34 @@ Router.post('/login', async (req, res) => {
 });
 Router.get('/', verify, async (req, res) => {
 	try {
-		
+
 		const user = await User.findById(req.user._id)
 		if (user) return res.status(httpCodes.OK).send(user)
 		else return res.status(httpCodes.UNAUTHORIZED)
 	} catch (err) {
 		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
+	}
+})
+
+Router.put('/changeProfile', verify, async (req, res) => {
+	try {
+		const user = await User.findById(req.user._id);
+
+		if (!user) {
+			return res.status(httpCodes.BAD_REQUEST).send(" User doesn't exist");
+		}
+		const validPass = await bcrypt.compare(req.body.password, user.password);
+		if (!validPass) {
+			return res.status(httpCodes.UNAUTHORIZED).send('wrong password')
+		}
+		console.log(validPass);
+		const salt = await bcrypt.genSalt(10);
+		const hashPassword = await bcrypt.hash(req.body.modification.password, salt);
+		const modifiedUser = await User.findByIdAndUpdate(req.user._id, { email: req.body.modification.email, Birthday: req.body.modification.Birthday, password: hashPassword })
+
+		res.status(httpCodes.OK).send(modifiedUser)
+	} catch (err) {
+		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
 	}
 })
 

@@ -1,23 +1,30 @@
 import { useState,useEffect } from "react";
+import PasswordConfirmation from "./PasswordConfirmation";
 const ProfileSettings = ({user}) => {
-
-    const [change,setChange]=useState(false)
+  const [modalOpen,setModalOpen]=useState(false)
+  const [change,setChange]=useState(false)
     const [edit,setEdit]=useState(false)
   const [modified,setModified]=useState([])
-
+  const [confirm,setConfirm]=useState('')
   const [date,setDate]=useState('')
   const [month,setMonth]=useState('')
   const [year,setYear]=useState('')
+  const [empty,setEmpty]=useState('')
 useEffect(() => {
     setModified(user)
+    setEmpty('')
   const bday=new Date(`${user.Birthday}`)
    setDate(bday.getDate())
   setMonth(bday.getMonth()+1)
   setYear(bday.getFullYear())
-
-}, [user]);
+ setChange(false)
+}, [user,change]);
   
+const handleClick=(e)=> {
+e.preventDefault()
+  setModalOpen(true)
 
+}
 
 
     return (
@@ -39,34 +46,36 @@ useEffect(() => {
             <input type='text' value={modified.email} placeholder={modified.email} onChange={(e)=> {
               e.preventDefault();
               modified.email=e.target.value
+              setModified({...modified})
             }} className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1 "/>
           </div>
           <div className=" px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="text-sm font-medium text-gray-500">Birthday</dt>
-<dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">{date}/{month}/{year}</dd>
+<input type='date' className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1 " placeholder={`${date}/${month}/${year}`} onChange={(e)=> {
+  e.preventDefault();
+  modified.Birthday=new Date(e.target.value)
+  setModified({...modified})
+}}/>
           </div>
-          <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Work at</dt>
-            {user.role==1 && <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">{user.WorkAt}</dd>}
-           {user.role==2&& <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">{user.service}</dd>}
-           {user.role==3&& <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">TechMyService</dd>}
-          </div>
-          <div className="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Role</dt>
-           {user.role==1 && <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">Driver</dd>}
-           {user.role==2&& <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">Administrator</dd>}
-           {user.role==3&& <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">Super Administrator</dd>}
-          </div>
+
+
+       
+       
           <div className=" px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Password</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">
-              ****************
-            </dd>
+            <dt className="text-sm font-medium text-gray-500">New password</dt>
+            <input type='password' className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1  " placeholder={empty} onChange={(e)=> {
+              modified.password=e.target.value
+              setModified({...modified})
+            }}/>
+             
+            
           </div>
+    
          
         </dl>
+        <PasswordConfirmation modalOpen={modalOpen} setmodalOpen={setModalOpen} modification={modified} change={change} setChange={setChange} />
       </div>
-        <button className="absolute bottom-4 right-10 p-2 rounded-xl text-white w-24 bg-slate-900">
+        <button onClick={handleClick} className="absolute bottom-4 right-10 p-2 rounded-xl text-white w-24 bg-slate-900">
           Save
         </button>
 

@@ -25,7 +25,7 @@ const MininavBar = () => {
 					<span className="text-white">Setting</span>
 				</NavLink>
 				<NavLink
-					to="/Profile/Help"
+					to="/Profile/help"
 					className={`flex px-2 flex-col items-center no-underline ${pathname.pathname.endsWith('Help') &&
 						'border-b-2 border-white '} `}
 				>
