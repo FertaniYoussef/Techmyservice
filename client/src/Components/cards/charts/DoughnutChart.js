@@ -20,6 +20,8 @@ function DoughnutChart({
     const legend = useRef(null);
 
     useEffect(() => {
+        console.log(data);
+        
         const ctx = canvas.current;
         // eslint-disable-next-line no-unused-vars
         const chart = new Chart(ctx, {
@@ -46,7 +48,9 @@ function DoughnutChart({
                 <canvas ref={canvas} width={width} height={height}></canvas>
             </div>
             <div className="px-5 pt-2 pb-6">
-                <ul ref={legend} className="flex flex-wrap justify-center -m-1"></ul>
+                <ul ref={legend} className="flex flex-wrap justify-center -m-1">
+                        
+                </ul>
             </div>
         </div>
     );
