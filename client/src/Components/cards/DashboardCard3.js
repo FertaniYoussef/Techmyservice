@@ -33,7 +33,7 @@ function DashboardCard03() {
             label.push(element._id)
             dat.push(element.count)
           })
-
+          
           
           setChartData({
             labels: label,
@@ -46,7 +46,7 @@ function DashboardCard03() {
                 backgroundColor: `rgba(${hexToRGB(tailwindConfig().theme.colors.sky[500])}, 0.08)`,
                 borderColor: tailwindConfig().theme.colors.sky[500],
                 borderWidth: 2,
-                tension: 0,
+                tension: 0.1,
                 pointRadius: 0,
                 pointHoverRadius: 3,
                 pointBackgroundColor: tailwindConfig().theme.colors.sky[500],
@@ -91,7 +91,6 @@ function DashboardCard03() {
         <div className="text-xs font-semibold text-slate-900 uppercase mb-1">Orders completed</div>
         <div className="flex items-start">
           <div className="text-3xl font-bold text-slate-900 mr-2">{total}</div>
-          <div className="text-sm font-semibold text-white px-1.5 bg-green-500 rounded-full">+49%</div>
         </div>
       </div>
       {/* Chart built with Chart.js 3 */}

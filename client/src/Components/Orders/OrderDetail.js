@@ -17,13 +17,14 @@ const OrderDetail = ({
     const packInput = useRef(null);
     // close if the esc key is pressed
     useEffect(() => {
+   
         const keyHandler = ({ keyCode }) => {
-            if (!modalOpen || keyCode !== 27) return;
+            if (viewBill==true || !modalOpen || keyCode !== 27) return;
             setModalOpen(false);
         };
         document.addEventListener('keydown', keyHandler);
         return () => document.removeEventListener('keydown', keyHandler);
-    });
+  }  );
     const handleClick=(e)=> {
 
         e.preventDefault();

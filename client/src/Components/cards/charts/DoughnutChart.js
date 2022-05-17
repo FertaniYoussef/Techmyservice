@@ -38,7 +38,7 @@ function DoughnutChart({
                 resizeDelay: 200,
             }
         });
-        return () => chart.destroy();
+     
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

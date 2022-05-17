@@ -33,7 +33,7 @@ const Orders = () => {
             })
         }, [setName])
     return ( <div className="Container scrollbar">
-    <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+    <div className="relative flex flex-col flex-1 overflow-y-hidden overflow-x-hidden">
         <div className='welcomebar'>
         <Navbar user={user} />
     </div> 

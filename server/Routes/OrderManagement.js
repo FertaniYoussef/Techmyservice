@@ -6,6 +6,7 @@ const { Order } = require('../models/Order');
 const { User, Driver } = require('../models/User');
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
+const faker=require('faker')
 
 Router.post('/addorder/:service/:name?', verify, async (req, res) => {
 	try {
@@ -212,5 +213,37 @@ Router.get('/getagendaorder?', verify, async (req, res) => {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
 	}
 });
+
+Router.post('/testAddOrder',async(req,res)=> {
+	try {
+		let addon_name=[]
+		for (let i=0;i<10;i++)
+		
+		{
+			const tempdate=faker.date.recent()
+		const tempend= tempdate
+		tempend.setHours(tempend.getHours()+1)
+			const order = new Order({
+			title: 'Youssef',
+			description: 'Handsome Package',
+			addon: addon_name,
+			client: '62502be0ea78f9cc3b478afe',
+			adress: faker.address.streetAddress(), 
+			package: '6259a55e4265437bcf9dbea2',
+			bill: '69',
+			start: tempdate ,
+			end: tempend,
+			service: '6267f3e9c9ecf4dc1c64abaa'
+		})
+		order.save();
+	}
+		
+		res.status(httpCodes.OK).send('test succesful')
+	}catch(err) {
+		console.log(err);
+		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
+	}
+})
+
 
 module.exports = Router;

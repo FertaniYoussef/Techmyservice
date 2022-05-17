@@ -38,25 +38,26 @@ function DashboardCard02() {
             datasets: [
               // Indigo line
               {
+                label:'Orders completed',
                 data: dat
                 ,
                 fill: true,
                 backgroundColor: `rgba(${hexToRGB(tailwindConfig().theme.colors.sky[500])}, 0.08)`,
                 borderColor: tailwindConfig().theme.colors.sky[500],
                 borderWidth: 2,
-                tension: 0,
+                tension: 0.1,
                 pointRadius: 0,
                 pointHoverRadius: 3,
                 pointBackgroundColor: tailwindConfig().theme.colors.sky[500],
-                clip: 20,
+              
               }
-              // Gray line
+
               
             ]})
             const reducer = (accumulator, curr) => accumulator + curr;
             setTotal(dat.reduce(reducer));
       
-			
+            console.log(chartData);
 
 					setChange(false);
 				})
@@ -92,7 +93,7 @@ function DashboardCard02() {
         <div className="text-xs font-semibold text-slate-900 uppercase mb-1">Total Orders</div>
         <div className="flex items-start">
           <div className="text-3xl font-bold text-slate-900 mr-2">{total}</div>
-          <div className="text-sm font-semibold text-white px-1.5 bg-yellow-500 rounded-full">-14%</div>
+  
         </div>
       </div>
       {/* Chart built with Chart.js 3 */}

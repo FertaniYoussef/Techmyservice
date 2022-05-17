@@ -27,7 +27,7 @@ function LineChart01({
       data: data,
       options: {
         chartArea: {
-          backgroundColor: tailwindConfig().theme.colors.sky[500]  ,
+          backgroundColor: tailwindConfig().theme.colors.slate[50],
         },
         layout: {
           padding: 20,
@@ -43,14 +43,15 @@ function LineChart01({
               parser: 'DD-MM-YYYY',
               unit: 'day',
             },
-            display: true,
+            display: false,
           },
         },
         plugins: {
           tooltip: {
             callbacks: {
+             
               title: () => false, // Disable tooltip title
-              label: (context) => formatValue(context.parsed.y),
+              label: (context) =>{ if (data.datasets[0].label=='Money')  return formatValue(context.parsed.y)},
             },
           },
           legend: {

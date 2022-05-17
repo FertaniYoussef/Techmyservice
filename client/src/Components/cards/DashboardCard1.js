@@ -24,33 +24,28 @@ function DashboardCard01() {
 				.get('api/earnings', header)
 				.then((response) => {
           const reponse=response.data
-          console.log(reponse)
           let label=[]
           let dat=[]
           reponse.forEach(element=> {
             label.push(element._id)
             dat.push(element.totalUnitsSold)
           })
-
-          console.log(label,dat)
           setChartData({
             labels: label,
             datasets: [
               // Indigo line
               {
+                label:'Money',
                 data: dat
                 ,
                 fill: true,
-                backgroundColor: `rgba(${hexToRGB(tailwindConfig().theme.colors.sky[500])}, 0.08)`,
-                borderColor: tailwindConfig().theme.colors.sky[500],
-                borderWidth: 2,
-                tension: 0,
-                pointRadius: 0,
-                pointHoverRadius: 3,
-                pointBackgroundColor: tailwindConfig().theme.colors.sky[500],
-                clip: 20,
+        backgroundColor: `rgba(${hexToRGB(tailwindConfig().theme.colors.blue[500])}, 0.08)`,
+        borderColor: tailwindConfig().theme.colors.indigo[500],
+        borderWidth: 2,
+        tension: 0.1,
+        pointRadius: 0,
+        pointBackgroundColor: tailwindConfig().theme.colors.indigo[500],
               }
-              // Gray line
               
             ]})
             const reducer = (accumulator, curr) => accumulator + curr;
@@ -91,7 +86,6 @@ function DashboardCard01() {
         <div className="text-xs font-semibold text-slate-900 uppercase mb-1">Sales</div>
         <div className="flex items-start">
           <div className="text-3xl font-bold text-slate-900 mr-2">{total}$</div>
-          <div className="text-sm font-semibold text-white px-1.5 bg-green-500 rounded-full">+49%</div>
         </div>
       </div>
       {/* Chart built with Chart.js 3 */}

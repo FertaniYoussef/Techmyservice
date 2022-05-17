@@ -13,7 +13,7 @@ const TableOrders = () => {
 	const history = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [postsPerPage] = useState(10);
+	const [postsPerPage] = useState(7);
 	const [orders, setorders] = useState([]);
 	const [change, setChange] = useState(false);
 	const current = useRef('')
@@ -52,10 +52,11 @@ const TableOrders = () => {
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentorders = orders.slice(indexOfFirstPack, indexOfLastPack);
 
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
+	const paginateFront = () => setCurrentPage(currentPage + 1);
+	const paginateBack = () => {if (currentPage>1) return setCurrentPage(currentPage - 1)};
 	if (loading) {
 		return (
 			<div className="flex mt-48  justify-center w-full h-full">
@@ -69,7 +70,7 @@ const TableOrders = () => {
 		);
 	}
 	return (
-		<div class="mt-24 relative w-11/12  mx-auto overflow-x-auto shadow-md bg-white  rounded-sm  shadow-lg">
+		<div class="mt-24 relative w-11/12  mx-auto overflow-x-auto shadow-md bg-white  overflow-y-auto   rounded-sm  shadow-lg">
 			<div class="p-2 flex justify-between">
 				<label for="table-search" class="sr-only">Search</label>
 				<div class="relative mt-1">
@@ -119,7 +120,7 @@ const TableOrders = () => {
 					<tbody>
 						{orders.filter((pack,index)=> 
 						 pack.title.toLowerCase().includes(search.toLowerCase())
-						).map((pack) => (
+						).slice(indexOfFirstPack, indexOfLastPack).map((pack) => (
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">

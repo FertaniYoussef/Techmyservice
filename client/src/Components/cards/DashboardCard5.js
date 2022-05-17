@@ -58,24 +58,20 @@ function DashboardCard06() {
             ],
           }
           )
+           
+
+        setChange(false);
+  
+        // eslint-disable-next-line react-hooks/exhaustive-deps
 
       
 			
 
-					setChange(false);
+	
 				})
 				.catch((err) => {
 					console.log(err.response);
 				});
-		},
-    [change])
-
-    const canvas = useRef(null);
-    const legend = useRef(null);
-
-    useEffect(() => {
-        console.log(chartData);
-        
         const ctx = canvas.current;
         // eslint-disable-next-line no-unused-vars
         const chart = new Chart(ctx, {
@@ -91,8 +87,12 @@ function DashboardCard06() {
             }
         });
         return () => chart.destroy();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+		},
+    [change])
+
+    const canvas = useRef(null);
+    const legend = useRef(null);
+
 
   return (
     <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-6 bg-white shadow-lg rounded-sm border border-slate-200">

@@ -12,6 +12,7 @@ const Bill = ({   BillOpen,
         const modalContent3 = useRef(null);
         const packInput2 = useRef(null);
 
+        
     // close if the esc key is pressed
     useEffect(() => {
         const keyHandler = ({ keyCode }) => {

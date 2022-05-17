@@ -109,7 +109,7 @@ Router.get('/orderscompleted', verify, async (req, res) => {
         
         ])}
         if (user.role==process.env.SuperAdmin) {   orders_day = await Order.aggregate([
-            { $match: { Pending:false} } ,
+            { $match: { Pending: false} } ,
                { $group: {
                     _id: { $dateToString: { format: "%d-%m-%Y", date:'$start'} },
                 
@@ -122,7 +122,7 @@ Router.get('/orderscompleted', verify, async (req, res) => {
         ])}
         if (!orders_day) return res.status(httpCodes.NO_CONTENT).send('no orders yet')
       
-        
+        console.log(orders_day);
         return res.status(httpCodes.OK).send(orders_day)
     } catch (err) {
        
