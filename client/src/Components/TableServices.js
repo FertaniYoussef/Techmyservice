@@ -177,13 +177,14 @@ const ListServices = () => {
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<Editservice modalOpen={editService} setModalOpen={setEditService} Service={current.current} header={header} change={change} setChange={setChange}/>
-									<ViewService modalOpen={viewService} setModalOpen={setviewService} Service={current.current} Position={currpos.current} header={header}/>
-									<DeleteServices modalOpen={deleteService} setModalOpen={setDeleteService} Service={current.current} header={header} change={change} setChange={setChange} />
+									
 										
 								</td>
 							</tr>
 						))}
+						<Editservice modalOpen={editService} setModalOpen={setEditService} Service={current.current} header={header} change={change} setChange={setChange}/>
+									<ViewService modalOpen={viewService} setModalOpen={setviewService} Service={current.current} Position={currpos.current} header={header}/>
+									<DeleteServices modalOpen={deleteService} setModalOpen={setDeleteService} Service={current.current} header={header} change={change} setChange={setChange} />
 					</tbody>
 					<tfoot>
 

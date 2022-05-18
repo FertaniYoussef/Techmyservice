@@ -88,7 +88,10 @@ const TableOrders = () => {
 					<Pagination
 						postsPerPage={postsPerPage}
 						totalPosts={orders.length}
+						paginateBack={paginateBack}
+						paginateFront={paginateFront}
 						paginate={paginate}
+						currentPage={currentPage}
 					/>
 				</div>
 
@@ -185,13 +188,14 @@ const TableOrders = () => {
 									>
 										<PersonAddAlt1 className='text-green-400' />
 									</button>
-									 <EditOrders modalOpen={editOrder} setModalOpen={seteditOrder} Order={current.current} header={header} change={change} setChange={setChange} />
-									<OrderDetail modalOpen={viewOrder} setModalOpen={setviewOrder} Order={current.current} />
-									<DeleteOrder modalOpen={deleteOrder} setModalOpen={setdeleteOrder} Order={current.current} header={header} change={change} setChange={setChange} /> 
-									<AssignOrder  modalOpen={assignOrder} setModalOpen={setassignOrder} Order={current.current} header={header} change={change} setChange={setChange} />
+									
 								</td>
 							</tr>
 						))}
+						 <EditOrders modalOpen={editOrder} setModalOpen={seteditOrder} Order={current.current} header={header} change={change} setChange={setChange} />
+									<OrderDetail modalOpen={viewOrder} setModalOpen={setviewOrder} Order={current.current} />
+									<DeleteOrder modalOpen={deleteOrder} setModalOpen={setdeleteOrder} Order={current.current} header={header} change={change} setChange={setChange} /> 
+									<AssignOrder  modalOpen={assignOrder} setModalOpen={setassignOrder} Order={current.current} header={header} change={change} setChange={setChange} />
 					</tbody>
 					<tfoot>
 

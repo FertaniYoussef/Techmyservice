@@ -180,11 +180,12 @@ const ListAdmins = () => {
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<ViewAdmins modalOpen={viewAdmin} setModalOpen={setViewAdmin} Admin={current.current}header={header} />
-									<DeleteAdmins modalOpen={deleteAdmin} setModalOpen={setDeleteAdmin} Admin={current.current} header={header} change={change} setChange={setChange} />
+								
 								</td>
 							</tr>
 						))}
+							<ViewAdmins modalOpen={viewAdmin} setModalOpen={setViewAdmin} Admin={current.current}header={header} />
+									<DeleteAdmins modalOpen={deleteAdmin} setModalOpen={setDeleteAdmin} Admin={current.current} header={header} change={change} setChange={setChange} />
 					</tbody>
 
 				</table>

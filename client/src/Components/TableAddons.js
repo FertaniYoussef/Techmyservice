@@ -160,12 +160,13 @@ const ListAddons = () => {
 									>
 										<Delete className='text-red-400' />
 									</button>
-									 <EditAddons modalOpen={editAddon} setModalOpen={setEditAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
-								<ViewAddon modalOpen={viewAddon} setModalOpen={setViewAddon} Pack={current.current} />
-									<DeleteAddon modalOpen={deleteAddon} setModalOpen={setDeleteAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
+									
 								</td>
 							</tr>
 						))}
+						 <EditAddons modalOpen={editAddon} setModalOpen={setEditAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
+								<ViewAddon modalOpen={viewAddon} setModalOpen={setViewAddon} Pack={current.current} />
+									<DeleteAddon modalOpen={deleteAddon} setModalOpen={setDeleteAddon} Pack={current.current} header={header} change={change} setChange={setChange} />
 					</tbody>
 					<tfoot>
 

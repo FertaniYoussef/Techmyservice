@@ -183,12 +183,13 @@ const ListPackages = () => {
 									>
 										<Delete className='text-red-400' />
 									</button>
-									<EditPackages modalOpen={editPackage} setModalOpen={setEditPackage} Pack={current.current} header={header} change={change} setChange={setChange} />
-									<ViewPackage modalOpen={viewPackage} setModalOpen={setViewPackage} Pack={current.current} />
-									<DeletePackage modalOpen={deletePackage} setModalOpen={setDeletePackage} Pack={current.current} header={header} change={change} setChange={setChange} />
+									
 								</td>
 							</tr>
 						))}
+						<EditPackages modalOpen={editPackage} setModalOpen={setEditPackage} Pack={current.current} header={header} change={change} setChange={setChange} />
+									<ViewPackage modalOpen={viewPackage} setModalOpen={setViewPackage} Pack={current.current} />
+									<DeletePackage modalOpen={deletePackage} setModalOpen={setDeletePackage} Pack={current.current} header={header} change={change} setChange={setChange} />
 					</tbody>
 					<tfoot>
 

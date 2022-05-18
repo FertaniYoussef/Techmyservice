@@ -42,11 +42,13 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
 		[]
 	);
 	useEffect(() => {
-		modalOpen &&
+		modalOpen===true &&
 		api
 			.get('api/getpackagelist', header)
 			.then((res) => {
 				if (res.status == 200) {
+					console.log(res.data);
+					
 					const temp = res.data.map((data) => ({ value: data.name, label: data.name }));
 					setPackages(temp);
 				}
@@ -67,7 +69,7 @@ const EditOrder = ({ modalOpen, setModalOpen, Order, header, change, setChange }
 			.catch((err) => {
 				console.log(err);
 			});
-	}, [modalOpen]);
+	}, [Order]);
 
 	const modifyOrder = async (e) => {
 		e.preventDefault();
