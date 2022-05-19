@@ -1,55 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Image01 from './images/user-36-05.jpg';
 import Image02 from './images/user-36-06.jpg';
 import Image03 from './images/user-36-07.jpg';
 import Image04 from './images/user-36-08.jpg';
 import Image05 from './images/user-36-09.jpg';
+import { useEffect } from 'react';
+import api from '../../service';
 
 function DashboardCard10() {
+	const [ change, setChange ] = useState(true);
+  const [customers,setCustomers]=useState([])
+	const auth = localStorage.getItem('auth-token');
+	const header = {
+		headers: {
+			'auth-token': auth
+		}
+	};
 
-  const customers = [
-    {
-      id: '0',
-      image: Image01,
-      name: 'Alex Shatov',
-      email: 'alexshatov@gmail.com',
-      location: '🇺🇸',
-      spent: '$2,890.66',
-    },
-    {
-      id: '1',
-      image: Image02,
-      name: 'Philip Harbach',
-      email: 'philip.h@gmail.com',
-      location: '🇩🇪',
-      spent: '$2,767.04',
-    },
-    {
-      id: '2',
-      image: Image03,
-      name: 'Mirko Fisuk',
-      email: 'mirkofisuk@gmail.com',
-      location: '🇫🇷',
-      spent: '$2,996.00',
-    },
-    {
-      id: '3',
-      image: Image04,
-      name: 'Olga Semklo',
-      email: 'olga.s@cool.design',
-      location: '🇮🇹',
-      spent: '$1,220.66',
-    },
-    {
-      id: '4',
-      image: Image05,
-      name: 'Burak Long',
-      email: 'longburak@gmail.com',
-      location: '🇬🇧',
-      spent: '$1,890.66',
-    },
-  ];
+  useEffect(()=> {
+
+  api.get('api/lastcustomers',header).then(res=>{
+      setCustomers(res.data)
+    
+  }).catch(err=> {
+    console.log(err);
+    
+  })
+  },[change])
 
   return (
     <div className="col-span-full xl:col-span-6  bg-white  rounded-lg  shadow-lg">
@@ -74,7 +52,7 @@ function DashboardCard10() {
                   <div className="font-semibold text-left">Spent</div>
                 </th>
                 <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-center">Country</div>
+                  <div className="font-semibold text-center">phone number</div>
                 </th>
               </tr>
             </thead>
@@ -83,24 +61,30 @@ function DashboardCard10() {
               {
                 customers.map(customer => {
                   return (
-                    <tr key={customer.id}>
+                    <tr key={customer._id}>
+                      {customer._id.map(curr=>
+                      <>
                       <td className="p-2 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="w-10 h-10 shrink-0 mr-2 sm:mr-3">
-                            <img className="rounded-full" src={customer.image} width="40" height="40" alt={customer.name} />
+                            {curr.profilepic!='' &&
+                            <img className="rounded-full" src={curr.profilepic} width="40" height="40" alt={curr.name} />
+                          }
                           </div>
-                          <div className="font-medium text-slate-800">{customer.name}</div>
+                          <div className="font-medium text-slate-800">{curr.name} {curr.prename}</div>
                         </div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">{customer.email}</div>
+                        <div className="text-left">{curr.email}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">{customer.spent}</div>
+                        <div className="text-left font-medium text-green-500">{customer.totalUnitsSold}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">{customer.location}</div>
+                        <div className="text-lg text-center">{curr.phone_number}</div>
                       </td>
+                      </>
+                      )}
                     </tr>
                   )
                 })

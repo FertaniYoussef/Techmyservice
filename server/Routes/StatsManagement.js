@@ -203,7 +203,15 @@ Router.get('/lastcustomers', verify, async (req, res) => {
 		}
 		if (user.role == process.env.SuperAdmin) {
 			custom = await Order.aggregate([
+				
 				{
+					$lookup:  {
+						  from:'users',
+						  localField:"client",
+						  foreignField:"_id",
+						  as:'client'
+					  }
+				  },{
 					$group: {
 						_id: '$client',
 						totalUnitsSold: {
@@ -211,19 +219,13 @@ Router.get('/lastcustomers', verify, async (req, res) => {
 						}
                     },
                   
-                
-              $lookup:  {
-                    from:'Users',
-                    localField:'client',
-                    foreignField:'_id',
-                    as:'customers'
-                }
-            }
+				}
 			]).limit(5);
            
 		}
-		if (!custom) return res.status(httpCodes.NO_CONTENT).send('no orders yet');
-        
+		if (!custom) return res.status(httpCodes.NO_CONTENT).send('no orders yet')
+		console.log(custom);
+		
 		return res.status(httpCodes.OK).send(custom);
 	} catch (err) {
 		console.log(err);

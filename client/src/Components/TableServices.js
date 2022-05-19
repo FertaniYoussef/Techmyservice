@@ -54,10 +54,10 @@ const ListServices = () => {
 	//get Current package
 	const indexOfLastPack = currentPage * postsPerPage;
 	const indexOfFirstPack = indexOfLastPack - postsPerPage;
-	const currentServices = Services.slice(indexOfFirstPack, indexOfLastPack);
-
 	// Change page
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
+	const paginateFront = () => setCurrentPage(currentPage + 1);
+	const paginateBack = () => {if (currentPage>1) return setCurrentPage(currentPage - 1)};
 	if (loading) {
 		return (
 			<div className="flex mt-48  justify-center w-full h-full">
@@ -90,6 +90,9 @@ const ListServices = () => {
 						postsPerPage={postsPerPage}
 						totalPosts={Services.length}
 						paginate={paginate}
+						paginateBack={paginateBack}
+						paginateFront={paginateFront}
+						currentPage={currentPage}
 					/>
 				</div>
 
@@ -120,7 +123,8 @@ const ListServices = () => {
 					<tbody>
 						{Services.filter((pack,index)=> 
 						 pack.name.toLowerCase().includes(search.toLowerCase())
-						).map((pack) => (
+						).slice(indexOfFirstPack, indexOfLastPack)
+.map((pack) => (
 							<tr class="rounded-lg ">
 								<th scope="row" class="px-6 py-4 font-medium text-slate-900 uppercase whitespace-nowrap">
 									<div className="flex items-center">

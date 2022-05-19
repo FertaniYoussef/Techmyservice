@@ -24,7 +24,7 @@ Chart.register(CategoryScale, BarController, BarElement, Filler, LinearScale, Ti
 
 // Import utilities
 
-function DashboardCard03() {
+function DashboardCard03({user}) {
 	const canvas = useRef(null);
 	const [ chartData, setChartData ] = useState([]);
 	const [ total, setTotal ] = useState(0);
@@ -162,7 +162,7 @@ function DashboardCard03() {
 						</li>
 					</EditMenu>
 				</header>
-				<h2 className="text-lg font-semibold text-slate-900 mb-2">SparkleMyCar</h2>
+				{user.role==3 ?<h2 className="text-lg font-semibold text-slate-900 mb-2">TechMyService</h2>:<h2 className="text-lg font-semibold text-slate-900 mb-2">{user.service}</h2> }
 				<div className="text-xs font-semibold text-slate-900 uppercase mb-1">Orders completed</div>
 				<div className="flex items-start">
 					<div className="text-3xl font-bold text-slate-900 mr-2">{total}</div>

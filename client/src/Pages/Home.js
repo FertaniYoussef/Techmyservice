@@ -24,7 +24,7 @@ const Home = () => {
         name: "",
         prename: ""
     })
-
+    const [admin,setAdmin]=useState([])
 
 
     useEffect(
@@ -36,6 +36,7 @@ const Home = () => {
                     user.name = response.data.name
                     user.prename = response.data.prename
                     setName({ ...user })
+                    setAdmin(response.data)
                     setloggedIn(true)
                     
                 }
@@ -62,12 +63,11 @@ const Home = () => {
                 {/* Welcome banner */}
                 <WelcomeBanner user={user} />
                 <div className="grid grid-cols-12 gap-6">
-                    <DashboardCard01 />
-                    <DashboardCard02 />
-                    <DashboardCard03 />
+                    <DashboardCard01 user={admin} />
+                    <DashboardCard02 user={admin} />
+                    <DashboardCard03 user={admin}/>
                     <DashboardCard10/>
                     <DashboardCard13/>
-                    <DashboardCard07/>
                 </div>
             </div>
         </div>

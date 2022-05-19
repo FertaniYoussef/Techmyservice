@@ -21,7 +21,7 @@ import 'chartjs-adapter-moment';
 import { tailwindConfig, hexToRGB, formatValue } from './utils/Utils';
 Chart.register(CategoryScale, BarController, BarElement, Filler, LinearScale, TimeScale, Tooltip, Legend);
 
-function DashboardCard01() {
+function DashboardCard01({user}) {
 	const [ total, setTotal ] = useState(0);
 	const [ change, setChange ] = useState(true);
 	const [ chartData, setChartData ] = useState([]);
@@ -35,6 +35,8 @@ function DashboardCard01() {
 	const canvas = useRef(null);
 	useEffect(
 		() => {
+
+			
 			api
 				.get('api/earnings', header)
 				.then((response) => {
@@ -171,7 +173,7 @@ function DashboardCard01() {
 						</li>
 					</EditMenu>
 				</header>
-				<h2 className="text-lg font-semibold text-slate-900 mb-2">SparkleMyCar</h2>
+				{user.role==3 ?<h2 className="text-lg font-semibold text-slate-900 mb-2">TechMyService</h2>:<h2 className="text-lg font-semibold text-slate-900 mb-2">{user.service}</h2> }
 				<div className="text-xs font-semibold text-slate-900 uppercase mb-1">Sales</div>
 				<div className="flex items-start">
 					<div className="text-3xl font-bold text-slate-900 mr-2">{total}$</div>
