@@ -224,7 +224,6 @@ Router.get('/lastcustomers', verify, async (req, res) => {
            
 		}
 		if (!custom) return res.status(httpCodes.NO_CONTENT).send('no orders yet')
-		console.log(custom);
 		
 		return res.status(httpCodes.OK).send(custom);
 	} catch (err) {
