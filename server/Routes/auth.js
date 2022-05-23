@@ -8,7 +8,6 @@ const mongodbcode = require('../constants/mongodbCodes');
 const httpCodes = require('../constants/httpCodes');
 const verify = require('../middleware/tokenverif');
 
-
 Router.post('/register', async (req, res) => {
 	try {
 		//Check if email already exist
@@ -17,7 +16,6 @@ Router.post('/register', async (req, res) => {
 		//Hash passwords
 		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(req.body.password, salt);
-
 
 		//Create the new user
 		const user = new User({
@@ -35,7 +33,7 @@ Router.post('/register', async (req, res) => {
 		const token = new Tokenmodel({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
 
 		//	Save the verification token
-		token.save(function (err) {
+		token.save(function(err) {
 			if (err) {
 				return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 			}
@@ -65,14 +63,13 @@ Router.post('/register', async (req, res) => {
 				token.token +
 				'.\n'
 		};
-		transporter.sendMail(mailOptions, function (err) {
+		transporter.sendMail(mailOptions, function(err) {
 			if (err) {
 				return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 			}
 			return res.status(httpCodes.CREATED).send('A verification email has been sent to ' + user.email + '.');
 		});
 	} catch (err) {
-
 		res.status(httpCodes.BAD_REQUEST).send(err);
 	}
 });
@@ -94,7 +91,10 @@ Router.post('/login', async (req, res) => {
 			return res.status(httpCodes.BAD_REQUEST).send('User not verified please check your email');
 		//Create and assign a token
 		const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-		return res.header({ 'auth-token': token, 'phone-number': user.phone_number }).status(httpCodes.ACCEPTED).send({ user, token });
+		return res
+			.header({ 'auth-token': token, 'phone-number': user.phone_number })
+			.status(httpCodes.ACCEPTED)
+			.send({ user, token });
 	} catch (err) {
 		console.error(err);
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
@@ -102,14 +102,13 @@ Router.post('/login', async (req, res) => {
 });
 Router.get('/', verify, async (req, res) => {
 	try {
-
-		const user = await User.findById(req.user._id)
-		if (user) return res.status(httpCodes.OK).send(user)
-		else return res.status(httpCodes.UNAUTHORIZED)
+		const user = await User.findById(req.user._id);
+		if (user) return res.status(httpCodes.OK).send(user);
+		else return res.status(httpCodes.UNAUTHORIZED);
 	} catch (err) {
 		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
-})
+});
 
 Router.put('/changeProfile', verify, async (req, res) => {
 	try {
@@ -120,17 +119,37 @@ Router.put('/changeProfile', verify, async (req, res) => {
 		}
 		const validPass = await bcrypt.compare(req.body.password, user.password);
 		if (!validPass) {
-			return res.status(httpCodes.UNAUTHORIZED).send('wrong password')
+			return res.status(httpCodes.UNAUTHORIZED).send('wrong password');
 		}
 		console.log(validPass);
 		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(req.body.modification.password, salt);
-		const modifiedUser = await User.findByIdAndUpdate(req.user._id, { email: req.body.modification.email, Birthday: req.body.modification.Birthday, password: hashPassword })
+		const modifiedUser = await User.findByIdAndUpdate(req.user._id, {
+			email: req.body.modification.email,
+			Birthday: req.body.modification.Birthday,
+			password: hashPassword
+		});
 
-		res.status(httpCodes.OK).send(modifiedUser)
+		res.status(httpCodes.OK).send(modifiedUser);
 	} catch (err) {
-		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err)
+		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
-})
+});
 
+Router.post('/forgottenpassword', async (req, res) => {
+	try {
+		const user = await User.findOne({ email: req.body.email });
+		if (!user) return res.status(400).send("user with given email doesn't exist");
+
+		let token = await Tokenmodel.findOne({ _userId: user._id });
+		if (!token) {
+			token = await new Token({
+				userId: user._id,
+				token: crypto.randomBytes(32).toString('hex')
+			}).save();
+		}
+	} catch (err) {
+		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
+	}
+});
 module.exports = Router;
