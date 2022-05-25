@@ -71,14 +71,37 @@ Router.post('/resend', async (req, res) => {
 			subject: 'Account Verification Token',
 			text:
 				'Hello,\n\n' +
-				'Please verify your account by clicking the link: \nhttp://' +
-				req.headers.host +
-				'/confirmation/' +
+				'Please verify your account by clicking the link: \n http://localhost:3000/confirmation/' +
 				token.token +
 				'.\n'
 		};
 		transporter.sendMail(mailOptions);
 		return res.status(httpCodes.OK).send('A verification email has been sent to ' + user.email + '.');
+	} catch (err) {
+		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
+	}
+});
+
+Router.post('/forgottenpassword/:token', async (req, res) => {
+	// Find a matching token
+
+	try {
+		const token = await Tokenmodel.findOne({ token: req.params.token });
+	
+		if (!token)
+			return res.status(httpCodes.NO_CONTENT).send({
+				type: 'not-verified',
+				msg: 'We were unable to find a valid token. Your token my have expired.'
+			});
+
+		//	If we found a token, find a matching user
+		const user = await User.findOne({ _id: token._userId });
+
+		if (!user)
+			return res.status(httpCodes.NO_CONTENT).send({ msg: 'We were unable to find a user for this token.' });
+	
+
+		return res.status(httpCodes.OK)
 	} catch (err) {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 	}

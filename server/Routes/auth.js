@@ -139,17 +139,60 @@ Router.put('/changeProfile', verify, async (req, res) => {
 Router.post('/forgottenpassword', async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email });
-		if (!user) return res.status(400).send("user with given email doesn't exist");
-
+		if (!user) return res.status(httpCodes.NO_CONTENT).send("user with given email doesn't exist");
+		
 		let token = await Tokenmodel.findOne({ _userId: user._id });
 		if (!token) {
-			token = await new Token({
-				userId: user._id,
-				token: crypto.randomBytes(32).toString('hex')
-			}).save();
+			token = new Tokenmodel({
+				_userId: user._id,
+				token: crypto.randomBytes(3).toString('hex').substr(0,6)
+			})
+			
+			
+			token.save(function(err) {
+				if (err) {
+					return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
+				}
+			})
 		}
-	} catch (err) {
-		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
+		
+		
+			const transporter = nodemailer.createTransport({
+				service: 'Gmail',
+				tls: {
+					rejectUnauthorized: false
+				},
+				port: 465,
+				secure: false,
+				auth: {
+					user: 'youssefmehdi.fertani@etudiant-isi.utm.tn',
+					pass: '12345678'
+				}
+			});
+			const mailOptions = {
+				from: 'no-reply@yourwebapplication.com',
+				to: user.email,
+				subject: 'Password reset',
+				text:
+					'Hello,\n\n' +
+					'Please reset your password by typing the code below\n'+
+					token+'.\n'
+			};
+			
+			transporter.sendMail(mailOptions, function(err) {
+				if (err) {
+					
+					return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
+				}
+				
+				return res.status(httpCodes.OK).send('A verification email has been sent to ' + user.email + '.');
+		})
+		
+	}
+	 catch (err) {
+		 console.log({msg:err.message});
+		 
+		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
 });
 module.exports = Router;

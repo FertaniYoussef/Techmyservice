@@ -39,7 +39,8 @@ function App() {
          
             <Route exact path="/signup" element={<Signup/>}/>
             <Route exact path="/login" element= {<Login/>}/>
-      
+            <Route exact path="/forgetpassword" element={<Login/>}/>
+            <Route exact path="/forgetpassword/verification" element={<Login/>}/>
           </Routes>
     </Router>
     </div>
