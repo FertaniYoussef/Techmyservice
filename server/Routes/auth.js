@@ -109,9 +109,14 @@ Router.get('/', verify, async (req, res) => {
 		if (user.role==process.env.Admin) {
 			const admin = await Admin.findById(user._id).populate('service','name')
 		if (!admin ) return res.status(httpCodes.NO_CONTENT).send('No admin')
-		console.log(admin);
 		
 		return res.status(httpCodes.OK).send(admin);
+		}
+		else if (user.role==process.env.Driver) {
+			const driver= await Driver.findById(user._id).populate('WorkAt','name')
+			if (!driver )return res.status(httpCodes.NO_CONTENT).send('No Driver')
+		
+			return res.status(httpCodes.OK).send(driver);
 		}
 		
 		return res.status(httpCodes.OK).send(user);
@@ -133,7 +138,6 @@ Router.put('/changeProfile', verify, async (req, res) => {
 		if (!validPass) {
 			return res.status(httpCodes.UNAUTHORIZED).send('wrong password');
 		}
-		console.log(validPass);
 		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(req.body.modification.password, salt);
 		const modifiedUser = await User.findByIdAndUpdate(req.user._id, {
