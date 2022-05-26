@@ -1,5 +1,5 @@
 const Router = require('express').Router();
-const { User, Tokenmodel } = require('../models/User');
+const { User, Tokenmodel,Admin } = require('../models/User');
 const bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
@@ -102,16 +102,22 @@ Router.post('/login', async (req, res) => {
 });
 Router.get('/', verify, async (req, res) => {
 	try {
-		let user = await User.findById(req.user._id);
+		const user = await User.findById(req.user._id);
 	
 		
 		if (!user) return res.status(httpCodes.UNAUTHORIZED) 
 		if (user.role==process.env.Admin) {
-			user = await Admin.findById(user._id).populate('service','name')
+			const admin = await Admin.findById(user._id).populate('service','name')
+		if (!admin ) return res.status(httpCodes.NO_CONTENT).send('No admin')
+		console.log(admin);
+		
+		return res.status(httpCodes.OK).send(admin);
 		}
 		
 		return res.status(httpCodes.OK).send(user);
 	} catch (err) {
+		console.log(err);
+		
 		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
 });

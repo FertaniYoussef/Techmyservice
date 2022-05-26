@@ -48,7 +48,7 @@ const Home = () => {
             )
             
         
-        }, [])
+        }, [loggedIn])
 
     return (<>
    

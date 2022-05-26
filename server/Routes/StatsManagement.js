@@ -153,7 +153,7 @@ Router.get('/topPackages', verify, async (req, res) => {
 						_id: '$title',
 
 						count: {
-							$sum: 0
+							$sum: 1
 						}
 					}
 				}
