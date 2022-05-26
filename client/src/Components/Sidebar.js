@@ -1,13 +1,32 @@
 import { StoreOutlined, PermIdentity, ShoppingBasketOutlined, DashboardOutlined, Redeem, AnalyticsOutlined, HomeOutlined } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link,Outlet,NavLink,useNavigate,useLocation  } from 'react-router-dom';
-
+import api from '../service'
 
 const Sidebar = () => {
 	const location = useLocation();
 	const {pathname}=location
+	const [user,setUser]=useState([])
+	const auth = localStorage.getItem('auth-token');
+	const header = {
+		headers: {
+			'auth-token': auth
+		}
+	};
 
 	const [sidebarExpanded, setSidebarExpanded] = useState(false);	
+
+	useEffect(()=> {
+
+				api.get('api/user', header).then((response) => {
+					if (response.status == 200) {
+						
+						setUser(response.data);
+					}
+				});
+			
+
+	},[])
 	return (
 		<>
 		<div className="Sidebar scrollbar">
@@ -95,7 +114,7 @@ const Sidebar = () => {
 						  </ul>
 						  </div>
 						</React.Fragment>
-						<li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes('Services') && 'bg-slate-900'}`}>
+						{user.role==3 &&<li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${pathname.includes('Services') && 'bg-slate-900'}`}>
 							<NavLink end to="Services" className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes('Services') && 'hover:text-slate-200'} no-underline`}>
 							<div className="flex items-center">
 							<svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
@@ -108,7 +127,7 @@ const Sidebar = () => {
 							
 							</NavLink>
 						</li>
-
+	}
 						<li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 rounded-lg ${pathname.includes('Drivers')  && 'bg-slate-900'}`}>
 							<NavLink end to="Drivers" className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes('Drivers') && 'hover:text-slate-200'} no-underline`}>
 							<div className="flex items-center">
@@ -135,7 +154,7 @@ const Sidebar = () => {
 							</NavLink>
 						</li>
 
-						<li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 rounded-lg ${pathname.includes('Admins')  && 'bg-slate-900'}`}>
+						{user.role==3 &&<li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 rounded-lg ${pathname.includes('Admins')  && 'bg-slate-900'}`}>
 							<NavLink end to="Admins" className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes('Admins') && 'hover:text-slate-200'} no-underline`}>
 							<div className="flex items-center">
 							<svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
@@ -147,6 +166,7 @@ const Sidebar = () => {
 							</div>
 							</NavLink>
 						</li>
+						}
 					</ul>
 				</div>
 			</div>

@@ -150,7 +150,7 @@ Router.get('/topPackages', verify, async (req, res) => {
 				{ $match: { service: admin.service } },
 				{
 					$group: {
-						_id: '$package',
+						_id: '$title',
 
 						count: {
 							$sum: 0
@@ -191,6 +191,13 @@ Router.get('/lastcustomers', verify, async (req, res) => {
 			custom = await Order.aggregate([
 				{ $match: { service: admin.service } },
 				{
+					$lookup:  {
+						  from:'users',
+						  localField:"client",
+						  foreignField:"_id",
+						  as:'client'
+					  }
+				  },{
 					$group: {
 						_id: '$client',
 

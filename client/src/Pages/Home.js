@@ -29,10 +29,10 @@ const Home = () => {
 
     useEffect(
         () => {
-            console.log(loggedIn);
             api.get('api/user', header).then((response) => {
                 console.log(response.status)
                 if (response.status == 200) {
+                    
                     user.name = response.data.name
                     user.prename = response.data.prename
                     setName({ ...user })
@@ -48,7 +48,7 @@ const Home = () => {
             )
             
         
-        }, [loggedIn])
+        }, [])
 
     return (<>
    

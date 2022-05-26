@@ -102,9 +102,15 @@ Router.post('/login', async (req, res) => {
 });
 Router.get('/', verify, async (req, res) => {
 	try {
-		const user = await User.findById(req.user._id);
-		if (user) return res.status(httpCodes.OK).send(user);
-		else return res.status(httpCodes.UNAUTHORIZED);
+		let user = await User.findById(req.user._id);
+	
+		
+		if (!user) return res.status(httpCodes.UNAUTHORIZED) 
+		if (user.role==process.env.Admin) {
+			user = await Admin.findById(user._id).populate('service','name')
+		}
+		
+		return res.status(httpCodes.OK).send(user);
 	} catch (err) {
 		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
@@ -115,7 +121,7 @@ Router.put('/changeProfile', verify, async (req, res) => {
 		const user = await User.findById(req.user._id);
 
 		if (!user) {
-			return res.status(httpCodes.BAD_REQUEST).send(" User doesn't exist");
+			return res.status(httpCodes.NO_CONTENT).send(" User doesn't exist");
 		}
 		const validPass = await bcrypt.compare(req.body.password, user.password);
 		if (!validPass) {
@@ -130,11 +136,26 @@ Router.put('/changeProfile', verify, async (req, res) => {
 			password: hashPassword
 		});
 
-		res.status(httpCodes.OK).send(modifiedUser);
+	return 	res.status(httpCodes.OK).send(modifiedUser);
 	} catch (err) {
 		res.status(httpCodes.INTERNAL_SERVER_ERROR).send(err);
 	}
 });
+
+Router.post('/changepassword',async(req,res)=> {
+	try {	
+		const salt = await bcrypt.genSalt(10);
+		const hashPassword = await bcrypt.hash(req.body.password, salt);
+		const user= await User.findOneAndUpdate({email:req.body.email},{password:hashPassword})
+		console.log(user);
+		
+		if (!user ) return res.status(httpCodes.NO_CONTENT).send(" User doesn't exist");
+
+		return res.status(httpCodes.OK).send('user modified')
+	}catch(err) {
+		res.status(httpCodes.INTERNAL_SERVER_ERROR).send({msg:err})
+	}
+})
 
 Router.post('/forgottenpassword', async (req, res) => {
 	try {
@@ -176,7 +197,7 @@ Router.post('/forgottenpassword', async (req, res) => {
 				text:
 					'Hello,\n\n' +
 					'Please reset your password by typing the code below\n'+
-					token+'.\n'
+					token.token+'.\n'
 			};
 			
 			transporter.sendMail(mailOptions, function(err) {

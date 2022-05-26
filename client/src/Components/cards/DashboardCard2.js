@@ -161,7 +161,7 @@ function DashboardCard02({user}) {
 						</li>
 					</EditMenu>
 				</header>
-				{user.role==3 ?<h2 className="text-lg font-semibold text-slate-900 mb-2">TechMyService</h2>:<h2 className="text-lg font-semibold text-slate-900 mb-2">{user.service}</h2> }
+				{user.role==3 ?<h2 className="text-lg font-semibold text-slate-900 mb-2">TechMyService</h2>:<h2 className="text-lg font-semibold text-slate-900 mb-2 uppercase">{user.name}</h2> }
 				<div className="text-xs font-semibold text-slate-900 uppercase mb-1">Total Orders</div>
 				<div className="flex items-start">
 					<div className="text-3xl font-bold text-slate-900 mr-2">{total}</div>

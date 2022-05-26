@@ -82,11 +82,11 @@ Router.post('/resend', async (req, res) => {
 	}
 });
 
-Router.post('/forgottenpassword/:token', async (req, res) => {
+Router.post('/forgottenpassword', async (req, res) => {
 	// Find a matching token
 
 	try {
-		const token = await Tokenmodel.findOne({ token: req.params.token });
+		const token = await Tokenmodel.findOne({ token: req.body.token });
 	
 		if (!token)
 			return res.status(httpCodes.NO_CONTENT).send({
@@ -101,7 +101,7 @@ Router.post('/forgottenpassword/:token', async (req, res) => {
 			return res.status(httpCodes.NO_CONTENT).send({ msg: 'We were unable to find a user for this token.' });
 	
 
-		return res.status(httpCodes.OK)
+		return res.status(httpCodes.OK).send('token verified')
 	} catch (err) {
 		return res.status(httpCodes.INTERNAL_SERVER_ERROR).send({ msg: err.message });
 	}

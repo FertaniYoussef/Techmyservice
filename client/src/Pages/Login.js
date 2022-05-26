@@ -1,23 +1,47 @@
 import {useState} from 'react'
 import api from '../service'
-import {ArrowBack,Done} from '@mui/icons-material'
+import {ArrowBack,Done,Password} from '@mui/icons-material'
 import {useNavigate,useLocation, NavLink} from 'react-router-dom'
-
+import ConfirmationChange from '../Components/ConfirmationPasswordChange'
 const Login = () => {
   const location=useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmpass,setConfirmpass]=useState('')
   const history=useNavigate()
   const [wrong,setWrong]=useState(false)
   const [token,setToken]=useState('')
+  const [modalOpen,setModalOpen]=useState(false)
+  const changePassword=async(e)=> {
+    e.preventDefault()
+    if (password!=confirmpass) {
+      setWrong(true)
+      setPassword('')
+      setConfirmpass('')
+    }
+    else {
+    api.post('/api/user/changepassword',{email,password}).then(res=>{
+      if (res.status==200) {
+        setWrong(false)
+        setModalOpen(true)
+      }
+    }).catch(err=> {
+      console.log({msg:err});
+      
+    })}
+  }
   const handleVerification=async(e)=>  {
     e.preventDefault()
-    api.post(`/api/forgottenpassword/${token}`).then(res=> {
+    api.post(`/api/verification/forgottenpassword`,{token}).then(res=> {
       if (res.status===200) {
-        console.log('okay')
+        
+        history('/forgetpassword/changepassword')
+        setWrong(false)
       }
       else if (res.status===204) {
-        console.log("no body");
+        setWrong(true)
+        setToken('')
+
 
       }
     })
@@ -201,7 +225,7 @@ const Login = () => {
                </div>
                <div className="flex flex-col place-content-center w-full">
                  <div>
-            <h2 className="mt-6 text-center mx-auto text-3xl font-extrabold text-white uppercase border-2 border-indigo-800 w-10 rounded-full bg-indigo-800  py-2"><Done/></h2>
+            <h2 className="mt-6 text-center mx-auto text-3xl font-extrabold text-indigo-800 uppercase"><Done/></h2>
           </div>
           <div className="mt-8 space-y-6">
             <input type="hidden" name="remember" defaultValue="true" />
@@ -211,10 +235,11 @@ const Login = () => {
                   type="text"
                   value={token}
                   required
-                  className="appearance-none rounded-md relative block w-full mb-4 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-md relative block w-full px-24 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Type your verification code here"
                   onChange={(e)=>setToken(e.target.value)}
                 />
+                         <p className={`text-xs text-red-500  mb-4 ${wrong===false && 'hidden'}`}>Passwords non identical</p>
                 <p className={`text-indigo-500 text-lg text-center `}>Verification email sent</p>
               </div>
             </div>
@@ -238,6 +263,58 @@ const Login = () => {
           </div>
           </div>
           </>
+          }
+           {
+             location.pathname.endsWith('changepassword') && <> <div className="absolute top-2 left-2">
+               <NavLink to="/login" className="text-indigo-800 no-underline hover:text-indigo-900">
+               <ArrowBack/>
+               </NavLink>
+               </div>
+               <div className="flex flex-col place-content-center w-full">
+                 <div>
+            <h2 className="mt-6 text-center mx-auto text-3xl font-extrabold text-indigo-800   rounded-lg uppercase">Change your password</h2>
+          </div>
+          <div className="mt-8 space-y-6">
+            <input type="hidden" name="remember" defaultValue="true" />
+            <div className="rounded-md w-full   -space-y-px">
+              <div className=" mx-auto">
+              <input
+                  type="password"
+                  value={password}
+                  required
+                  className="appearance-none rounded-md relative block w-full mb-4 px-24 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Type your new password "
+                  onChange={(e)=>setPassword(e.target.value)}
+                />
+              </div>
+              <div className=" mx-auto">
+              <input
+                  type="password"
+                  value={confirmpass}
+                  required
+                  className="appearance-none rounded-md relative block w-full  px-24 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Confirm your new password "
+                  onChange={(e)=>setConfirmpass(e.target.value)}
+                />
+              </div>
+              <p className={`text-xs text-red-500 ${wrong===false && 'hidden'}`}>Passwords non identical</p>
+            </div>
+
+            <div className="flex">
+        
+              <button
+                type="submit"
+                className="group relative w-[50%]  ml-8 items-center flex justify-center py-2 px-4 mx-auto border border-transparent text-sm font-medium rounded-md text-white bg-indigo-800 hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+                onClick={changePassword}
+              >
+                 Confirm
+              </button>
+            </div>
+          </div>
+          </div>
+          <ConfirmationChange modalOpen={modalOpen} setModalOpen={setModalOpen} message="Your password has been succesfully changed"/>
+          </>
+       
           }
         </div>
         </div>
