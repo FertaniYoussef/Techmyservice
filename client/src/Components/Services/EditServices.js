@@ -190,7 +190,6 @@ const Editservice = ({
                                                         label="Administrator"
                                                         placeholder='Administrator'
                                                         onChange={(e) => {
-                                                            console.log(e.target.value)
                                                             setOneAdmin(e.target.value)
                                                         }}
                                                     ><option value=''>None</option>

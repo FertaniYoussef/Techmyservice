@@ -53,7 +53,6 @@ Router.get('/getpackages', verify, async (req, res) => {
 	try {
 		const packages = await Package.find({}).populate('service', [ 'name' ]);
 		if (!packages) return res.status(httpCodes.NO_CONTENT).send('no package exist yet');
-		console.log(packages);
 		return res.status(httpCodes.OK).send(packages);
 	} catch (err) {
 		return res.status(httpCodes.BAD_REQUEST).send({ msg: err.message });
@@ -62,7 +61,6 @@ Router.get('/getpackages', verify, async (req, res) => {
 Router.get('/getpackagelist', verify, async (req, res) => {
 	try {
 		const user = await User.findById(req.user._id);
-		console.log(user);
 		let packages = [];
 		if (user.role == process.env.SuperAdmin) {
 			packages = await Package.find({}).populate('service', [ 'name' ]);
@@ -111,9 +109,9 @@ Router.delete('/deletepackage?', verify, async (req, res) => {
 });
 Router.put('/updatepackage', verify, upload.single('icon'), async (req, res) => {
 	try {
-		const pack_req = JSON.parse(req.body.service);
-		console.log(req.body);
-		const user = await User.findById(user_id);
+		const pack_req= JSON.parse(req.body.pack)
+		
+		const user = await User.findById(req.user._id);
 		if (user.role == process.env.User || user.role == process.env.Driver)
 			return res.status(httpCodes.UNAUTHORIZED).send('Access Denied');
 		const pack_name = await Package.findOneAndUpdate(
@@ -126,7 +124,6 @@ Router.put('/updatepackage', verify, upload.single('icon'), async (req, res) => 
 			}
 		);
 		if (!pack_name) return res.status(httpCodes.NO_CONTENT).send("the package doesn't exist");
-		console.log(pack_name);
 		const path = 'img' + pack_name.icon;
 		fs.unlink(path, (err) => {
 			if (path === null) {
